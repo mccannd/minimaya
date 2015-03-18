@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>glsl/lambert.frag.glsl</file>
+        <file>glsl/lambert.vert.glsl</file>
+        <file>glsl/wire.frag.glsl</file>
+        <file>glsl/wire.vert.glsl</file>
+    </qresource>
+</RCC>
