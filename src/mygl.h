@@ -9,6 +9,7 @@
 #include <scene/cylinder.h>
 #include <scene/sphere.h>
 #include <scene/camera.h>
+#include <scene/mesh.h>
 #include <la.h>
 
 
@@ -23,9 +24,15 @@ private:
     Sphere geom_sphere;
     ShaderProgram prog_lambert;
     ShaderProgram prog_wire;
+    Mesh geom_mesh;
+
+    Face* selected_face;
+    HalfEdge* selected_edge;
+    Vertex* selected_vertex;
 
     Camera camera;
 
+    std::vector<HalfEdge*> drawn_edges = {};
 public:
     explicit MyGL(QWidget *parent = 0);
     ~MyGL();
@@ -34,6 +41,21 @@ public:
     void resizeGL(int w, int h);
     void paintGL();
 
+    Mesh* getMesh();
+
+    // mesh interface functions
+    void divideEdge();
+    void triangulateFace();
+    void moveVertex(float x, float y, float z);
+    void deleteVertex();
+
 protected:
     void keyPressEvent(QKeyEvent *e);
+signals:
+    void meshChanged();
+public slots:
+    void faceSelected(QListWidgetItem* f);
+    void edgeSelected(QListWidgetItem* e);
+    void vertexSelected(QListWidgetItem* v);
+
 };

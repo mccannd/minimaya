@@ -9,7 +9,11 @@ SOURCES += \
     $$PWD/shaderprogram.cpp \
     $$PWD/scene/camera.cpp \
     $$PWD/scene/cylinder.cpp \
-    $$PWD/scene/sphere.cpp
+    $$PWD/scene/sphere.cpp \
+    $$PWD/vertex.cpp \
+    $$PWD/halfedge.cpp \
+    $$PWD/face.cpp \
+    $$PWD/scene/mesh.cpp
 
 HEADERS += \
     $$PWD/mainwindow.h \
@@ -19,4 +23,8 @@ HEADERS += \
     $$PWD/scene/camera.h \
     $$PWD/scene/cylinder.h \
     $$PWD/scene/sphere.h \
-    $$PWD/la.h
+    $$PWD/la.h \
+    $$PWD/vertex.h \
+    $$PWD/halfedge.h \
+    $$PWD/face.h \
+    $$PWD/scene/mesh.h

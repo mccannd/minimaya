@@ -1,9 +1,11 @@
+
 #include "mygl.h"
 #include <la.h>
 
 #include <iostream>
 #include <QApplication>
 #include <QKeyEvent>
+
 
 
 MyGL::MyGL(QWidget *parent)
@@ -19,6 +21,9 @@ MyGL::~MyGL()
     vao.destroy();
     geom_cylinder.destroy();
     geom_sphere.destroy();
+    // ensure that the data in the mesh does not leak
+    geom_mesh.clearAll();
+    geom_mesh.destroy();
 }
 
 void MyGL::initializeGL()
@@ -44,10 +49,14 @@ void MyGL::initializeGL()
     // Create a Vertex Attribute Object
     vao.create();
 
-    // Create the example sphere (you should delete this when you add your own code elsewhere)
     geom_cylinder.create();
 
     geom_sphere.create();
+
+    geom_mesh.create();
+    geom_mesh.unitCube(); // initialize mesh as a unit cube
+
+    emit meshChanged();
 
     // Create and set up the diffuse shader
     prog_lambert.create(":/glsl/lambert.vert.glsl", ":/glsl/lambert.frag.glsl");
@@ -83,14 +92,26 @@ void MyGL::paintGL()
     prog_lambert.setViewProjMatrix(camera.getViewProj());
     prog_wire.setViewProjMatrix(camera.getViewProj());
 
-    // Sphere
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(-2, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(3, 3, 3));
-    prog_lambert.setModelMatrix(model);
-    prog_lambert.draw(*this, geom_sphere);
-    // Cylinder
-    model = glm::translate(glm::mat4(1.0f), glm::vec3(2, 2, 0)) * glm::rotate(glm::mat4(1.0f), -45.0f, glm::vec3(0, 0, 1));
-    prog_lambert.setModelMatrix(model);
-    prog_lambert.draw(*this, geom_cylinder);
+    prog_lambert.setModelMatrix(glm::mat4(1.0f));
+    prog_wire.setModelMatrix(glm::mat4(1.0f));
+
+    prog_lambert.draw(*this, geom_mesh);
+    // draw selected mesh features
+    glDisable(GL_DEPTH_TEST);
+
+    for (unsigned int i = 0; i < drawn_edges.size(); i++) {
+        if (drawn_edges[i] != NULL) {
+            drawn_edges[i]->create();
+            prog_wire.draw(*this, *(drawn_edges[i]));
+        }
+    }
+
+    glEnable(GL_DEPTH_TEST);
+}
+
+Mesh* MyGL::getMesh()
+{
+    return &geom_mesh;
 }
 
 void MyGL::keyPressEvent(QKeyEvent *e)
@@ -117,4 +138,110 @@ void MyGL::keyPressEvent(QKeyEvent *e)
     }
     camera.RecomputeEye();
     update();  // Calls paintGL, among other things
+}
+
+/// mesh interface functions
+void MyGL::divideEdge()
+{
+    // check that an edge is selected
+    if (selected_edge == NULL) {
+        return;
+    }
+
+    // tell the mesh to divide this edge
+
+    // emit a signal that the mesh has changed
+}
+
+void MyGL::triangulateFace()
+{
+    // check that a vertex is selected
+    if (selected_face == NULL) {
+        return;
+    }
+
+    // if the face is a triangle, do nothing
+    if (drawn_edges.size() <= 3) {
+        return;
+    }
+
+    // tell the mesh to divide this face
+
+    // emit a signal that the mesh has changed
+}
+
+void MyGL::moveVertex(float x, float y, float z)
+{
+    // check that a vertex is selected
+    if (selected_vertex == NULL) {
+        return;
+    }
+
+    // change the position of the selected vertex
+    geom_mesh.moveVertex(selected_vertex, x, y, z);
+
+    // update the screen
+    update();
+}
+
+void MyGL::deleteVertex()
+{
+    // check that a vertex is selected
+    if (selected_vertex == NULL) {
+        return;
+    }
+    // emit a signal that the mesh has changed
+}
+
+///  geometry selection slots
+
+void MyGL::faceSelected(QListWidgetItem* f)
+{
+    Face* face = (Face*) f;
+
+    // clear the vector of pointers
+    drawn_edges.clear();
+
+    // add all of the edges around the face to the list of things to draw
+    HalfEdge* edge = face->start_edge;
+
+    do {
+        drawn_edges.push_back(edge);
+        edge->create(); // prepare the edge for drawing
+        edge = edge->next;
+    } while (edge != face->start_edge);
+
+    //std::cout<<"A face has been selected!\n";
+
+    selected_face = face;
+
+    // redraw
+    update();
+}
+
+void MyGL::edgeSelected(QListWidgetItem *e)
+{
+    HalfEdge* edge = (HalfEdge*) e;
+
+    // clear the vector of pointers
+    drawn_edges.clear();
+
+    //std::cout<<"An edge has been selected!\n";
+
+    drawn_edges.push_back(edge);
+    edge->create(); // prepare the edge for drawing
+
+    selected_edge = edge;
+
+    update();
+
+}
+
+void MyGL::vertexSelected(QListWidgetItem *v)
+{
+    Vertex* vertex = (Vertex*) v;
+
+    selected_vertex = vertex;
+
+    update();
 }
