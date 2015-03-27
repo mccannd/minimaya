@@ -204,7 +204,13 @@ void Mesh::moveVertex(Vertex* v, float x, float y, float z)
     v->pos = glm::vec4(x, y, z, 1);
 
     // update the buffers
-    updateBuffers();
+    this->create();
+}
+
+void Mesh::recolorFace(Face *f, float r, float g, float b)
+{
+    f->color = glm::vec4(r, g, b, 0);
+    this->create();
 }
 
 void Mesh::divideEdge(HalfEdge *e)
@@ -221,9 +227,12 @@ void Mesh::divideEdge(HalfEdge *e)
     Vertex* v1 = e->sym->vert;
     Vertex* v2 = e->vert;
 
-    glm::vec4 avg = v1->pos + v2->pos;
-    avg = glm::vec4(avg[0], avg[1], avg[2], 1);
-    Vertex* vn = new Vertex(avg[0], avg[1], avg[2], 1);
+    glm::vec4 avg = glm::vec4(0.5f * (v1->pos[0] + v2->pos[0]),
+            0.5f * (v1->pos[1] + v2->pos[1]),
+            0.5f * (v1->pos[2] + v2->pos[2]), 1);
+    Vertex* vn = new Vertex(avg[0], avg[1], avg[2],
+            ++vertexID);
+    vertices.push_back(vn);
 
     // create an edge from vn to v2
     HalfEdge* n2 = new HalfEdge(v2, e->face, ++vertexID);
@@ -236,6 +245,7 @@ void Mesh::divideEdge(HalfEdge *e)
     // redirect edge flow
     e->vert = vn;
     e->sym->vert = vn;
+    vn->edge = e;
     n2->next = e->next;
     n1->next = e->sym->next;
     e->next = n2;
@@ -243,11 +253,11 @@ void Mesh::divideEdge(HalfEdge *e)
     // sneakyness: triangulating this face will fan here
     e->face->start_edge = e;
     e->sym->face->start_edge = e->sym;
-    n1->pair(e->sym);
-    n2->pair(e);
+    n2->pair(e->sym);
+    n1->pair(e);
 
     // update buffers
-    updateBuffers();
+    this->create();
 }
 
 void Mesh::triangulateFace(Face *f)
@@ -315,7 +325,7 @@ void Mesh::triangulateFace(Face *f)
         e = f2->next;
     } while (e->next != start);
 
-    updateBuffers();
+    this->create();
 }
 
 void Mesh::deleteVertex(Vertex *v)
@@ -470,10 +480,10 @@ void Mesh::unitCube()
 
     faces.push_back(z1);
     faces.push_back(z2);
-    faces.push_back(y1);
-    faces.push_back(y2);
     faces.push_back(x1);
+    faces.push_back(y1);
     faces.push_back(x2);
+    faces.push_back(y2);
 
     vertices.push_back(v1);
     vertices.push_back(v2);

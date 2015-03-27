@@ -46,6 +46,7 @@ public:
     // mesh interface functions
     void divideEdge();
     void triangulateFace();
+    void recolorFace(float r, float g, float b);
     void moveVertex(float x, float y, float z);
     void deleteVertex();
 
@@ -53,6 +54,7 @@ protected:
     void keyPressEvent(QKeyEvent *e);
 signals:
     void meshChanged();
+    void vertexChosen(float x, float y, float z);
 public slots:
     void faceSelected(QListWidgetItem* f);
     void edgeSelected(QListWidgetItem* e);

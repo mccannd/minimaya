@@ -107,6 +107,7 @@ void HalfEdge::destroy()
 {
     bufIdx.destroy();
     bufPos.destroy();
+    bufCol.destroy();
 }
 
 GLenum HalfEdge::drawMode()

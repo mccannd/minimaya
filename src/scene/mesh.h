@@ -58,6 +58,7 @@ public:
 
     /// Interface interaction options
     void moveVertex(Vertex* v, float x, float y, float z);
+    void recolorFace(Face* f, float r, float g, float b);
     void divideEdge(HalfEdge* e);
     void triangulateFace(Face* f);
     void deleteVertex(Vertex* v);

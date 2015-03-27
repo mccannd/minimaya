@@ -106,6 +106,10 @@ void MyGL::paintGL()
         }
     }
 
+    if (selected_vertex != NULL) {
+        selected_vertex->create();
+        prog_wire.draw(*this, *selected_vertex);
+    }
     glEnable(GL_DEPTH_TEST);
 }
 
@@ -149,13 +153,35 @@ void MyGL::divideEdge()
     }
 
     // tell the mesh to divide this edge
+    geom_mesh.divideEdge(selected_edge);
 
     // emit a signal that the mesh has changed
+    update();
+    emit meshChanged();
+}
+
+void MyGL::recolorFace(float r, float g, float b)
+{
+    // check that a face is selected
+    if (selected_face == NULL) {
+        return;
+    }
+
+    if (r > 1) r = 1;
+    if (r < 0) r = 0;
+    if (g > 1) g = 1;
+    if (g < 0) g = 0;
+    if (b > 1) b = 1;
+    if (b < 0) b = 0;
+
+    geom_mesh.recolorFace(selected_face, r, g, b);
+    //std::cout<<"FEHS COLOR\n";
+    update();
 }
 
 void MyGL::triangulateFace()
 {
-    // check that a vertex is selected
+    // check that a face is selected
     if (selected_face == NULL) {
         return;
     }
@@ -215,6 +241,8 @@ void MyGL::faceSelected(QListWidgetItem* f)
 
     selected_face = face;
 
+    selected_edge = NULL;
+    selected_vertex = NULL;
     // redraw
     update();
 }
@@ -233,6 +261,8 @@ void MyGL::edgeSelected(QListWidgetItem *e)
 
     selected_edge = edge;
 
+    selected_vertex = NULL;
+    selected_face = NULL;
     update();
 
 }
@@ -241,7 +271,16 @@ void MyGL::vertexSelected(QListWidgetItem *v)
 {
     Vertex* vertex = (Vertex*) v;
 
+    drawn_edges.clear();
+
     selected_vertex = vertex;
+
+    selected_edge = NULL;
+    selected_face = NULL;
+
+    emit vertexChosen(selected_vertex->pos[0],
+            selected_vertex->pos[1],
+            selected_vertex->pos[2]);
 
     update();
 }

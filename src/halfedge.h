@@ -12,7 +12,8 @@
 
 class Vertex;
 class Face;
-class HalfEdge : public QListWidgetItem, public ShaderProgram::Drawable
+class HalfEdge : public QListWidgetItem,
+        public ShaderProgram::Drawable
 {
 private:
     int id; // unique number for user interface
@@ -29,10 +30,10 @@ public:
     ~HalfEdge();
 
     // fields
-    Face* face; // face to left of half edge
-    Vertex* vert;
-    HalfEdge* next;
-    HalfEdge* sym;
+    Face* face = NULL; // face to left of half edge
+    Vertex* vert = NULL;
+    HalfEdge* next = NULL;
+    HalfEdge* sym = NULL;
 
     // pair this edge and another
     void pair (HalfEdge *s);
