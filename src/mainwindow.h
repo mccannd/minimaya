@@ -35,6 +35,10 @@ private slots:
 
     void on_vertices_list_itemClicked(QListWidgetItem *item);
 
+    void on_pushButton_2_clicked();
+
+    void on_pushButton_6_clicked();
+
 private:
     Ui::MainWindow *ui;
 

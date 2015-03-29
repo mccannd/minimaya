@@ -192,8 +192,13 @@ void MyGL::triangulateFace()
     }
 
     // tell the mesh to divide this face
+    geom_mesh.triangulateFace(selected_face);
 
+    drawn_edges.clear();
+
+    update();
     // emit a signal that the mesh has changed
+    emit meshChanged();
 }
 
 void MyGL::moveVertex(float x, float y, float z)
@@ -216,7 +221,27 @@ void MyGL::deleteVertex()
     if (selected_vertex == NULL) {
         return;
     }
+
+    geom_mesh.deleteVertex(selected_vertex);
+
+    selected_vertex = NULL;
+
+    update();
+
     // emit a signal that the mesh has changed
+    emit meshChanged();
+}
+
+void MyGL::resetMesh()
+{
+    selected_face = NULL;
+    selected_edge = NULL;
+    selected_vertex = NULL;
+    drawn_edges.clear();
+    geom_mesh.clearAll();
+    geom_mesh.unitCube();
+    update();
+    emit meshChanged();
 }
 
 ///  geometry selection slots

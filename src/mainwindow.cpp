@@ -101,3 +101,13 @@ void MainWindow::on_vertices_list_itemClicked(QListWidgetItem *item)
 {
     ui->mygl->vertexSelected(item);
 }
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    ui->mygl->deleteVertex();
+}
+
+void MainWindow::on_pushButton_6_clicked()
+{
+    ui->mygl->resetMesh();
+}

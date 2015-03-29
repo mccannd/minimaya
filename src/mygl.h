@@ -26,9 +26,9 @@ private:
     ShaderProgram prog_wire;
     Mesh geom_mesh;
 
-    Face* selected_face;
-    HalfEdge* selected_edge;
-    Vertex* selected_vertex;
+    Face* selected_face = NULL;
+    HalfEdge* selected_edge = NULL;
+    Vertex* selected_vertex = NULL;
 
     Camera camera;
 
@@ -49,6 +49,7 @@ public:
     void recolorFace(float r, float g, float b);
     void moveVertex(float x, float y, float z);
     void deleteVertex();
+    void resetMesh();
 
 protected:
     void keyPressEvent(QKeyEvent *e);

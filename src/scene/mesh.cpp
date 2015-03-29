@@ -50,6 +50,7 @@ void Mesh::updateBuffers()
         GLuint fan = vID;
         HalfEdge* edge = start;
 
+
         // traverse all other vertices, each completing a triangle of IDs
         do {
             // calculate normal for this vertex
@@ -61,7 +62,30 @@ void Mesh::updateBuffers()
             glm::vec3 a3 = glm::vec3(a[0], a[1], a[2]);
             glm::vec3 c3 = glm::vec3(c[0], c[1], c[2]);
             glm::vec3 cross3 = glm::cross(a3, c3);
+            cross3 = glm::normalize(cross3);
+
+            // edge case: zero cross product
+            if (cross3[0] == 0 && cross3[1] == 0 && cross3[2] == 0) {
+                HalfEdge* nextEdge = edge->next;
+
+                // continue until good cross is found
+                while (cross3[0] == 0 && cross3[1] == 0 && cross3[2] == 0) {
+                    a = nextEdge->sym->vert->pos;
+                    b = nextEdge->vert->pos;
+                    c = nextEdge->next->vert->pos;
+                    a = a - b;
+                    c = c - b;
+                    a3 = glm::vec3(a[0], a[1], a[2]);
+                    cross3 = glm::vec3(c[0], c[1], c[2]);
+                    cross3 = glm::cross(a3, c3);
+                    nextEdge = nextEdge->next;
+
+                    if (nextEdge == edge) { break; }
+                }
+            }
+
             glm::vec4 normal = glm::vec4(cross3[0], cross3[1], cross3[2], 0);
+
 
             meshVertexPositions.push_back(edge->vert->pos);
             meshVertexColors.push_back(color);
@@ -328,6 +352,21 @@ void Mesh::triangulateFace(Face *f)
     this->create();
 }
 
+// helper: return the num of edges sharing this vertex
+int incidentEdges(Vertex* v)
+{
+    int edges = 0;
+    HalfEdge* s = v->edge;
+    HalfEdge* e = s;
+    do {
+        // cycle through all edges pointing to v
+        e = e->next->sym;
+        edges++;
+    } while (e != s);
+
+    return edges;
+}
+
 void Mesh::deleteVertex(Vertex *v)
 {
     // check that the face is contained within this mesh
@@ -336,12 +375,129 @@ void Mesh::deleteVertex(Vertex *v)
         return;
     }
 
-    // cry
-    return;
+    std::vector<HalfEdge*> de = {}; // edges to delete
+    std::vector<Vertex*> dv = {}; // vertices to delete
+    std::vector<Face*> df = {}; // faces to delete
+    std::vector<Vertex*> tv = {}; // target vertices
+
+    // add vertex to list for deletion
+    dv.push_back(v);
+
+    ///
+    /// reach out from the deleted vertex and compile the lists
+    ///
+
+    HalfEdge* start = v->edge;
+    HalfEdge* e1 = start;
+
+    do {
+        HalfEdge* e2 = e1->sym; // edge going out from v
+        df.push_back(e2->face); // face incident to v
+        while (incidentEdges(e2->vert) <= 2) {
+            // this vertex is only on two edges
+            // so the edge it's on and the vertex
+            // need to be deleted along with the face
+            de.push_back(e2);
+            de.push_back(e2->sym);
+            dv.push_back(e2->vert);
+        }
+        // now the edge should point to a vertex with >= 3 edges
+        tv.push_back(e2->vert);
+        // add the edge it's on to the list of deleted edges
+        de.push_back(e2);
+        de.push_back(e2->sym);
+
+        // cycle origin to next incoming edge to v
+        e1 = e1->next->sym;
+    } while (e1 != start);
+
+    ///
+    /// link the edges that will remain when the faces are gone
+    ///
+
+    e1 = start->sym;
+    // number of target vertices reached in traversal
+    unsigned int foundVerts = 0;
+
+    while (tv.size() > foundVerts) {
+        if(std::find(tv.begin(), tv.end(), e1->vert) != tv.end()) {
+            // if the very first outgoing edge reaches a target, do nothing
+            // it will not be in the ring of edges so move on to the next one
+            // e1.next will be the first edge on this ring
+            if (e1 != start->sym) {
+                // this edge points to a target vertex
+                foundVerts++;
+                // link this edge with the edge on the other side of target
+                //       d  <-- deleted vertex
+                //       |
+                //  b -- t -- a <-- at.next to tb instead of td
+                e1->next = e1->next->sym->next;
+
+                // we must also ensure that the vertex doesn't
+                // point to an edge that will be deleted
+                e1->vert->edge = e1;
+            }
+
+        }
+
+        e1->face = NULL; // the face this is on will be deleted
+        e1 = e1->next; // continue traversing edges
+    }
+
+    // delete everything on the lists
+    // by erasing them from the face, vert, edge vecs
+
+    // faces
+    for (unsigned int i = 0; i < df.size(); i++) {
+        if (df[i] != NULL) {
+            for (unsigned int j = 0; j < faces.size(); j++) {
+                if (df[i] == faces[j]) {
+                    faces.erase(faces.begin() + j);
+                    break;
+                }
+            }
+        }
+    }
+    // edges
+    for (unsigned int i = 0; i < de.size(); i++) {
+        if (de[i] != NULL) {
+            for (unsigned int j = 0; j < edges.size(); j++) {
+                if (de[i] == edges[j]) {
+                    edges.erase(edges.begin() + j);
+                    break;
+                }
+            }
+        }
+    }
+    // vertices
+    for (unsigned int i = 0; i < dv.size(); i++) {
+        if (dv[i] != NULL) {
+            for (unsigned int j = 0; j < vertices.size(); j++) {
+                if (dv[i] == vertices[j]) {
+                    vertices.erase(vertices.begin() + j);
+                    break;
+                }
+            }
+        }
+    }
+
+    tv.clear();
+    dv.clear();
+    de.clear();
+    df.clear();
+
+    // edge case: no faces left in mesh
+    if (faces.size() == 0) {
+        this->clearAll();
+    }
+    // recreate buffers
+    this->create();
+
 }
 
 /// --- Creation of arbitrary meshes ---
 
+// god have mercy on your soul if you need this
 void Mesh::arbitraryMesh(std::vector<Face*> f,
                          std::vector<Vertex*> v,
                          std::vector<HalfEdge*> e)
@@ -378,6 +534,11 @@ void Mesh::unitCube()
     e43->next = e32;
     e14->next = e43;
 
+    v1->edge = e21;
+    v2->edge = e32;
+    v3->edge = e43;
+    v4->edge = e14;
+
     z1->start_edge = e21;
 
     // negative z face
@@ -397,6 +558,11 @@ void Mesh::unitCube()
     e67->next = e78;
     e78->next = e85;
     e85->next = e56;
+
+    v5->edge = e85;
+    v6->edge = e56;
+    v7->edge = e67;
+    v8->edge = e78;
 
     z2->start_edge = e56;
 
