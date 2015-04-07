@@ -97,3 +97,7 @@ bool Vertex::bindCol()
     return bufCol.bind();
 }
 
+int Vertex::getID()
+{
+    return id;
+}

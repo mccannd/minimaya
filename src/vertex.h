@@ -26,7 +26,7 @@ public:
     ~Vertex();
 
     glm::vec4 pos; // location of vertex
-    HalfEdge* edge;
+    HalfEdge* edge = NULL;
 
     int getID();
     // graphics: drawable point

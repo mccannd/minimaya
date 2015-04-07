@@ -111,3 +111,18 @@ void MainWindow::on_pushButton_6_clicked()
 {
     ui->mygl->resetMesh();
 }
+
+void MainWindow::on_pushButton_7_clicked()
+{
+    ui->mygl->subdivideMesh();
+}
+
+void MainWindow::on_pushButton_9_clicked()
+{
+    ui->mygl->selectNextEdge(ui->edge_list);
+}
+
+void MainWindow::on_pushButton_8_clicked()
+{
+    ui->mygl->selectSymEdge(ui->edge_list);
+}

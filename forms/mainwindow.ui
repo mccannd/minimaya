@@ -49,7 +49,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="edge_tab">
      <attribute name="title">
@@ -59,9 +59,9 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>530</y>
+        <y>537</y>
         <width>271</width>
-        <height>28</height>
+        <height>31</height>
        </rect>
       </property>
       <property name="text">
@@ -74,8 +74,34 @@
         <x>10</x>
         <y>10</y>
         <width>271</width>
-        <height>511</height>
+        <height>431</height>
        </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_8">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>497</y>
+        <width>271</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Select Symmetrical Edge</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_9">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>457</y>
+        <width>271</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Select Next Edge</string>
       </property>
      </widget>
     </widget>
@@ -378,6 +404,19 @@ Color</string>
       </property>
       <property name="text">
        <string>Reset Cube</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_7">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>271</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Smooth Mesh</string>
       </property>
      </widget>
     </widget>

@@ -79,8 +79,8 @@ void HalfEdge::create()
     edge_vert_pos[0] = vert->pos;
     edge_vert_pos[1] = sym->vert->pos;
 
-    edge_vert_col[0] = glm::vec4(0.8f, 1, 0.9f, 0);
-    edge_vert_col[1] = glm::vec4(0.8f, 1, 0.9f, 0);
+    edge_vert_col[0] = glm::vec4(1, 1, 0.5f, 0);
+    edge_vert_col[1] = glm::vec4(1, 0.3f, 0, 0);
 
     edge_idx[0] = 0;
     edge_idx[1] = 1;
@@ -140,3 +140,7 @@ bool HalfEdge::bindCol()
     return bufCol.bind();
 }
 
+int HalfEdge::getID()
+{
+    return id;
+}

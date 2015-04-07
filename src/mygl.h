@@ -50,6 +50,10 @@ public:
     void moveVertex(float x, float y, float z);
     void deleteVertex();
     void resetMesh();
+    void subdivideMesh();
+
+    void selectNextEdge(QListWidget* qlw);
+    void selectSymEdge(QListWidget *qlw);
 
 protected:
     void keyPressEvent(QKeyEvent *e);

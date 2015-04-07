@@ -6,6 +6,9 @@
 
 #include <assert.h>
 
+#include <QHash>
+#include <QSet>
+#include <QFileDialog>
 
 static const int CYL_IDX_COUNT = 240;
 static const int CYL_VERT_COUNT = 80;
@@ -237,11 +240,11 @@ void Mesh::recolorFace(Face *f, float r, float g, float b)
     this->create();
 }
 
-void Mesh::divideEdge(HalfEdge *e)
+Vertex* Mesh::divideEdge(HalfEdge *e, boolean updateBuffers)
 {
     // check that the edge is in this mesh
     if(std::find(edges.begin(), edges.end(), e) == edges.end()) {
-        return;
+        return NULL;
     }
 
     // v1 ---e--> vn ------> v2
@@ -259,17 +262,19 @@ void Mesh::divideEdge(HalfEdge *e)
     vertices.push_back(vn);
 
     // create an edge from vn to v2
-    HalfEdge* n2 = new HalfEdge(v2, e->face, ++vertexID);
+    HalfEdge* n2 = new HalfEdge(v2, e->face, ++edgeID);
     edges.push_back(n2);
 
     // create an edge from vn to v1
-    HalfEdge* n1 = new HalfEdge(v1, e->sym->face, ++vertexID);
+    HalfEdge* n1 = new HalfEdge(v1, e->sym->face, ++edgeID);
     edges.push_back(n1);
 
     // redirect edge flow
     e->vert = vn;
     e->sym->vert = vn;
     vn->edge = e;
+    v1->edge = n1;
+    v2->edge = n2;
     n2->next = e->next;
     n1->next = e->sym->next;
     e->next = n2;
@@ -281,7 +286,11 @@ void Mesh::divideEdge(HalfEdge *e)
     n1->pair(e);
 
     // update buffers
-    this->create();
+    if (updateBuffers) {
+        this->create();
+    }
+
+    return vn;
 }
 
 void Mesh::triangulateFace(Face *f)
@@ -372,6 +381,19 @@ void Mesh::deleteVertex(Vertex *v)
     // check that the face is contained within this mesh
     if(std::find(vertices.begin(), vertices.end(), v)
             == vertices.end()) {
+        return;
+    }
+
+    // check if this is an isolated vertex
+    if (v->edge == NULL) {
+        // delete this and return
+        for (unsigned int j = 0; j < vertices.size(); j++) {
+            if (v == vertices[j]) {
+                vertices.erase(vertices.begin() + j);
+                break;
+            }
+        }
+
         return;
     }
 
@@ -495,6 +517,317 @@ void Mesh::deleteVertex(Vertex *v)
 
 }
 
+void Mesh::subdivide()
+{
+
+    // maps a centroid to each face
+    QHash<Face*, Vertex*> centroids;
+
+    // lists any points that are new
+    QSet<Vertex*> midpoints;
+
+    // lists any faces that are new
+    QSet<Face*> newFaces;
+
+    /// --- Create the centroids of all faces ---
+    /// --- Step 1 of 4
+    ///
+
+    for (unsigned int i = 0; i < faces.size(); i++) {
+
+        float x = 0;
+        float y = 0;
+        float z = 0;
+
+        double vertexCount = 0.0;
+
+        // average all points on this face to make centroid
+
+        HalfEdge* start = faces[i]->start_edge;
+        HalfEdge* e = start;
+        do {
+            Vertex* v = e->vert;
+            x += v->pos[0];
+            y += v->pos[1];
+            z += v->pos[2];
+            e = e->next;
+            vertexCount++;
+        } while (e != start);
+
+        x /= vertexCount;
+        y /= vertexCount;
+        z /= vertexCount;
+
+        Vertex* centroid = new Vertex(x, y, z, ++vertexID);
+
+        centroids[faces[i]] = centroid;
+        vertices.push_back(centroid);
+    }
+
+    /// --- Create midpoints on each edge ---
+    /// --- Step 2 of 4
+    ///
+
+    for (unsigned int i = 0; i < faces.size(); i++) {
+
+        HalfEdge* start = faces[i]->start_edge;
+        HalfEdge* e = start;
+
+        // each midpoint is an average of:
+        // adjacent vertices and centroids
+        e = start;
+        do {
+
+            // check if a midpoint is mapped already
+            if (midpoints.contains(e->vert) ||
+                    midpoints.contains(e->sym->vert)) {
+                e = e->next;
+                if (e == start) {
+                    break;
+                }
+                continue;
+            }
+
+            float x = 0;
+            float y = 0;
+            float z = 0;
+
+            double vertexCount = 2.0;
+            // endpoint 2
+            Vertex* v2 = e->vert;
+
+            x += v2->pos[0];
+            y += v2->pos[1];
+            z += v2->pos[2];
+
+            // endpoint 1
+            Vertex* v1 = e->sym->vert;
+
+            x += v1->pos[0];
+            y += v1->pos[1];
+            z += v1->pos[2];
+            // if the edge is a boundary its face ptr is null
+            if (e->face != NULL) {
+                Vertex* c = centroids[e->face];
+                x += c->pos[0];
+                y += c->pos[1];
+                z += c->pos[2];
+                vertexCount++;
+            }
+            if (e->sym->face != NULL) {
+                Vertex* c = centroids[e->sym->face];
+                x += c->pos[0];
+                y += c->pos[1];
+                z += c->pos[2];
+                vertexCount++;
+            }
+
+            x /= vertexCount;
+            y /= vertexCount;
+            z /= vertexCount;
+
+            Vertex* mid = this->divideEdge(e, false);
+            mid->pos = glm::vec4(x, y, z, 1);
+
+            // add the midpoint to the hashset
+            midpoints.insert(mid);
+
+            e = e->next;
+        } while (e != start);
+    }
+
+    /// --- Adjust existing vertices to new positions
+    /// --- Step 3 of 4
+    ///
+
+    for (unsigned int i = 0; i < vertices.size(); i++) {
+        // get adjacent edges
+        // from each edge get a midpoint
+        // and get its faces centroid
+        Vertex* v = vertices[i];
+
+
+        // continue if this is actually a midpoint or centroid
+        if (v->edge == NULL || midpoints.contains(v)) {
+            continue;
+        }
+
+        //std::cout<<"\nworking on vertex "<< v->getID() << "\n";
+
+        HalfEdge* start = v->edge->sym;
+        HalfEdge* e = start;
+
+        float midPointCount = 0.0;
+
+        float x_centroid = 0.0;
+        float y_centroid = 0.0;
+        float z_centroid = 0.0;
+
+        float x_midpoints = 0.0;
+        float y_midpoints = 0.0;
+        float z_midpoints = 0.0;
+
+        do {
+            Face* f = e->face;
+
+            if (f != NULL) {
+                Vertex* c = centroids[f];
+                x_centroid += c->pos[0];
+                y_centroid += c->pos[1];
+                z_centroid += c->pos[2];
+            } else {
+                std::cout<<"Null face!\n";
+            }
+
+            Vertex* m = e->vert;
+            if (midpoints.contains(m)) {
+                x_midpoints += m->pos[0];
+                y_midpoints += m->pos[1];
+                z_midpoints += m->pos[2];
+                midPointCount++;
+            } else {
+                std::cout<<"worked on vertex connected to non-midpoint\n";
+            }
+            // go to next edge pointing from this vert
+            e = e->sym->next;
+        } while (e != start);
+
+        // calculate the coordinates weighted by midpoints
+        float x = (midPointCount - 2) * v->pos[0] / midPointCount;
+        float y = (midPointCount - 2) * v->pos[1] / midPointCount;
+        float z = (midPointCount - 2) * v->pos[2] / midPointCount;
+
+        x += x_centroid / (midPointCount * midPointCount);
+        y += y_centroid / (midPointCount * midPointCount);
+        z += z_centroid / (midPointCount * midPointCount);
+
+        x += x_midpoints / (midPointCount * midPointCount);
+        y += y_midpoints / (midPointCount * midPointCount);
+        z += z_midpoints / (midPointCount * midPointCount);
+
+        // set the vert up!
+        v->pos = glm::vec4(x, y, z, 1);
+    }
+
+    /// --- Quadrangulate original faces ---
+    /// --- Step 4 of 4
+    ///
+
+    for (unsigned int i = 0; i < faces.size(); i++) {
+        Face* f = faces[i];
+
+        if (newFaces.contains(f) || !centroids.contains(f)) {
+            continue;
+        }
+
+        Vertex* centroid = centroids[faces[i]];
+        HalfEdge* e = f->start_edge;
+
+        while (!midpoints.contains(e->vert)) {
+            e = e->next;
+        }
+
+        Vertex* start_vert = e->vert;
+
+        do {
+            // make a quad on from this edge
+            // v --- 1 -e-
+            // |     |
+            // |     |
+            // 2 --- c
+            Vertex* m1 = e->vert;
+            Vertex* m2 = e->next->next->vert;
+
+            if (e->sym->vert == centroid) {
+                // this is NOT the first face
+
+                if(e->next->next->next->vert == centroid) {
+                    // this is the last quad
+                    // do not create any edges
+                    // reroute edges
+                    e->next->next->next->next = e;
+
+                    // create a new face and reassign to edges
+                    Face* newQuad = new Face(f->color, ++faceID);
+                    newQuad->start_edge = e;
+                    e->face = newQuad;
+                    e->next->face = newQuad;
+                    e->next->next->face = newQuad;
+                    e->next->next->next->face = newQuad;
+
+                    // put quad into lists
+                    newFaces.insert(newQuad);
+                    faces.push_back(newQuad);
+
+                    e = e->next->next->next->sym;
+                } else {
+                    // this is an intermediate quad
+                    // create two edges between the 2nd midpoint and cent
+                    HalfEdge* c_two = new HalfEdge(m2, ++edgeID);
+                    HalfEdge* two_c = new HalfEdge(centroid, ++edgeID);
+                    c_two->pair(two_c);
+                    edges.push_back(c_two);
+                    edges.push_back(two_c);
+
+                    // redirect edges
+                    c_two->next = e->next->next->next;
+                    e->next->next->next = two_c;
+                    two_c->next = e;
+
+                    // create a new face and reassign to edges
+                    Face* newQuad = new Face(f->color, ++faceID);
+                    newQuad->start_edge = e;
+                    e->face = newQuad;
+                    e->next->face = newQuad;
+                    e->next->next->face = newQuad;
+                    e->next->next->next->face = newQuad;
+
+                    // put quad into lists
+                    newFaces.insert(newQuad);
+                    faces.push_back(newQuad);
+
+                    // move on to next edge
+                    e = c_two;
+                }
+
+            } else {
+                // the is the FIRST face
+                // create the edges between the midpoints and centroid
+                HalfEdge* c_one = new HalfEdge(m1, ++edgeID);
+                HalfEdge* one_c = new HalfEdge(centroid, ++edgeID);
+                HalfEdge* c_two = new HalfEdge(m2, ++edgeID);
+                HalfEdge* two_c = new HalfEdge(centroid, ++edgeID);
+                c_one->pair(one_c);
+                c_two->pair(two_c);
+                edges.push_back(c_one);
+                edges.push_back(one_c);
+                edges.push_back(c_two);
+                edges.push_back(two_c);
+
+                // redirect edges
+                c_one->next = e->next;
+                two_c->next = c_one;
+                c_two->next = e->next->next->next;
+                e->next->next->next = two_c;
+                e->next = one_c;
+
+                // assign this face to appropriate edges
+                f->start_edge = c_one;
+                c_one->face = f;
+                two_c->face = f;
+
+                centroid->edge = two_c;
+
+                // move to next edge
+                e = c_two;
+            }
+
+        } while (e->vert != start_vert);
+    }
+
+    this->create();
+}
+
 /// --- Creation of arbitrary meshes ---
 
 // god have mercy on your soul if you need this
@@ -508,6 +841,70 @@ void Mesh::arbitraryMesh(std::vector<Face*> f,
     edges = e;
     vertices = v;
     this->create();
+}
+
+void Mesh::parseObj()
+{
+
+
+    // maps the id of a vertex to a vertex
+    QHash<int, Vertex*> verts;
+    // maps vertices (A, B) to the edge from A to B
+    // the sym of that edge will have the key (B, A)
+    QHash<std::pair<Vertex*, Vertex*>, HalfEdge*>
+            existingEdges;
+
+    // open the file
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
+                                                    "/home",
+                                                    tr("Mesh Files (*.obj)"));
+    QFile mesh(fileName);
+
+    if (mesh.open(QFile::ReadOnly | QFile::Truncate)) {
+        vertexID = 0;
+        faceID = 0;
+        edgeID = 0;
+        clearAll();
+
+        // open the stream and begin parsing
+        QTextStream in(&mesh);
+        while (!in.atEnd()) {
+            QString line = in.readLine();
+            QStringList dividedList = str.split(" ", QString::SkipEmptyParts);
+
+            // check which type of line this is
+            if (dividedList.at(0) == "v") {
+                // found a vertex
+                // v (posx) (posy) (posz)
+                float x = dividedList.at(1).toFloat();
+                float y = dividedList.at(2).toFloat();
+                float z = dividedList.at(3).toFloat();
+                Vertex* v = new Vertex(x, y, z, ++vertexID);
+                vertices.push_back(v);
+                verts[vertexID] = v;
+            } else if (dividedList.at(0) == "f") {
+                // found a face
+                // f (v/vt/vn) (v/vt/vn) ...
+                int numVerts = dividedList.size() - 1;
+
+
+
+            }
+
+            // map the vertex to its id, starting at one
+            // ignore vertex normals
+            // ignore vertex textures
+            // parse face construction
+            // f v1/x/x v2/x/x v3/x/x v4/x/x
+            // create loop of edges around face
+            // add edge to map for all edges pointing to vert
+
+        }
+    } else {
+        // file failed to open
+        return;
+    }
+
 }
 
 void Mesh::unitCube()

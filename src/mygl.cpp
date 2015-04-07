@@ -132,9 +132,9 @@ void MyGL::keyPressEvent(QKeyEvent *e)
     } else if (e->key() == Qt::Key_Down) {
         camera.phi += 5.0f * DEG2RAD;
     } else if (e->key() == Qt::Key_I) {
-        camera.zoom -= 0.5f * DEG2RAD;
+        camera.zoom -= 0.5f;
     } else if (e->key() == Qt::Key_O) {
-        camera.zoom += 0.5f * DEG2RAD;
+        camera.zoom += 0.5f;
     } else if (e->key() == Qt::Key_1) {
         camera.fovy += 5.0f * DEG2RAD;
     } else if (e->key() == Qt::Key_2) {
@@ -153,7 +153,7 @@ void MyGL::divideEdge()
     }
 
     // tell the mesh to divide this edge
-    geom_mesh.divideEdge(selected_edge);
+    geom_mesh.divideEdge(selected_edge, true);
 
     // emit a signal that the mesh has changed
     update();
@@ -232,6 +232,17 @@ void MyGL::deleteVertex()
     emit meshChanged();
 }
 
+void MyGL::subdivideMesh()
+{
+    geom_mesh.subdivide();
+    update();
+    selected_edge = NULL;
+    selected_vertex = NULL;
+    selected_face = NULL;
+    drawn_edges.clear();
+    emit meshChanged();
+}
+
 void MyGL::resetMesh()
 {
     selected_face = NULL;
@@ -242,6 +253,27 @@ void MyGL::resetMesh()
     geom_mesh.unitCube();
     update();
     emit meshChanged();
+}
+
+
+void MyGL::selectNextEdge(QListWidget *qlw)
+{
+    if (selected_edge == NULL) {return;}
+    selected_edge = selected_edge->next;
+    drawn_edges.clear();
+    drawn_edges.push_back(selected_edge);
+    qlw->setCurrentItem(selected_edge);
+    update();
+}
+
+void MyGL::selectSymEdge(QListWidget *qlw)
+{
+    if (selected_edge == NULL) {return;}
+    selected_edge = selected_edge->sym;
+    drawn_edges.clear();
+    drawn_edges.push_back(selected_edge);
+    qlw->setCurrentItem(selected_edge);
+    update();
 }
 
 ///  geometry selection slots
