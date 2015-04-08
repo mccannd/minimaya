@@ -55,6 +55,8 @@ public:
     void selectNextEdge(QListWidget* qlw);
     void selectSymEdge(QListWidget *qlw);
 
+    void importOBJ();
+
 protected:
     void keyPressEvent(QKeyEvent *e);
 signals:

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <QApplication>
 #include <QKeyEvent>
+#include <QFileDialog>
 
 
 
@@ -274,6 +275,17 @@ void MyGL::selectSymEdge(QListWidget *qlw)
     drawn_edges.push_back(selected_edge);
     qlw->setCurrentItem(selected_edge);
     update();
+}
+
+void MyGL::importOBJ()
+{
+    // open the file
+    QString fileName = QFileDialog::getOpenFileName(this, QString("Open File"),
+                                                    QString("/home"),
+                                                    QString("Mesh Files (*.obj)"));
+    geom_mesh.parseObj(fileName);
+    update();
+    emit meshChanged();
 }
 
 ///  geometry selection slots

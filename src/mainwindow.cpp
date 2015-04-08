@@ -126,3 +126,8 @@ void MainWindow::on_pushButton_8_clicked()
 {
     ui->mygl->selectSymEdge(ui->edge_list);
 }
+
+void MainWindow::on_pushButton_10_clicked()
+{
+    ui->mygl->importOBJ();
+}

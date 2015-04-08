@@ -8,7 +8,8 @@
 
 #include <QHash>
 #include <QSet>
-#include <QFileDialog>
+#include <QFile>
+#include <QPair>
 
 static const int CYL_IDX_COUNT = 240;
 static const int CYL_VERT_COUNT = 80;
@@ -280,8 +281,13 @@ Vertex* Mesh::divideEdge(HalfEdge *e, boolean updateBuffers)
     e->next = n2;
     e->sym->next = n1;
     // sneakyness: triangulating this face will fan here
-    e->face->start_edge = e;
-    e->sym->face->start_edge = e->sym;
+    if (e->face != NULL) {
+        e->face->start_edge = e;
+    }
+    if (e->sym->face!= NULL) {
+        e->sym->face->start_edge = e->sym;
+    }
+
     n2->pair(e->sym);
     n1->pair(e);
 
@@ -675,8 +681,6 @@ void Mesh::subdivide()
                 x_centroid += c->pos[0];
                 y_centroid += c->pos[1];
                 z_centroid += c->pos[2];
-            } else {
-                std::cout<<"Null face!\n";
             }
 
             Vertex* m = e->vert;
@@ -843,7 +847,7 @@ void Mesh::arbitraryMesh(std::vector<Face*> f,
     this->create();
 }
 
-void Mesh::parseObj()
+void Mesh::parseObj(QString& fileName)
 {
 
 
@@ -851,16 +855,13 @@ void Mesh::parseObj()
     QHash<int, Vertex*> verts;
     // maps vertices (A, B) to the edge from A to B
     // the sym of that edge will have the key (B, A)
-    QHash<std::pair<Vertex*, Vertex*>, HalfEdge*>
+    QHash<QPair<Vertex*, Vertex*>, HalfEdge*>
             existingEdges;
 
-    // open the file
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
-                                                    "/home",
-                                                    tr("Mesh Files (*.obj)"));
     QFile mesh(fileName);
 
-    if (mesh.open(QFile::ReadOnly | QFile::Truncate)) {
+    if (mesh.open(QFile::ReadOnly)) {
+
         vertexID = 0;
         faceID = 0;
         edgeID = 0;
@@ -870,7 +871,13 @@ void Mesh::parseObj()
         QTextStream in(&mesh);
         while (!in.atEnd()) {
             QString line = in.readLine();
-            QStringList dividedList = str.split(" ", QString::SkipEmptyParts);
+
+            if (line.isEmpty()) {
+                continue;
+            }
+
+            QStringList dividedList = line.split(" ",
+                                                QString::SkipEmptyParts);
 
             // check which type of line this is
             if (dividedList.at(0) == "v") {
@@ -885,23 +892,115 @@ void Mesh::parseObj()
             } else if (dividedList.at(0) == "f") {
                 // found a face
                 // f (v/vt/vn) (v/vt/vn) ...
-                int numVerts = dividedList.size() - 1;
+
+                Face* f = new Face(++faceID);
+                faces.push_back(f);
+
+                HalfEdge* prev = NULL;
+                Vertex* startPoint = NULL;
+                Vertex* endPoint = NULL;
+
+                for(int i = 1; i < dividedList.size(); i++) {
+                    QStringList vert = dividedList.at(i).
+                            split("/", QString::SkipEmptyParts);
+                    int vID = vert.at(0).toInt();
+
+                    // get a pair of start and end points
+                    // continue the cycle
+                    startPoint = endPoint;
+                    endPoint = verts[vID];
+
+                    if (i == 1) {
+                        QStringList svert = dividedList.at(dividedList.size() - 1).
+                                split("/", QString::SkipEmptyParts);
+                        int svID = svert.at(0).toInt();
+                        startPoint = verts[svID];
+                    }
+
+                    QPair<Vertex*,Vertex*> a_to_b(startPoint, endPoint);
+                    QPair<Vertex*,Vertex*> b_to_a(endPoint, startPoint);
+                    // see if an edge for this pair exists
+                    if (existingEdges.contains(a_to_b)) {
+                        // if it does, route the last edge to this one and continue
+                        HalfEdge* e = existingEdges[a_to_b];
+                        e->face = f;
+                        if (prev != NULL) { prev->next = e; }
+                        prev = e;
+                    } else {
+                        // if it does not, create new edges and map them
+                        HalfEdge* e1 = new HalfEdge(endPoint, ++edgeID);
+                        HalfEdge* e2 = new HalfEdge(startPoint, ++edgeID);
+
+                        e1->face = f; // set up pointers
+                        e1->pair(e2);
+                        endPoint->edge = e1;
+                        startPoint->edge = e2;
+
+                        edges.push_back(e1); // add to the vectors
+                        edges.push_back(e2);
+
+                        if (prev != NULL) { prev->next = e1; }
+
+                        existingEdges[a_to_b] = e1; // add to the map
+                        existingEdges[b_to_a] = e2;
+
+                        prev = e1;
+                    }
 
 
+                }
+
+                // connect the last edge to the first
+                QStringList svert = dividedList.at(dividedList.size() - 1).
+                        split("/", QString::SkipEmptyParts);
+                int svID = svert.at(0).toInt();
+                startPoint = verts[svID];
+                QStringList vert = dividedList.at(1).
+                        split("/", QString::SkipEmptyParts);
+                int vID = vert.at(0).toInt();
+                endPoint = verts[vID];
+
+                QPair<Vertex*,Vertex*> a_to_b(startPoint, endPoint);
+                QPair<Vertex*,Vertex*> b_to_a(endPoint, startPoint);
+
+                // see if an edge for this pair exists
+                if (existingEdges.contains(a_to_b)) {
+                    // if it does, route the last edge to this one and continue
+                    HalfEdge* e = existingEdges[a_to_b];
+                    e->face = f;
+                    f->start_edge = e;
+                    if (prev != NULL) { prev->next = e; }
+                    prev = e;
+                } else {
+                    // if it does not, create new edges and map them
+                    HalfEdge* e1 = new HalfEdge(endPoint, ++edgeID);
+                    HalfEdge* e2 = new HalfEdge(startPoint, ++edgeID);
+
+                    e1->face = f; // set up pointers
+                    f->start_edge = e1;
+                    e1->pair(e2);
+                    endPoint->edge = e1;
+                    startPoint->edge = e2;
+
+                    edges.push_back(e1); // add to the vectors
+                    edges.push_back(e2);
+
+                    if (prev != NULL) { prev->next = e1; }
+
+                    existingEdges[a_to_b] = e1; // add to the map
+                    existingEdges[b_to_a] = e2;
+
+                    prev = e1;
+                }
 
             }
-
-            // map the vertex to its id, starting at one
-            // ignore vertex normals
-            // ignore vertex textures
-            // parse face construction
-            // f v1/x/x v2/x/x v3/x/x v4/x/x
-            // create loop of edges around face
-            // add edge to map for all edges pointing to vert
-
         }
+
+        this->destroy();
+        this->create();
     } else {
         // file failed to open
+        std::cout<<"File failed to open\n";
         return;
     }
 

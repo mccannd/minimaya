@@ -63,7 +63,7 @@ public:
     void triangulateFace(Face* f);
     void deleteVertex(Vertex* v);
 
-    void parseObj();
+    void parseObj(QString& fileName);
 
     void subdivide();
 };
