@@ -1,4 +1,4 @@
-HW 5: Help log by Dan McCann
+HW 5 and 6: Help log by Dan McCann
 
 Q: Question	A: Answer	
 
@@ -16,6 +16,26 @@ A: erase(vec.start() + i) where i is the index of the element to be removed. -- 
 
 Q: How do you remove only one pointer from a vector without deleting it?
 A: Don't try. Find another container or a workaround. -- Stack Overflow, Google
+
+HW6:
+
+Q: How do you modify several multiple things with a function?
+A: References. You can pass ptr*& into a function, and changing ptr inside the function
+	will also change it outside with the power of references. -- Adam
+
+Q: How do you efficiently update the QListWidgets?
+A: Deleting anything extending QListWidgetItem will automatically delete it from a list.
+	You could also pass the widget pointer through functions and add things one by one instead of clearing and updating. 
+	--Kai, Piazza
+
+Q: When using a QHash with QPairs as keys, and the QPairs are created on the stack, will there be any issues?
+A: No. There will be some structural test allowing it to work. -- Kai, Adam
+
+Q: In the QFileOpenDialog example in the documentation, what is the tr() function they include?
+A: A translation macro that you do not need to worry about. -- Kai
+
+Q: Subdivision on the cube does not quite converge to a sphere but it is consistent. Is this okay?
+A: This is the way we expect. See, this is how Maya does it: (shows example on Blender) -- Kai
 
 -----
 
@@ -51,3 +71,17 @@ R: UNRESOLVED. This is an issue with polygons not being convex, and doing the ve
 
 B: Triangulating NGons that are not convex will cause wonkiness.
 R: UNRESOLVED.
+
+
+HW6: 
+
+B: Seg Fault when quadrangulating faces
+R: Resolved. A few pointers were not being set correctly by edge division.
+
+B: When the mesh is divided, the original faces (now smaller) become triangles. Trying to smooth again seg faults.
+R: Resolved. The edge case of connecting the last new face to the original was not covered completely.
+
+B: Seg Fault when subdividing with a hole.
+R: Resolved. Added condition to edge division in case the edges pointed to null faces.
+
+B: 
