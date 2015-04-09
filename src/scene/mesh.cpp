@@ -993,7 +993,6 @@ void Mesh::parseObj(QString& fileName)
 
                     prev = e1;
                 }
-
             }
         }
 
@@ -1026,10 +1025,6 @@ void Mesh::unitCube()
     HalfEdge* e23 = new HalfEdge(v3, z1, ++edgeID);
     HalfEdge* e34 = new HalfEdge(v4, z1, ++edgeID);
     HalfEdge* e41 = new HalfEdge(v1, z1, ++edgeID);
-//    e21->next = e14;
-//    e32->next = e21;
-//    e43->next = e32;
-//    e14->next = e43;
 
     e12->next = e23;
     e23->next = e34;
@@ -1056,10 +1051,6 @@ void Mesh::unitCube()
     HalfEdge* e58 = new HalfEdge(v8, z2, ++edgeID);
     HalfEdge* e87 = new HalfEdge(v7, z2, ++edgeID);
     HalfEdge* e76 = new HalfEdge(v6, z2, ++edgeID);
-//    e56->next = e67;
-//    e67->next = e78;
-//    e78->next = e85;
-//    e85->next = e56;
 
     e65->next = e58;
     e58->next = e87;
@@ -1081,10 +1072,6 @@ void Mesh::unitCube()
     HalfEdge* e67 = new HalfEdge(v7, x1, ++edgeID);
     HalfEdge* e73 = new HalfEdge(v3, x1, ++edgeID);
     HalfEdge* e32 = new HalfEdge(v2, x1, ++edgeID);
-//    e23->next = e37;
-//    e37->next = e76;
-//    e76->next = e62;
-//    e62->next = e23;
 
     e26->next = e67;
     e67->next = e73;
@@ -1101,10 +1088,6 @@ void Mesh::unitCube()
     HalfEdge* e78 = new HalfEdge(v8, y1, ++edgeID);
     HalfEdge* e84 = new HalfEdge(v4, y1, ++edgeID);
     HalfEdge* e43 = new HalfEdge(v3, y1, ++edgeID);
-//    e34->next = e48;
-//    e48->next = e87;
-//    e87->next = e73;
-//    e73->next = e34;
 
     e37->next = e78;
     e78->next = e84;
@@ -1120,10 +1103,6 @@ void Mesh::unitCube()
     HalfEdge* e48 = new HalfEdge(v8, x2, ++edgeID);
     HalfEdge* e85 = new HalfEdge(v5, x2, ++edgeID);
     HalfEdge* e51 = new HalfEdge(v1, x2, ++edgeID);
-//    e15->next = e58;
-//    e58->next = e84;
-//    e84->next = e41;
-//    e41->next = e15;
 
     e14->next = e48;
     e48->next = e85;
@@ -1140,10 +1119,6 @@ void Mesh::unitCube()
     HalfEdge* e56 = new HalfEdge(v6, y2, ++edgeID);
     HalfEdge* e62 = new HalfEdge(v2, y2, ++edgeID);
     HalfEdge* e21 = new HalfEdge(v1, y2, ++edgeID);
-//    e12->next = e26;
-//    e26->next = e65;
-//    e65->next = e51;
-//    e51->next = e12;
 
     e15->next = e56;
     e56->next = e62;
