@@ -88,7 +88,8 @@ void Mesh::updateBuffers()
                 }
             }
 
-            glm::vec4 normal = glm::vec4(cross3[0], cross3[1], cross3[2], 0);
+            glm::vec4 normal = glm::vec4(0.0 - cross3[0],
+                    0.0 - cross3[1], 0.0 - cross3[2], 0);
 
 
             meshVertexPositions.push_back(edge->vert->pos);
@@ -1013,7 +1014,7 @@ void Mesh::unitCube()
     edgeID = 0;
 
     // positive z face
-    // 1, 4, 3, 2
+    // 1, 2, 3, 4
     Vertex* v1 = new Vertex(-0.5, -0.5, 0.5, ++vertexID);
     Vertex* v2 = new Vertex(0.5, -0.5, 0.5, ++vertexID);
     Vertex* v3 = new Vertex(0.5, 0.5, 0.5, ++vertexID);
@@ -1021,105 +1022,135 @@ void Mesh::unitCube()
 
     Face* z1 = new Face(glm::vec4(1, 0, 0, 0), ++faceID);
 
-    HalfEdge* e21 = new HalfEdge(v1, z1, ++edgeID);
-    HalfEdge* e32 = new HalfEdge(v2, z1, ++edgeID);
-    HalfEdge* e43 = new HalfEdge(v3, z1, ++edgeID);
-    HalfEdge* e14 = new HalfEdge(v4, z1, ++edgeID);
-    e21->next = e14;
-    e32->next = e21;
-    e43->next = e32;
-    e14->next = e43;
+    HalfEdge* e12 = new HalfEdge(v2, z1, ++edgeID);
+    HalfEdge* e23 = new HalfEdge(v3, z1, ++edgeID);
+    HalfEdge* e34 = new HalfEdge(v4, z1, ++edgeID);
+    HalfEdge* e41 = new HalfEdge(v1, z1, ++edgeID);
+//    e21->next = e14;
+//    e32->next = e21;
+//    e43->next = e32;
+//    e14->next = e43;
 
-    v1->edge = e21;
-    v2->edge = e32;
-    v3->edge = e43;
-    v4->edge = e14;
+    e12->next = e23;
+    e23->next = e34;
+    e34->next = e41;
+    e41->next = e12;
 
-    z1->start_edge = e21;
+    v1->edge = e41;
+    v2->edge = e12;
+    v3->edge = e23;
+    v4->edge = e34;
+
+    z1->start_edge = e12;
 
     // negative z face
-    // 5, 6, 7, 8
+    // 5, 8, 7, 6
     Vertex* v5 = new Vertex(-0.5, -0.5, -0.5, ++vertexID);
     Vertex* v6 = new Vertex(0.5, -0.5, -0.5, ++vertexID);
     Vertex* v7 = new Vertex(0.5, 0.5, -0.5, ++vertexID);
     Vertex* v8 = new Vertex(-0.5, 0.5, -0.5, ++vertexID);
 
-    Face* z2 = new Face(glm::vec4(1, 1, 0, 0),++faceID);
+    Face* z2 = new Face(glm::vec4(0, 1, 1, 0),++faceID);
 
-    HalfEdge* e56 = new HalfEdge(v6, z2, ++edgeID);
-    HalfEdge* e67 = new HalfEdge(v7, z2, ++edgeID);
-    HalfEdge* e78 = new HalfEdge(v8, z2, ++edgeID);
-    HalfEdge* e85 = new HalfEdge(v5, z2, ++edgeID);
-    e56->next = e67;
-    e67->next = e78;
-    e78->next = e85;
-    e85->next = e56;
+    HalfEdge* e65 = new HalfEdge(v5, z2, ++edgeID);
+    HalfEdge* e58 = new HalfEdge(v8, z2, ++edgeID);
+    HalfEdge* e87 = new HalfEdge(v7, z2, ++edgeID);
+    HalfEdge* e76 = new HalfEdge(v6, z2, ++edgeID);
+//    e56->next = e67;
+//    e67->next = e78;
+//    e78->next = e85;
+//    e85->next = e56;
 
-    v5->edge = e85;
-    v6->edge = e56;
-    v7->edge = e67;
-    v8->edge = e78;
+    e65->next = e58;
+    e58->next = e87;
+    e87->next = e76;
+    e76->next = e65;
 
-    z2->start_edge = e56;
+    v5->edge = e65;
+    v6->edge = e76;
+    v7->edge = e87;
+    v8->edge = e58;
+
+    z2->start_edge = e65;
 
     // positive x face
-    // 2, 3, 7, 6
+    // 2, 6, 7, 3
 
     Face* x1 = new Face(glm::vec4(0, 1, 0, 0), ++faceID);
-    HalfEdge* e23 = new HalfEdge(v3, x1, ++edgeID);
-    HalfEdge* e37 = new HalfEdge(v7, x1, ++edgeID);
-    HalfEdge* e76 = new HalfEdge(v6, x1, ++edgeID);
-    HalfEdge* e62 = new HalfEdge(v2, x1, ++edgeID);
-    e23->next = e37;
-    e37->next = e76;
-    e76->next = e62;
-    e62->next = e23;
+    HalfEdge* e26 = new HalfEdge(v6, x1, ++edgeID);
+    HalfEdge* e67 = new HalfEdge(v7, x1, ++edgeID);
+    HalfEdge* e73 = new HalfEdge(v3, x1, ++edgeID);
+    HalfEdge* e32 = new HalfEdge(v2, x1, ++edgeID);
+//    e23->next = e37;
+//    e37->next = e76;
+//    e76->next = e62;
+//    e62->next = e23;
 
-    x1->start_edge = e23;
+    e26->next = e67;
+    e67->next = e73;
+    e73->next = e32;
+    e32->next = e26;
+
+    x1->start_edge = e26;
 
     // positive y face
-    // 3, 4, 8, 7
+    // 3, 7, 8, 4
 
     Face* y1 = new Face(glm::vec4(0, 0, 1, 0), ++faceID);
-    HalfEdge* e34 = new HalfEdge(v4, y1, ++edgeID);
-    HalfEdge* e48 = new HalfEdge(v8, y1, ++edgeID);
-    HalfEdge* e87 = new HalfEdge(v7, y1, ++edgeID);
-    HalfEdge* e73 = new HalfEdge(v3, y1, ++edgeID);
-    e34->next = e48;
-    e48->next = e87;
-    e87->next = e73;
-    e73->next = e34;
+    HalfEdge* e37 = new HalfEdge(v7, y1, ++edgeID);
+    HalfEdge* e78 = new HalfEdge(v8, y1, ++edgeID);
+    HalfEdge* e84 = new HalfEdge(v4, y1, ++edgeID);
+    HalfEdge* e43 = new HalfEdge(v3, y1, ++edgeID);
+//    e34->next = e48;
+//    e48->next = e87;
+//    e87->next = e73;
+//    e73->next = e34;
 
-    y1->start_edge = e34;
+    e37->next = e78;
+    e78->next = e84;
+    e84->next = e43;
+    e43->next = e37;
+
+    y1->start_edge = e37;
 
     // negative x face
-    // 1, 5, 8, 4
-    Face* x2 = new Face(glm::vec4(0, 1, 1, 0), ++faceID);
-    HalfEdge* e15 = new HalfEdge(v5, x2, ++edgeID);
-    HalfEdge* e58 = new HalfEdge(v8, x2, ++edgeID);
-    HalfEdge* e84 = new HalfEdge(v4, x2, ++edgeID);
-    HalfEdge* e41 = new HalfEdge(v1, x2, ++edgeID);
-    e15->next = e58;
-    e58->next = e84;
-    e84->next = e41;
-    e41->next = e15;
+    // 1, 4, 8, 5
+    Face* x2 = new Face(glm::vec4(1, 0, 1, 0), ++faceID);
+    HalfEdge* e14 = new HalfEdge(v4, x2, ++edgeID);
+    HalfEdge* e48 = new HalfEdge(v8, x2, ++edgeID);
+    HalfEdge* e85 = new HalfEdge(v5, x2, ++edgeID);
+    HalfEdge* e51 = new HalfEdge(v1, x2, ++edgeID);
+//    e15->next = e58;
+//    e58->next = e84;
+//    e84->next = e41;
+//    e41->next = e15;
 
-    x2->start_edge = e15;
+    e14->next = e48;
+    e48->next = e85;
+    e85->next = e51;
+    e51->next = e14;
+
+    x2->start_edge = e14;
 
     // negative y face
-    // 1, 2, 6, 5
+    // 1, 5, 6, 2
 
-    Face* y2 = new Face(glm::vec4(1, 0, 1, 0), ++faceID);
-    HalfEdge* e12 = new HalfEdge(v2, y2, ++edgeID);
-    HalfEdge* e26 = new HalfEdge(v6, y2, ++edgeID);
-    HalfEdge* e65 = new HalfEdge(v5, y2, ++edgeID);
-    HalfEdge* e51 = new HalfEdge(v1, y2, ++edgeID);
-    e12->next = e26;
-    e26->next = e65;
-    e65->next = e51;
-    e51->next = e12;
+    Face* y2 = new Face(glm::vec4(1, 1, 0, 0), ++faceID);
+    HalfEdge* e15 = new HalfEdge(v5, y2, ++edgeID);
+    HalfEdge* e56 = new HalfEdge(v6, y2, ++edgeID);
+    HalfEdge* e62 = new HalfEdge(v2, y2, ++edgeID);
+    HalfEdge* e21 = new HalfEdge(v1, y2, ++edgeID);
+//    e12->next = e26;
+//    e26->next = e65;
+//    e65->next = e51;
+//    e51->next = e12;
 
-    y2->start_edge = e12;
+    e15->next = e56;
+    e56->next = e62;
+    e62->next = e21;
+    e21->next = e15;
+
+    y2->start_edge = e15;
 
     // pair the edges
     e12->pair(e21);

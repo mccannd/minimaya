@@ -81,7 +81,13 @@ R: Resolved. A few pointers were not being set correctly by edge division.
 B: When the mesh is divided, the original faces (now smaller) become triangles. Trying to smooth again seg faults.
 R: Resolved. The edge case of connecting the last new face to the original was not covered completely.
 
-B: Seg Fault when subdividing with a hole.
+B: Seg Fault when subdividing a mesh with a hole.
 R: Resolved. Added condition to edge division in case the edges pointed to null faces.
 
-B: 
+B: Seg Fault when importing a file.
+R: Resolved. The file was being read properly but the faces did not have start edges, and the buffer creation crashed
+
+B: Imported object successully displayed on the screen, but the lighting is inverted.
+	The edges are counterclockwise.
+R: Resolved. The cube from HW5 was constructed clockwise, and the normals had to be flipped. 
+	Solved with the help of Adam, Piazza, and the next edge button. 
