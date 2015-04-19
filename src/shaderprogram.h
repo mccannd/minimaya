@@ -22,6 +22,8 @@ public:
         virtual bool bindPos() = 0;
         virtual bool bindNor() = 0;
         virtual bool bindCol() = 0;
+        virtual bool bindJID() = 0;
+        virtual bool bindJWeight() = 0;
     };
 
 public:
@@ -30,7 +32,11 @@ public:
     int attrPos;
     int attrNor;
     int attrCol;
+    int attrJointIDs; // used for skeleton shader
+    int attrJointWeights; // used for skeleton shader
 
+    int unifJointBindPos; // used for skeleton shader
+    int unifJointTransform; // used for skeleton shader
     int unifModel;
     int unifModelInvTr;
     int unifViewProj;
@@ -40,5 +46,7 @@ public:
     void create(const char *vertfile, const char *fragfile);
     void setModelMatrix(const glm::mat4 &model);
     void setViewProjMatrix(const glm::mat4& vp);
+    void setJointBindPosArray(const std::vector<glm::mat4>& jbp);
+    void setJointTransformArray(const std::vector<glm::mat4>& jt);
     void draw(GLWidget277 &f, Drawable &d);
 };

@@ -8,12 +8,49 @@ void ShaderProgram::create(const char *vertfile, const char *fragfile)
     prog.addShaderFromSourceFile(QOpenGLShader::Fragment, fragfile);
     prog.link();
 
+    // in (per vertex stream)
     attrPos = prog.attributeLocation("vs_Pos");
     attrNor = prog.attributeLocation("vs_Nor");
     attrCol = prog.attributeLocation("vs_Col");
+    attrJointIDs = prog.attributeLocation("vs_JID");
+    attrJointWeights = prog.attributeLocation("vs_JWeight");
+
+    // uniform
+    unifJointBindPos = prog.uniformLocation("u_BindMatrix");
+    unifJointTransform = prog.uniformLocation("u_TransformMatrix");
     unifModel      = prog.uniformLocation("u_Model");
     unifModelInvTr = prog.uniformLocation("u_ModelInvTr");
     unifViewProj   = prog.uniformLocation("u_ViewProj");
+}
+
+void ShaderProgram::setJointBindPosArray(const std::vector<glm::mat4> &jbp)
+{
+    prog.bind();
+
+    if(unifJointBindPos != -1){
+        std::vector<QMatrix4x4> qmats;
+        for (unsigned int i = 0; i < jbp.size(); i++) {
+            qmats.push_back(la::to_qmat(jbp[i]));
+        }
+
+        prog.setUniformValueArray(unifJointBindPos,
+                                  qmats.data(), qmats.size());
+    }
+}
+
+void ShaderProgram::setJointTransformArray(const std::vector<glm::mat4> &jt)
+{
+    prog.bind();
+
+    if(unifJointTransform != -1){
+        std::vector<QMatrix4x4> qmats;
+        for (unsigned int i = 0; i < jt.size(); i++) {
+            qmats.push_back(la::to_qmat(jt[i]));
+        }
+
+        prog.setUniformValueArray(unifJointTransform,
+                                  qmats.data(), qmats.size());
+    }
 }
 
 void ShaderProgram::setModelMatrix(const glm::mat4 &model)
@@ -65,6 +102,15 @@ void ShaderProgram::draw(GLWidget277 &f, Drawable &d)
         f.glVertexAttribPointer(attrCol, 4, GL_FLOAT, false, 0, NULL);
     }
 
+    if (attrJointIDs != -1 && d.bindJID()) {
+        prog.enableAttributeArray(attrJointIDs);
+        f.glVertexAttribIPointer(attrJointIDs, 2, GL_UNSIGNED_INT, 0, NULL);
+    }
+
+    if (attrJointWeights != -1 && d.bindJWeight()) {
+        prog.enableAttributeArray(attrJointWeights);
+        f.glVertexAttribPointer(attrJointWeights, 2, GL_FLOAT, true, 0, NULL);
+    }
     // Bind the index buffer and then draw shapes from it.
     // This invokes the shader program, which accesses the vertex buffers.
     d.bindIdx();
@@ -73,6 +119,8 @@ void ShaderProgram::draw(GLWidget277 &f, Drawable &d)
     if (attrPos != -1) prog.disableAttributeArray(attrPos);
     if (attrNor != -1) prog.disableAttributeArray(attrNor);
     if (attrCol!= -1) prog.disableAttributeArray(attrCol);
+    if (attrJointIDs != -1) prog.disableAttributeArray(attrJointIDs);
+    if (attrJointWeights != -1) prog.disableAttributeArray(attrJointWeights);
 
     f.printGLErrorLog();
 }

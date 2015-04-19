@@ -144,3 +144,13 @@ int HalfEdge::getID()
 {
     return id;
 }
+
+bool HalfEdge::bindJID()
+{
+    return 1;
+}
+
+bool HalfEdge::bindJWeight()
+{
+    return 1;
+}

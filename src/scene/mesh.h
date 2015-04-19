@@ -20,11 +20,15 @@ private:
     QOpenGLBuffer bufPos;
     QOpenGLBuffer bufNor;
     QOpenGLBuffer bufCol;  // Can be used to pass per-vertex color information to the shader, but is currently unused.
+    QOpenGLBuffer bufJID;   // when bound to a skeleton, these are pairs of influencing joint per vertex
+    QOpenGLBuffer bufJWeight;   // shows weight of joint influence per vertex
 
     std::vector<glm::vec4> meshVertexPositions = {};
     std::vector<glm::vec4> meshVertexNormals = {};
     std::vector<glm::vec4> meshVertexColors = {};
     std::vector<GLuint> meshIndices = {};
+    std::vector<glm::vec2> meshJointIDs = {};
+    std::vector<glm::vec2> meshJointWeights = {};
 
     // clear the current buffers and repopulate
     void updateBuffers();
@@ -42,6 +46,8 @@ public:
     virtual bool bindPos();
     virtual bool bindNor();
     virtual bool bindCol();
+    virtual bool bindJID();
+    virtual bool bindJWeight();
 
     std::vector<HalfEdge*> edges = {};
     std::vector<Vertex*> vertices = {};
@@ -65,7 +71,10 @@ public:
 
     void parseObj(QString& fileName);
 
-    void subdivide();
+    // binds a skeleton to each vertex
+    void linearBinding(Joint* root);
+
+    void subdivide(QListWidget* e, QListWidget* f, QListWidget* v);
 };
 
 

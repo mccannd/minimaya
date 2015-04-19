@@ -18,7 +18,9 @@ Mesh::Mesh()
     : bufIdx(QOpenGLBuffer::IndexBuffer),
       bufPos(QOpenGLBuffer::VertexBuffer),
       bufNor(QOpenGLBuffer::VertexBuffer),
-      bufCol(QOpenGLBuffer::VertexBuffer)
+      bufCol(QOpenGLBuffer::VertexBuffer),
+      bufJID(QOpenGLBuffer::VertexBuffer),
+      bufJWeight(QOpenGLBuffer::VertexBuffer)
 {
 }
 
@@ -31,6 +33,8 @@ void Mesh::updateBuffers()
     meshVertexNormals.clear();
     meshVertexColors.clear();
     meshIndices.clear();
+    meshJointIDs.clear();
+    meshJointWeights.clear();
 
     GLuint vID = 0; // ID for vertex indices buffer
 
@@ -95,6 +99,8 @@ void Mesh::updateBuffers()
             meshVertexPositions.push_back(edge->vert->pos);
             meshVertexColors.push_back(color);
             meshVertexNormals.push_back(normal);
+            meshJointIDs.push_back(edge->vert->jointIDs);
+            meshJointWeights.push_back((edge->vert->weights));
 
             if (vID <= fan + 2) {
                 // no completed triangle yet
@@ -153,6 +159,18 @@ void Mesh::create()
     bufNor.setUsagePattern(QOpenGLBuffer::StaticDraw);
     bufNor.allocate(meshVertexNormals.data(),
                     meshVertexPositions.size() * sizeof(glm::vec4));
+
+    bufJID.create();
+    bufJID.bind();
+    bufJID.setUsagePattern(QOpenGLBuffer::StaticDraw);
+    bufJID.allocate(meshJointIDs.data(),
+                    meshJointIDs.size() * sizeof(glm::ivec2));
+
+    bufJWeight.create();
+    bufJWeight.bind();
+    bufJWeight.setUsagePattern(QOpenGLBuffer::StaticDraw);
+    bufJWeight.allocate(meshJointWeights.data(),
+                        meshJointWeights.size() * sizeof(glm::vec2));
 }
 
 void Mesh::destroy()
@@ -161,6 +179,8 @@ void Mesh::destroy()
     bufPos.destroy();
     bufNor.destroy();
     bufCol.destroy();
+    bufJID.destroy();
+    bufJWeight.destroy();
 }
 
 // destroy all mesh information
@@ -217,6 +237,17 @@ bool Mesh::bindNor()
 bool Mesh::bindCol()
 {
     return bufCol.bind();
+}
+
+// skeleton bindings
+bool Mesh::bindJID()
+{
+    return bufJID.bind();
+}
+
+bool Mesh::bindJWeight()
+{
+    return bufJWeight.bind();
 }
 
 /// --- Interface Interaction Functions ---
@@ -524,7 +555,98 @@ void Mesh::deleteVertex(Vertex *v)
 
 }
 
-void Mesh::subdivide()
+// helper: recursively produce a list of all joints
+void jointList(std::vector<Joint*> &joints, Joint* j)
+{
+    joints.push_back(j);
+    for (unsigned int i = 0; i < j->numChildren(); i++) {
+        jointList(joints, j->getChild(i));
+    }
+}
+
+// helper: find the euclidean distance between a joint and vertex
+float jointToVertDistance(Joint* j, Vertex* v)
+{
+    // center of joint, in world space
+    glm::vec4 jc = j->getOverallTransformation() * glm::vec4(0, 0, 0, 1);
+    // position of vertex
+    glm::vec4 vc = v->pos;
+
+    float dist = (float) sqrt((jc[0] - vc[0]) * (jc[0] - vc[0]) +
+                        (jc[1] - vc[1]) * (jc[1] - vc[1]) +
+                        (jc[2] - vc[2]) * (jc[2] - vc[2]));
+
+    return dist;
+}
+
+void Mesh::linearBinding(Joint *root)
+{
+    // compile a list of all joints to iterate
+    std::vector<Joint*> allJoints;
+    jointList(allJoints, root);
+
+    // for every vertex
+    for (unsigned int i = 0; i < vertices.size(); i++) {
+        // search for two closest joints
+        int firstID;
+        int secondID;
+        float firstDistance = 4096;
+        float secondDistance = 4096;
+        Vertex* currentVertex = vertices[i];
+
+        // edge case: only one joint
+        // map the joint with full influence
+        if (allJoints.size() == 1) {
+            currentVertex->jointIDs = glm::vec2(0, 0);
+            currentVertex->weights = glm::vec2(0.5, 0.5);
+            continue;
+        }
+
+        // linear search
+        for (unsigned int j = 0; j < allJoints.size(); j++) {
+            Joint* currentJoint = allJoints[j];
+            float distance = jointToVertDistance(currentJoint,
+                                                 currentVertex);
+
+            if (distance < firstDistance) {
+                secondID = firstID;
+                firstID = j;
+                secondDistance = firstDistance;
+                firstDistance = distance;
+            } else if (distance < secondDistance) {
+                secondID = j;
+                secondDistance = distance;
+            }
+        }
+
+        // normalize the weights
+        float sumDistance = firstDistance + secondDistance;
+        firstDistance /= sumDistance; // make proportional weights
+        secondDistance /= sumDistance;
+
+        // map these joints to vertex weights
+        currentVertex->jointIDs = glm::ivec2(firstID, secondID);
+        currentVertex->weights = glm::vec2(secondDistance, firstDistance);
+        std::cout<<"Bound vertex " << currentVertex->getID() <<" to joints: <"
+                << firstID << ", " << secondID <<
+                   "> with weights: <" << secondDistance <<
+                   ", " << firstDistance << ">\n";
+
+    }
+
+    // create the bind matrix for all joints
+    // bind matrix is the inverse of overall transformations at this time
+    for (unsigned int i = 0; i < allJoints.size(); i++) {
+        allJoints[i]->bind_matrix =
+                la::inverse(allJoints[i]->getOverallTransformation());
+    }
+
+    this->create();
+}
+
+
+void Mesh::subdivide(QListWidget *edgeList, QListWidget *faceList,
+                     QListWidget *vertList)
 {
 
     // maps a centroid to each face
@@ -763,6 +885,7 @@ void Mesh::subdivide()
                     // put quad into lists
                     newFaces.insert(newQuad);
                     faces.push_back(newQuad);
+                    //faceList->insertItem(faceList->size(), newQuad);
 
                     e = e->next->next->next->sym;
                 } else {
@@ -786,6 +909,7 @@ void Mesh::subdivide()
                     e->next->face = newQuad;
                     e->next->next->face = newQuad;
                     e->next->next->next->face = newQuad;
+                    //faceList->insertItem(faceList->size(), newQuad);
 
                     // put quad into lists
                     newFaces.insert(newQuad);

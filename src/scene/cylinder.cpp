@@ -192,3 +192,13 @@ bool Cylinder::bindCol()
 {
     return bufCol.bind();
 }
+
+bool Cylinder::bindJID()
+{
+    return 1;
+}
+
+bool Cylinder::bindJWeight()
+{
+    return 1;
+}

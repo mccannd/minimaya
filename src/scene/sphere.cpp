@@ -183,3 +183,13 @@ bool Sphere::bindCol()
 {
     return bufCol.bind();
 }
+
+bool Sphere::bindJID()
+{
+    return 1;
+}
+
+bool Sphere::bindJWeight()
+{
+    return 1;
+}

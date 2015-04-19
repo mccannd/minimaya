@@ -101,3 +101,13 @@ int Vertex::getID()
 {
     return id;
 }
+
+bool Vertex::bindJID()
+{
+    return 1;
+}
+
+bool Vertex::bindJWeight()
+{
+    return 1;
+}

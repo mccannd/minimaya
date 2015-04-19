@@ -49,6 +49,8 @@ public:
     virtual bool bindPos();
     virtual bool bindNor();
     virtual bool bindCol();
+    virtual bool bindJID();
+    virtual bool bindJWeight();
 };
 
 

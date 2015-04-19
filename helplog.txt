@@ -37,6 +37,23 @@ A: A translation macro that you do not need to worry about. -- Kai
 Q: Subdivision on the cube does not quite converge to a sphere but it is consistent. Is this okay?
 A: This is the way we expect. See, this is how Maya does it: (shows example on Blender) -- Kai
 
+HW7:
+
+Q: How do you make a quaternion in glm?
+A: glm::quat is the class, can be made with Euler angles glm::quat(vec3) or glm::angleAxis(angle, x, y, z)
+    --Documentation
+
+Q: What is the joint ID referring to?
+A: Make it the refer to a list / array of joints; you need this to pass information through glsl--Karl
+
+Q: I have declared uniform mat4 arrays in my shader. How do I "import" them?
+A: See the setUniformValue() function used for the model and view projection uniforms. --Gary
+
+Q: I have declared in vec2s in my shader. How do I get them to stream in?
+A: You need to create new buffers for shaderprogram, bind them in your drawable's create(), and send them 
+	through the glVertexAttribPointer function --Gary
+
+
 -----
 
 B: Bug / Difficulty	R: Resolution
@@ -91,3 +108,12 @@ B: Imported object successully displayed on the screen, but the lighting is inve
 	The edges are counterclockwise.
 R: Resolved. The cube from HW5 was constructed clockwise, and the normals had to be flipped. 
 	Solved with the help of Adam, Piazza, and the next edge button. 
+
+
+HW7:
+
+B: When importing a skeleton from JSON, parented nodes had flickering lines connecting them to parents.
+R: Resolved. Constructors for some nodes did not include OpenGL buffers. -- Adam
+
+B: When a skeleton is bound to the mesh, it will only recognize the root joint. Vertices linked to the root will follow it exactly, all others will disappear, and moving the other joints can cause a crash.
+R: 

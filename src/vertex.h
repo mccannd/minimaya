@@ -9,6 +9,8 @@
 #include <QOpenGLContext>
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
+#include "scene/joint.h"
+
 class HalfEdge;
 class Vertex : public QListWidgetItem,
         public ShaderProgram::Drawable
@@ -27,6 +29,8 @@ public:
 
     glm::vec4 pos; // location of vertex
     HalfEdge* edge = NULL;
+    glm::ivec2 jointIDs;
+    glm::vec2 weights;
 
     int getID();
     // graphics: drawable point
@@ -39,5 +43,7 @@ public:
     virtual bool bindPos();
     virtual bool bindNor();
     virtual bool bindCol();
+    virtual bool bindJID();
+    virtual bool bindJWeight();
 };
 
