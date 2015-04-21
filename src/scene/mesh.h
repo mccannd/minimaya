@@ -27,7 +27,7 @@ private:
     std::vector<glm::vec4> meshVertexNormals = {};
     std::vector<glm::vec4> meshVertexColors = {};
     std::vector<GLuint> meshIndices = {};
-    std::vector<glm::vec2> meshJointIDs = {};
+    std::vector<glm::ivec2> meshJointIDs = {};
     std::vector<glm::vec2> meshJointWeights = {};
 
     // clear the current buffers and repopulate

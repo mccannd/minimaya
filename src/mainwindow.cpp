@@ -250,8 +250,9 @@ void MainWindow::on_pushButton_17_clicked()
 
 void MainWindow::on_pushButton_18_clicked()
 {
+
+    ui->mygl->bindSkeleton();
     ui->mygl->updateSkeletonList();
     ui->mygl->updateSkeletonTransformations();
-    ui->mygl->bindSkeleton();
     ui->mygl->skeleton_bound = true;
 }

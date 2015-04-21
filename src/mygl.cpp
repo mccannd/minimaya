@@ -365,7 +365,9 @@ void MyGL::selectJoint(QTreeWidgetItem *j)
 {
     Joint* joint = (Joint*) j;
     if (joint != NULL) {
-        selected_joint->color = glm::vec4(0.1, 0.1, 0.6, 1);
+        if(selected_joint != NULL){
+            selected_joint->color = glm::vec4(0.1, 0.1, 0.6, 1);
+        }
         selected_joint = joint;
         selected_joint->color = glm::vec4(1, 1, 1, 1);
         emit jointSelected(j);

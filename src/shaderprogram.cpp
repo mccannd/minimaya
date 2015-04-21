@@ -109,7 +109,7 @@ void ShaderProgram::draw(GLWidget277 &f, Drawable &d)
 
     if (attrJointWeights != -1 && d.bindJWeight()) {
         prog.enableAttributeArray(attrJointWeights);
-        f.glVertexAttribPointer(attrJointWeights, 2, GL_FLOAT, true, 0, NULL);
+        f.glVertexAttribPointer(attrJointWeights, 2, GL_FLOAT, false, 0, NULL);
     }
     // Bind the index buffer and then draw shapes from it.
     // This invokes the shader program, which accesses the vertex buffers.

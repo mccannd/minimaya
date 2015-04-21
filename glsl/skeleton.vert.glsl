@@ -26,12 +26,12 @@ uniform mat4 u_ViewProj;    // The matrix that defines the camera's transformati
 
 // ---- Skeleton Uniform Features -------------------------------------------------------------------------
 
-uniform mat4[100] u_BindMatrix;        // The array of mat4 that represents the bind matrix of joints
+uniform mat4 u_BindMatrix[64];        // The array of mat4 that represents the bind matrix of joints
                                     // this converts a position in world space to joint local space
                                     // which gives the displacement, in local space, 
                                     // the index of this array is the "ID" of the joint
 
-uniform mat4[100] u_TransformMatrix;   // transformation array of each joint
+uniform mat4 u_TransformMatrix[64];   // transformation array of each joint
                                     // joint local space -> world space
 
 // --------------------------------------------------------------------------------------------------------
