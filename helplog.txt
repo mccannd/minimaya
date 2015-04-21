@@ -1,0 +1,119 @@
+HW 5 and 6: Help log by Dan McCann
+
+Q: Question	A: Answer	
+
+Q: Why is it so annoying to get the start point of an edge?
+A: It isn't, e.sym.vert gets it if sym exists. -- Remi
+
+Q: How do you approach constructing the buffers from half edge traversal?
+A: Look at the instructions. It's done by face. -- Remi
+
+Q: Why are the edges rainbow?
+A: Use the vertex color buffers for your drawable. -- Adam
+
+Q: How do you remove something from a vector?
+A: erase(vec.start() + i) where i is the index of the element to be removed. -- Stack Overflow.
+
+Q: How do you remove only one pointer from a vector without deleting it?
+A: Don't try. Find another container or a workaround. -- Stack Overflow, Google
+
+HW6:
+
+Q: How do you modify several multiple things with a function?
+A: References. You can pass ptr*& into a function, and changing ptr inside the function
+	will also change it outside with the power of references. -- Adam
+
+Q: How do you efficiently update the QListWidgets?
+A: Deleting anything extending QListWidgetItem will automatically delete it from a list.
+	You could also pass the widget pointer through functions and add things one by one instead of clearing and updating. 
+	--Kai, Piazza
+
+Q: When using a QHash with QPairs as keys, and the QPairs are created on the stack, will there be any issues?
+A: No. There will be some structural test allowing it to work. -- Kai, Adam
+
+Q: In the QFileOpenDialog example in the documentation, what is the tr() function they include?
+A: A translation macro that you do not need to worry about. -- Kai
+
+Q: Subdivision on the cube does not quite converge to a sphere but it is consistent. Is this okay?
+A: This is the way we expect. See, this is how Maya does it: (shows example on Blender) -- Kai
+
+HW7:
+
+Q: How do you make a quaternion in glm?
+A: glm::quat is the class, can be made with Euler angles glm::quat(vec3) or glm::angleAxis(angle, x, y, z)
+    --Documentation
+
+Q: What is the joint ID referring to?
+A: Make it the refer to a list / array of joints; you need this to pass information through glsl--Karl
+
+Q: I have declared uniform mat4 arrays in my shader. How do I "import" them?
+A: See the setUniformValue() function used for the model and view projection uniforms. --Gary
+
+Q: I have declared in vec2s in my shader. How do I get them to stream in?
+A: You need to create new buffers for shaderprogram, bind them in your drawable's create(), and send them 
+	through the glVertexAttribPointer function --Gary
+
+
+-----
+
+B: Bug / Difficulty	R: Resolution
+
+B: Making the cube creates a bad_alloc
+R: Resolved. Found an incorrect edge->next pointer in the cube. A while loop never finished and it ran out of memory.
+
+B: One corner of the cube has a gradient
+R: Resolved. Checked pointers and found an incorrect edge traversal.
+
+B: Trying to redraw the cube causes a GL_Invalid_Operation
+R: Resolved. Call update() in MyGL instead of the repaint function.
+
+B: Segmentation fault when calling the edge split function
+R: Resolved. When updating the QListWidgets, clear() or erase DELETES all elements, does not remove them. 
+	They must be removed one by one and added again.
+
+B: Crash soon after edge split when OpenGL complains about timers.
+R: Resolved. Passed something of the wrong type into a buffer related function.
+
+B: Seg fault on debugger only (?) when I added deletion.
+R: Resolved. I changed the selected_vertex, edge, face fields to be explicitly null initially in mygl.
+
+B: Seg fault on any vertex deletion.
+R: Resolved. I did not create the links from vertices to edges when making the cube.
+
+B: When deleting vertices that would remove all remaining faces in the mesh, floating vertices and edges can still be selected.
+R: Resolved. I added an edge case to the end of my delete function.
+
+B: Adding vertices causes some normals to go out of whack.
+R: UNRESOLVED. This is an issue with polygons not being convex, and doing the vertex normals by vertex instead of by face.
+
+B: Triangulating NGons that are not convex will cause wonkiness.
+R: UNRESOLVED.
+
+
+HW6: 
+
+B: Seg Fault when quadrangulating faces
+R: Resolved. A few pointers were not being set correctly by edge division.
+
+B: When the mesh is divided, the original faces (now smaller) become triangles. Trying to smooth again seg faults.
+R: Resolved. The edge case of connecting the last new face to the original was not covered completely.
+
+B: Seg Fault when subdividing a mesh with a hole.
+R: Resolved. Added condition to edge division in case the edges pointed to null faces.
+
+B: Seg Fault when importing a file.
+R: Resolved. The file was being read properly but the faces did not have start edges, and the buffer creation crashed
+
+B: Imported object successully displayed on the screen, but the lighting is inverted.
+	The edges are counterclockwise.
+R: Resolved. The cube from HW5 was constructed clockwise, and the normals had to be flipped. 
+	Solved with the help of Adam, Piazza, and the next edge button. 
+
+
+HW7:
+
+B: When importing a skeleton from JSON, parented nodes had flickering lines connecting them to parents.
+R: Resolved. Constructors for some nodes did not include OpenGL buffers. -- Adam
+
+B: When a skeleton is bound to the mesh, it will only recognize the root joint. Vertices linked to the root will follow it exactly, all others will disappear, and moving the other joints can cause a crash.
+R: 
