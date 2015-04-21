@@ -1,0 +1,1186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1000</width>
+    <height>716</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>OpenGLDemo</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="MyGL" name="mygl" native="true">
+    <property name="geometry">
+     <rect>
+      <x>12</x>
+      <y>41</y>
+      <width>618</width>
+      <height>432</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+      <horstretch>1</horstretch>
+      <verstretch>1</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>618</width>
+      <height>432</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="myListWidget" name="listWidget">
+    <property name="geometry">
+     <rect>
+      <x>640</x>
+      <y>41</y>
+      <width>109</width>
+      <height>431</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="myListWidget" name="listWidget_3">
+    <property name="geometry">
+     <rect>
+      <x>879</x>
+      <y>41</y>
+      <width>109</width>
+      <height>431</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="myListWidget" name="listWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>759</x>
+      <y>41</y>
+      <width>110</width>
+      <height>431</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>780</x>
+      <y>20</y>
+      <width>59</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Vertices</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>890</x>
+      <y>20</y>
+      <width>71</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>HalfEdges</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>670</x>
+      <y>20</y>
+      <width>59</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Faces</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>500</y>
+      <width>201</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Vertex Position</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>540</y>
+      <width>111</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Face Color</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>590</y>
+      <width>231</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Add Vertex on Selected HalfEdge</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>650</y>
+      <width>115</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Triangulate</string>
+    </property>
+   </widget>
+   <widget class="myLineEdit" name="lineEdit">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>520</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="myLineEdit" name="lineEdit_2">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>520</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="myLineEdit" name="lineEdit_3">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>520</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="myLineEdit" name="lineEdit_4">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>560</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="myLineEdit" name="lineEdit_5">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>560</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="myLineEdit" name="lineEdit_6">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>560</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_3">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>520</y>
+      <width>71</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>OK</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_4">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>560</y>
+      <width>71</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>OK</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_5">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>650</y>
+      <width>115</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Delete Vertex</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_6">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>620</y>
+      <width>231</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Catmull-Clark Subdivision</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_7">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>650</y>
+      <width>115</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Browse OBJ</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_8">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>650</y>
+      <width>115</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Export OBJ</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_9">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>650</y>
+      <width>115</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Browse JSON</string>
+    </property>
+   </widget>
+   <widget class="myTreeWidget" name="treeWidget">
+    <property name="geometry">
+     <rect>
+      <x>710</x>
+      <y>490</y>
+      <width>256</width>
+      <height>192</height>
+     </rect>
+    </property>
+    <column>
+     <property name="text">
+      <string>Joints</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QPushButton" name="pushButton_10">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>650</y>
+      <width>115</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Put on Weight</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_11">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>610</y>
+      <width>81</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Rotate X</string>
+    </property>
+   </widget>
+   <widget class="myLineEdit" name="lineEdit_8">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>520</y>
+      <width>331</width>
+      <height>21</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="myLineEdit" name="lineEdit_9">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>580</y>
+      <width>331</width>
+      <height>21</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>500</y>
+      <width>201</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Joint Position</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_12">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>610</y>
+      <width>81</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Rotate Y</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_13">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>610</y>
+      <width>81</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Rotate Z</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>560</y>
+      <width>201</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Joint Quat (see READ.ME)</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1000</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionQuit"/>
+   </widget>
+   <addaction name="menuFile"/>
+  </widget>
+  <action name="actionQuit">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>MyGL</class>
+   <extends>QWidget</extends>
+   <header>mygl.h</header>
+   <slots>
+    <signal>sig_SendRootNode(QTreeWidgetItem*)</signal>
+    <signal>sig_SendRaycastSelection(QTreeWidgetItem*)</signal>
+    <signal>sig_SendFace(QListWidgetItem*)</signal>
+    <signal>sig_SendVertices(QListWidgetItem*)</signal>
+    <signal>sig_SendHalfEdges(QListWidgetItem*)</signal>
+    <signal>sig_Sendx(double)</signal>
+    <signal>sig_Sendy(double)</signal>
+    <signal>sig_Sendz(double)</signal>
+    <signal>sig_SendColR(double)</signal>
+    <signal>sig_SendColG(double)</signal>
+    <signal>sig_SendColB(double)</signal>
+    <signal>sig_ResetList()</signal>
+    <signal>sig_ClearList()</signal>
+    <signal>sig_sendItemTop(QTreeWidgetItem*)</signal>
+    <signal>sig_sendJointTranslation(QString)</signal>
+    <signal>sig_sendJointQuat(QString)</signal>
+    <slot>slot_ReceiveSelectedNode(QTreeWidgetItem*)</slot>
+    <slot>slot_ReceiveSelectedFace(QListWidgetItem*)</slot>
+    <slot>slot_ReceiveSelectedVertex(QListWidgetItem*)</slot>
+    <slot>slot_ReceiveSelectedHalfEdge(QListWidgetItem*)</slot>
+    <slot>slot_Receivex(QString)</slot>
+    <slot>slot_Receivey(QString)</slot>
+    <slot>slot_Receivez(QString)</slot>
+    <slot>slot_ReceiveR(QString)</slot>
+    <slot>slot_ReceiveG(QString)</slot>
+    <slot>slot_ReceiveB(QString)</slot>
+    <slot>slot_AddVertextoEdge()</slot>
+    <slot>slot_Triangulate()</slot>
+    <slot>slot_UpdateVertexPos()</slot>
+    <slot>slot_UpdateFaceColor()</slot>
+    <slot>slot_DeleteVertex()</slot>
+    <slot>slot_Subdivide()</slot>
+    <slot>slot_OpenFile()</slot>
+    <slot>slot_ExportFile()</slot>
+    <slot>slot_OpenJSON()</slot>
+    <slot>slot_MeshSkinningFunction()</slot>
+    <slot>slot_ReceiveSelectedJoint(QTreeWidgetItem*,QTreeWidgetItem*)</slot>
+    <slot>slot_RotateXJoint()</slot>
+    <slot>slot_RotateYJoint()</slot>
+    <slot>slot_RotateZJoint()</slot>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>myListWidget</class>
+   <extends>QListWidget</extends>
+   <header>mylistwidget.h</header>
+   <slots>
+    <slot>slot_ReceiveFace(QListWidgetItem*)</slot>
+    <slot>slot_ReceiveVertex(QListWidgetItem*)</slot>
+    <slot>slot_ReceiveHalfEdge(QListWidgetItem*)</slot>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>myLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>mylineedit.h</header>
+   <slots>
+    <slot>slot_setValue(double)</slot>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>myTreeWidget</class>
+   <extends>QTreeWidget</extends>
+   <header>mytreewidget.h</header>
+   <slots>
+    <slot>slot_receiveItemTop(QTreeWidgetItem*)</slot>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>mygl</sender>
+   <signal>sig_SendVertices(QListWidgetItem*)</signal>
+   <receiver>listWidget_2</receiver>
+   <slot>slot_ReceiveVertex(QListWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>599</x>
+     <y>90</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>790</x>
+     <y>88</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mygl</sender>
+   <signal>sig_SendHalfEdges(QListWidgetItem*)</signal>
+   <receiver>listWidget_3</receiver>
+   <slot>slot_ReceiveHalfEdge(QListWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>613</x>
+     <y>102</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>935</x>
+     <y>104</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>listWidget</sender>
+   <signal>itemClicked(QListWidgetItem*)</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_ReceiveSelectedFace(QListWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>656</x>
+     <y>116</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>580</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>listWidget_2</sender>
+   <signal>itemClicked(QListWidgetItem*)</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_ReceiveSelectedVertex(QListWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>769</x>
+     <y>134</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>593</x>
+     <y>134</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>listWidget_3</sender>
+   <signal>itemClicked(QListWidgetItem*)</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_ReceiveSelectedHalfEdge(QListWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>895</x>
+     <y>146</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>586</x>
+     <y>146</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_AddVertextoEdge()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>643</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>56</x>
+     <y>338</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_Triangulate()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>673</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>320</x>
+     <y>473</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mygl</sender>
+   <signal>sig_SendFace(QListWidgetItem*)</signal>
+   <receiver>listWidget</receiver>
+   <slot>slot_ReceiveFace(QListWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>623</x>
+     <y>71</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>686</x>
+     <y>71</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mygl</sender>
+   <signal>sig_ResetList()</signal>
+   <receiver>listWidget</receiver>
+   <slot>reset()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>612</x>
+     <y>165</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>688</x>
+     <y>159</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mygl</sender>
+   <signal>sig_ResetList()</signal>
+   <receiver>listWidget_2</receiver>
+   <slot>reset()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>618</x>
+     <y>180</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>845</x>
+     <y>176</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mygl</sender>
+   <signal>sig_ResetList()</signal>
+   <receiver>listWidget_3</receiver>
+   <slot>reset()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>605</x>
+     <y>195</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>937</x>
+     <y>191</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mygl</sender>
+   <signal>sig_Sendx(double)</signal>
+   <receiver>lineEdit</receiver>
+   <slot>slot_setValue(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>29</x>
+     <y>477</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>25</x>
+     <y>544</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_Receivex(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>41</x>
+     <y>548</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>44</x>
+     <y>460</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mygl</sender>
+   <signal>sig_Sendy(double)</signal>
+   <receiver>lineEdit_2</receiver>
+   <slot>slot_setValue(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>109</x>
+     <y>470</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>108</x>
+     <y>559</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEdit_2</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_Receivey(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>123</x>
+     <y>555</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>123</x>
+     <y>428</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mygl</sender>
+   <signal>sig_Sendz(double)</signal>
+   <receiver>lineEdit_3</receiver>
+   <slot>slot_setValue(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>190</x>
+     <y>483</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>188</x>
+     <y>555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEdit_3</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_Receivez(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>204</x>
+     <y>543</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>204</x>
+     <y>418</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mygl</sender>
+   <signal>sig_SendColR(double)</signal>
+   <receiver>lineEdit_5</receiver>
+   <slot>slot_setValue(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>289</x>
+     <y>468</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>54</x>
+     <y>587</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEdit_5</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_ReceiveR(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>77</x>
+     <y>586</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>301</x>
+     <y>460</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mygl</sender>
+   <signal>sig_SendColG(double)</signal>
+   <receiver>lineEdit_6</receiver>
+   <slot>slot_setValue(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>364</x>
+     <y>486</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>134</x>
+     <y>584</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEdit_6</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_ReceiveG(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>155</x>
+     <y>589</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>385</x>
+     <y>469</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mygl</sender>
+   <signal>sig_SendColB(double)</signal>
+   <receiver>lineEdit_4</receiver>
+   <slot>slot_setValue(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>447</x>
+     <y>472</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>216</x>
+     <y>594</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEdit_4</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_ReceiveB(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>241</x>
+     <y>587</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>464</x>
+     <y>411</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_3</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_UpdateVertexPos()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>273</x>
+     <y>552</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>268</x>
+     <y>477</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_4</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_UpdateFaceColor()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>324</x>
+     <y>594</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>605</x>
+     <y>484</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_5</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_DeleteVertex()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>171</x>
+     <y>673</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>575</x>
+     <y>380</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_6</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_Subdivide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>64</x>
+     <y>643</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>70</x>
+     <y>395</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_7</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_OpenFile()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>268</x>
+     <y>703</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>336</x>
+     <y>397</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mygl</sender>
+   <signal>sig_ClearList()</signal>
+   <receiver>listWidget</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>616</x>
+     <y>205</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>685</x>
+     <y>205</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mygl</sender>
+   <signal>sig_ClearList()</signal>
+   <receiver>listWidget_2</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>611</x>
+     <y>219</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>805</x>
+     <y>221</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mygl</sender>
+   <signal>sig_ClearList()</signal>
+   <receiver>listWidget_3</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>607</x>
+     <y>234</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>919</x>
+     <y>237</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_8</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_ExportFile()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>393</x>
+     <y>703</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>558</x>
+     <y>464</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mygl</sender>
+   <signal>sig_sendItemTop(QTreeWidgetItem*)</signal>
+   <receiver>treeWidget</receiver>
+   <slot>slot_receiveItemTop(QTreeWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>619</x>
+     <y>429</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>737</x>
+     <y>533</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_9</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_OpenJSON()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>558</x>
+     <y>681</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>407</x>
+     <y>434</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_10</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_MeshSkinningFunction()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>621</x>
+     <y>682</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>596</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>treeWidget</sender>
+   <signal>currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_ReceiveSelectedJoint(QTreeWidgetItem*,QTreeWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>739</x>
+     <y>556</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>544</x>
+     <y>446</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mygl</sender>
+   <signal>sig_sendJointTranslation(QString)</signal>
+   <receiver>lineEdit_8</receiver>
+   <slot>setText(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>491</x>
+     <y>481</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>491</x>
+     <y>559</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mygl</sender>
+   <signal>sig_sendJointQuat(QString)</signal>
+   <receiver>lineEdit_9</receiver>
+   <slot>setText(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>510</x>
+     <y>483</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>507</x>
+     <y>586</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_11</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_RotateXJoint()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>422</x>
+     <y>603</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>422</x>
+     <y>412</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_12</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_RotateYJoint()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>463</x>
+     <y>603</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>476</x>
+     <y>382</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_13</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_RotateZJoint()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>539</x>
+     <y>604</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>526</x>
+     <y>440</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

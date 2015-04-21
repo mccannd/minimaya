@@ -1,0 +1,17 @@
+Timestamp,Topic,Question,Solution,Sources
+4/14/2015 15:17:50,GitLab,How do I change my repository push location?,,Kai (Backlog)
+4/14/2015 15:18:26,Wireframe,,"prog_wire just doesn't shade, you still have to give color",
+4/14/2015 22:16:01,Cylinder to Joint,,"The indices on the cylinder are making triangles but you want lines!
+",Adam (backlog)
+4/17/2015 12:47:54,Convert vec4 to vec3,,glm::vec4(v4);,http://stackoverflow.com/questions/14657303/convert-glmvec4-to-glmvec3
+4/17/2015 16:56:07,Parent to Child,joint.create()?,Each joint isn't from the same instance of joint as were the cubes/cylinders/spheres were in the scene graph homework. Create joints for all of them.,Becca <3 (backlog)
+4/17/2015 17:03:15,Yellow,What makes yellow?,red and green,http://www.rapidtables.com/web/color/Yellow_Color.htm
+4/17/2015 17:29:07,Parent to Child,"I did it in a hacky way. What's a better solution?
+
+I took the origin and minus the entire local transformation of the current joint then made sure that it was considered as a point.","vec4(0, 0, 0, 2) - thisjoint.pos",Adam
+4/17/2015 17:29:53,JSON,Create all of the JSONs via QJSONDocument then go through it with QJSONObject?,Yes,Adam
+4/17/2015 18:47:40,Skinning,,See Notes,Adam
+4/17/2015 18:47:53,Parsing JSON,,,https://meetingcpp.com/index.php/br/items/qt-and-json.html
+4/18/2015 10:00:52,Parsing JSON,"incomplete type
+forward declaration",#include <QJsonArray>,http://stackoverflow.com/questions/23128904/read-json-with-qjsonobject
+4/18/2015 18:55:02,Quat madness,,,https://piazza.com/class/i4wx333fals13n?cid=353

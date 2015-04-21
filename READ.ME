@@ -1,0 +1,105 @@
+Ellen Duong
+CIS 277 HW7 Skeletons and Skinning
+Documentation
+
+-----------------------------
+*****NOTABLE INFORMAIION*****
+-----------------------------
+* Joint Quat displays toMat4(joint->rot) * vec4(0, 0, 0, 1). This was a last minute kind of thing.
+* Didn't do Shader-based skin deformation
+* Delete doesn't work/It does nothing
+
+
+Inital Display
+* geom_mesh cube
+* test joints
+
+
+
+--------------------
+GUI + Added Controls
+--------------------
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>        Joints       <<<
+<<<<<<<<<<<<<<<<<<<<<<<<<<<
+* Parents: Red -> Yellow :Child
+* IF SELECTED
+  Parent: Blue -> Green :Child
+
+* QTreeWidget Joints (bottom right) displays all of the joints. It does NOT clear the joints. Yes, so there is a memory leak that I didn't close. But I do intend to fix it! but be careful in the meantime
+   * Click on a joint and you'll see it highlighted in cyan
+
+* Joint Position: Displays the local transformation in vec4 form
+* Joint Quat: Displays the joint's rotation. HOWEVER, this is horribly displayed at the moment in vec4 form. Basically: toMat4(joint->rot) * vec4(0, 0, 0, 1).
+
+* Rotate X, Rotate Y, Rotate Z: These will rotate the joints by 5 degrees in respective directions. (EXTRA CREDIT? Instructions say may. "Since the rotations of your joints are stored as quaternions, you may choose to implement interactive rotation as a concatenation with a world-axis rotation (e.g. when the user presses one button, the joint's rotation is multiplied by a rotation of 5 degrees about the X axis, while another button rotates it by 5 degrees about the Y axis, and so on).")
+
+* Put on Weight calls slot_MeshSkinningFunction() in MyGL
+  This will calculate the Mesh Skinning Function for all of the vertices. And then print out 10 of them in the console. It could print them all but I figured we didn't need that. But you coul change it in slot_MeshSkinning Function, the variable count. It DOES Calculate it all though!
+
+* Browse JSON: imports joints from file
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>> Subdivision and OBJ <<<
+<<<<<<<<<<<<<<<<<<<<<<<<<<<
+* Catmull-Clark Subdivision Button
+  Subsdivides the mesh
+* Browse
+  Incorporates obj file into the scene.
+  However, it doesn't link up correctly. Thus you can't subdivide.
+
+>>>>>>>>>>>>>>>>>>>>>>>
+>>> Debugging Tools <<<
+<<<<<<<<<<<<<<<<<<<<<<<
+* Coloring
+  Faces:    Green outline
+  Vertices: Yellow
+  HalfEdge: The vert that it points to is white and the vert prev is lack to show its direction.
+* KEYBOARD SHORTCUTS
+  If you have a halfedge selected you can travel along with it
+  H - .next
+  J - .sym
+  which wil then become the newly selected half-edge.
+  Note this may not reflect so in the QListWidgets
+
+  Clicking in the faces menu will highlight the starting half edge.
+  Clicking in the halfedges menu will highlight the current face it is on.
+  This will update as you use H and J
+
+
+>>>>>>>>>>>>>>>>>
+>>> Homework 5<<<
+<<<<<<<<<<<<<<<<<
+* Face, Vertices, HalfEdges Menus
+  Note that you must CLICK on the associated Face, Vertex, and HalfEdge
+  in order to have it selected both in the menu and in my code. Using the
+  ARROW KEYS to move up and down the menus does not work.
+* Change the vertex position (x, y, z)
+  Make sure that you have a vertex selected BEFORE entering in values to
+  move the vertex to. You'll notice that when you select a vertex,
+  its position is displayed where you'd enter a new value for it.
+  Once you decide its new position hit the OK button next to it. Make sure
+  that you entered a valid point! It takes it as a QString and then casts
+  it so you really need to give it convertable things like numbers.
+  PLANARITY is also checked when a vertex is moved. If planarity is broken,
+  the face is triangulated to maintain planarity.
+* Change the Face color (r, g, b)
+  Basically the same applies here but for faces. Make sure you have a
+  face selected BEFORE attempting to change the color of a face. Again,
+  you'll see that the color is displayed. Change it as you will but
+  remember castable things. 
+* Add Vertex (slow?)
+  Select a HalfEdge prior to trying to add a vertex
+  Adds a vertex to the selected HalfEdge. 
+* Triangulate (slow?)
+  Select a Face prior to trying to use the triangulation button
+>> NOTE: The Add Vertex and Triangulate buttons seem slow? Or purhaps you have
+>> to click on something else for it to visibly update. I'm not sure. I just 
+>> kind of click on a random halfedge or something I'm not looking at at the
+>> moment. I think nothing is causing it to update otherwise.
+* Delete Vertex
+  This doesn't do anything at the moment because I was still trying to figure
+  out how I would implment it. I'll implement this though at some point.
+
