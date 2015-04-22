@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     format.setVersion(3, 2);
     format.setOption(QSurfaceFormat::DeprecatedFunctions, false);
     format.setProfile(QSurfaceFormat::CoreProfile);
-    //format.setSamples(4);  // Uncomment for nice antialiasing. Not always supported.
+    format.setSamples(8);  // Uncomment for nice antialiasing. Not always supported.
 
     /*** AUTOMATIC TESTING: DO NOT MODIFY ***/
     /*** Check whether automatic testing is enabled */
