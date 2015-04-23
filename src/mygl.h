@@ -11,6 +11,7 @@
 #include <scene/camera.h>
 #include <scene/mesh.h>
 #include <scene/joint.h>
+#include <scene/ray.h>
 #include <la.h>
 #include "skeletonparser.h"
 
@@ -28,7 +29,7 @@ private:
     ShaderProgram prog_wire;
     ShaderProgram prog_skeleton;
     Mesh geom_mesh;
-
+//    Ray geom_ray;
 
     Face* selected_face = NULL;
     HalfEdge* selected_edge = NULL;
