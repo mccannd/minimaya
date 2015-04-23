@@ -21,14 +21,8 @@ private:
     QOpenGLBuffer bufNor;
     QOpenGLBuffer bufJID;   // when bound to a skeleton, these are pairs of influencing joint per vertex
     QOpenGLBuffer bufJWeight;   // shows weight of joint influence per vertex
-public:
-//    Lattice();
-    Lattice(Mesh* m, int a, int b, int c);
 
     Mesh* mesh;
-    int x; //
-    int y;
-    int z;
 
     float maxx = -INFINITY;
     float minx = INFINITY;
@@ -36,8 +30,17 @@ public:
     float miny = INFINITY;
     float maxz = -INFINITY;
     float minz = INFINITY;
+    bool updating_divisions = false;
+public:
+//    Lattice();
+    Lattice(Mesh* m, int a, int b, int c);
+
+    int x;
+    int y;
+    int z;
 
     void boundaries(Mesh *m);
+    void updateDivisions(int xdivs, int ydivs, int zdivs);
 
     void create();
     void destroy();
