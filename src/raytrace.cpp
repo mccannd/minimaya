@@ -1,10 +1,13 @@
 #include "raytrace.h"
 
+#include <iostream>
+
 #include <cstdlib>
 #include <cmath>
 #include <cfloat>
 
-glm::vec4 Raytrace::background = glm::vec4(0.5, 0.5, 0.5, 1);
+glm::vec4 Raytrace::background = glm::vec4(0, 0, 0, 1);
+glm::vec4 Raytrace::light_source = glm::vec4(-1, 5, -1, 1);
 
 Raytrace::Raytrace(Camera *cam, Mesh *m) {
   camera = cam;
@@ -18,7 +21,7 @@ void Raytrace::renderToFile(QString filename) {
   for (int x = 0; x < camera->width; x++) {
     for (int y = 0; y < camera->height; y++) {
       glm::vec4 samples;
-      int n = 2;
+      int n = 1;
       float incr = 1.0f / n;
       for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
@@ -47,18 +50,25 @@ void Raytrace::setPixel(int x, int y, glm::vec4 color) {
 glm::vec4 Raytrace::castRay(float x, float y) {
   Ray r(x, y);
   // Only traces with convex planar polygons
-  std::pair<Face*, Ray> trace = traceRay(r);
+  std::pair<Face*, OutgoingRays> trace = traceRay(r);
   if (trace.first != NULL) {
-    float diffuse = glm::dot(trace.first->norm, glm::normalize(glm::vec4(5, 5, 3, 1) - trace.second.pos));
-    if (diffuse > 1.0f) diffuse = 1.0f;
+    Ray to_light = std::get<2>(trace.second);
+    float diffuse = glm::dot(trace.first->norm, glm::normalize(to_light.dir));
     if (diffuse < 0.0f) diffuse = 0.0f;
+    else if (traceRay(to_light).first != NULL) diffuse = 0.0f; // shadow
+    else {
+      glm::vec4 H = (to_light.dir - to_light.pos + camera->eye) / 2.0f;
+      float specular = std::pow(glm::dot(H, trace.first->norm), 12.8);
+      if (specular > 0.0f) diffuse += specular;
+    }
+    if (diffuse > 2.0f) diffuse = 2.0f;
     return (0.2f + diffuse) * trace.first->color;
   } else {
     return background;
   }
 }
 
-std::pair<Face*, Raytrace::Ray> Raytrace::traceRay(Raytrace::Ray r) {
+std::pair<Face*, Raytrace::OutgoingRays> Raytrace::traceRay(Raytrace::Ray r) {
   // Only traces with convex planar polygons
   float min = camera->far_clip;
   glm::vec4 p(0, 0, 0, 1);
@@ -72,9 +82,15 @@ std::pair<Face*, Raytrace::Ray> Raytrace::traceRay(Raytrace::Ray r) {
     }
   }
   if (closest != NULL) {
-    return std::make_pair(closest, Ray(p, glm::reflect(r.dir, closest->norm)));
+    return std::make_pair(closest, std::make_tuple(
+      Ray(p, glm::reflect(r.dir, closest->norm)), 
+      Ray(p, glm::refract(r.dir, closest->norm, 1.0f)), 
+      Ray(p, light_source - p)));
   } else {
-    return std::make_pair(closest, r);
+    return std::make_pair(closest, std::make_tuple(
+      Ray(p, r.dir), 
+      Ray(p, r.dir), 
+      Ray(p, light_source - p)));
   }
 }
 
@@ -118,7 +134,7 @@ float Raytrace::Ray::size(glm::vec4 &a, glm::vec4 &b, glm::vec4 &c) {
 
 bool Raytrace::Ray::within(glm::vec4 &p, glm::vec4 &a, glm::vec4 &b, glm::vec4 &c) {
   float s = size(a, b, c);
-  return (size(a, p, b) / s) + (size(b, p, c) / s) + (size(c, p, a) / s) == 1;
+  return fequal((size(a, p, b) / s) + (size(b, p, c) / s) + (size(c, p, a) / s), 1.0f);
 }
 
 std::pair<float, glm::vec4> Raytrace::Ray::intersect(Face *f) {

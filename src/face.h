@@ -1,9 +1,12 @@
-# pragma once
+#pragma once
 
-#ifndef FACE_H
-#define FACE_H
 #include "la.h"
 #include "QListWidgetItem"
+
+
+typedef struct {
+  float rflec, alpha, rfrac, specl;
+} Material;
 
 class HalfEdge;
 class Face : public QListWidgetItem
@@ -17,10 +20,10 @@ public:
 
     glm::vec4 color;
     HalfEdge* start_edge;
+    Material mat_attr;
 
     glm::vec4 norm = glm::vec4(0, 0, 0, -1);
 
     int getID();
 };
 
-#endif // FACE_H

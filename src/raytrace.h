@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <tuple>
 #include <map>
 #include <utility>
 
@@ -34,8 +34,11 @@ class Raytrace {
         std::pair<float, glm::vec4> intersect(Face *f);
         bool within(glm::vec4 &p, glm::vec4 &a, glm::vec4 &b, glm::vec4 &c);
     };
-    
+
+    typedef std::tuple<Raytrace::Ray, Raytrace::Ray, Raytrace::Ray> OutgoingRays;
+
     static glm::vec4 background;
+    static glm::vec4 light_source;
 
     Raytrace(Camera *cam, Mesh *m);
 
@@ -49,6 +52,6 @@ class Raytrace {
 
     void setPixel(int x, int y, glm::vec4 color);
     glm::vec4 castRay(float x, float y);
-    std::pair<Face*, Raytrace::Ray> traceRay(Raytrace::Ray r);
+    std::pair<Face*, Raytrace::OutgoingRays> traceRay(Raytrace::Ray r);
 };
 

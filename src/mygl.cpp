@@ -57,7 +57,9 @@ void MyGL::initializeGL()
     geom_sphere.create();
 
     geom_mesh.create();
-    geom_mesh.unitCube(); // initialize mesh as a unit cube
+    //geom_mesh.unitCube(); // initialize mesh as a unit cube
+    QString filename = QString("C:/Users/molisani/Google Drive/Penn/15A/CIS 277 - Computer Graphics/minimaya/render_test.obj");
+    geom_mesh.parseObj(filename);
 
 
     // create a root skellington joint
