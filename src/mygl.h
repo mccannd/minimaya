@@ -11,6 +11,7 @@
 #include <scene/camera.h>
 #include <scene/mesh.h>
 #include <scene/joint.h>
+#include <scene/lattice.h>
 #include <la.h>
 #include "skeletonparser.h"
 
@@ -28,6 +29,7 @@ private:
     ShaderProgram prog_wire;
     ShaderProgram prog_skeleton;
     Mesh geom_mesh;
+    Lattice* geom_lattice;
 
     Face* selected_face = NULL;
     HalfEdge* selected_edge = NULL;
