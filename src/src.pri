@@ -16,8 +16,7 @@ SOURCES += \
     $$PWD/scene/mesh.cpp \
     $$PWD/scene/joint.cpp \
     $$PWD/skeletonparser.cpp \
-    $$PWD/interpolationutils.cpp \
-    $$PWD/scene/ray.cpp
+    $$PWD/interpolationutils.cpp
 
 HEADERS += \
     $$PWD/mainwindow.h \
@@ -34,5 +33,4 @@ HEADERS += \
     $$PWD/scene/mesh.h \
     $$PWD/scene/joint.h \
     $$PWD/skeletonparser.h \
-    $$PWD/interpolationutils.h \
-    $$PWD/scene/ray.h
+    $$PWD/interpolationutils.h
