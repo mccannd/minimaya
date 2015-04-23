@@ -18,6 +18,8 @@ SOURCES += \
     $$PWD/skeletonparser.cpp \
     $$PWD/interpolationutils.cpp \
     $$PWD/scene/keyframeselectable.cpp
+    $$PWD/scene/lattice.cpp \
+    $$PWD/mymath.cpp
 
 HEADERS += \
     $$PWD/mainwindow.h \
@@ -36,3 +38,5 @@ HEADERS += \
     $$PWD/skeletonparser.h \
     $$PWD/interpolationutils.h \
     $$PWD/scene/keyframeselectable.h
+    $$PWD/scene/lattice.h \
+    $$PWD/mymath.h

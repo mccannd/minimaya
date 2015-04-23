@@ -22,6 +22,7 @@ MyGL::~MyGL()
     // ensure that the data in the mesh does not leak
     geom_mesh.clearAll();
     geom_mesh.destroy();
+//    geom_lattice->destroy();
 
     delete root_joint;
 }
@@ -53,7 +54,8 @@ void MyGL::initializeGL()
     geom_sphere.create();
     geom_mesh.create();
     geom_mesh.unitCube(); // initialize mesh as a unit cube
-//    geom_ray.create();
+    geom_lattice = new Lattice(&geom_mesh, 2, 2, 2);
+    geom_lattice->create();
 
     // create a root skellington joint
     root_joint = new Joint();
@@ -131,6 +133,8 @@ void MyGL::paintGL()
     if (skeleton_visible) {
         drawSkeleton(root_joint);
     }
+
+    prog_wire.draw(*this, *geom_lattice);
 
     glEnable(GL_DEPTH_TEST);
 }

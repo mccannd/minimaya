@@ -307,10 +307,6 @@ bool Joint::bindJWeight()
     return 1;
 }
 
-
-
-
-
 /// --- Geometric information utilities
 ///
 ///

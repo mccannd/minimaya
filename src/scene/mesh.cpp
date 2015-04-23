@@ -11,9 +11,6 @@
 #include <QFile>
 #include <QPair>
 
-static const int CYL_IDX_COUNT = 240;
-static const int CYL_VERT_COUNT = 80;
-
 Mesh::Mesh()
     : bufIdx(QOpenGLBuffer::IndexBuffer),
       bufPos(QOpenGLBuffer::VertexBuffer),
