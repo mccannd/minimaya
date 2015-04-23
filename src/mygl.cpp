@@ -180,7 +180,7 @@ void MyGL::keyPressEvent(QKeyEvent *e)
         camera.fovy += 5.0f * DEG2RAD;
     } else if (e->key() == Qt::Key_2) {
         camera.fovy -= 5.0f * DEG2RAD;
-    } else if (e->key() == Qt::Key_F12) {
+    } else if (e->key() == Qt::Key_R) {
         Raytrace rt(&camera, &geom_mesh);
         rt.renderToFile("render.bmp");
     }
