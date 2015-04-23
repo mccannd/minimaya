@@ -59,7 +59,7 @@ glm::vec4 Raytrace::castRay(float x, float y) {
     else {
       glm::vec4 H = (to_light.dir - to_light.pos + camera->eye) / 2.0f;
       float specular = std::pow(glm::dot(H, trace.first->norm), 12.8);
-      if (specular > 0.0f) diffuse += specular;
+      //if (specular > 0.0f) diffuse += specular;
     }
     if (diffuse > 2.0f) diffuse = 2.0f;
     return (0.2f + diffuse) * trace.first->color;
