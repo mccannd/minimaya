@@ -18,7 +18,7 @@ public:
     glm::vec4 color;
     HalfEdge* start_edge;
 
-    glm::vec4 norm;
+    glm::vec4 norm = glm::vec4(0, 0, 0, -1);
 
     int getID();
 };

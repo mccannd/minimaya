@@ -13,7 +13,28 @@
 
 class Raytrace {
   public:
-    class Ray;
+    class Ray {
+      private:
+        static float len;
+        static glm::vec4 V, H;
+
+      public:
+        static Camera *camera;
+        static void init(Camera *cam);
+        static void init();
+
+        static float size(glm::vec4 &a, glm::vec4 &b, glm::vec4 &c);
+
+        glm::vec4 pos;
+        glm::vec4 dir;
+
+        Ray(float px, float py);
+        Ray(glm::vec4 pos, glm::vec4 dir);
+
+        std::pair<float, glm::vec4> intersect(Face *f);
+        bool within(glm::vec4 &p, glm::vec4 &a, glm::vec4 &b, glm::vec4 &c);
+    };
+    
     static glm::vec4 background;
 
     Raytrace(Camera *cam, Mesh *m);
@@ -31,23 +52,3 @@ class Raytrace {
     std::pair<Face*, Raytrace::Ray> traceRay(Raytrace::Ray r);
 };
 
-class Raytrace::Ray {
-  private:
-    static float len;
-    static glm::vec4 V, H;
-
-  public:
-    static Camera *camera;
-    static void init();
-
-    static float size(glm::vec4 &a, glm::vec4 &b, glm::vec4 &c);
-
-    glm::vec4 pos;
-    glm::vec4 dir;
-
-    Ray(float px, float py);
-    Ray(glm::vec4 pos, glm::vec4 dir);
-
-    std::pair<float, glm::vec4> intersect(Face *f);
-    bool within(glm::vec4 &p, glm::vec4 &a, glm::vec4 &b, glm::vec4 &c);
-};

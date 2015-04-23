@@ -1,5 +1,6 @@
 #include "raytrace.h"
 
+#include <cstdlib>
 #include <cmath>
 #include <cfloat>
 
@@ -11,13 +12,24 @@ Raytrace::Raytrace(Camera *cam, Mesh *m) {
 }
 
 void Raytrace::renderToFile(QString filename) {
-  Ray::camera = camera;
-  Ray::init();
+  Ray::init(camera);
   out.SetSize(camera->width, camera->height);
   out.SetBitDepth(24);
   for (int x = 0; x < camera->width; x++) {
     for (int y = 0; y < camera->height; y++) {
-      setPixel(x, y, castRay(x + 0.5, y + 0.5));
+      glm::vec4 samples;
+      int n = 2;
+      float incr = 1.0f / n;
+      for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+          float jitter_x = rand() / (float) RAND_MAX;
+          float jitter_y = rand() / (float) RAND_MAX;
+          float sx = x + ((i + jitter_x) * incr);
+          float sy = y + ((j + jitter_y) * incr);
+          samples += castRay(sx, sy);
+        }
+      }
+      setPixel(x, y, samples * incr * incr);
     }
   }
   out.WriteToFile(filename.toStdString().data());
@@ -53,7 +65,7 @@ std::pair<Face*, Raytrace::Ray> Raytrace::traceRay(Raytrace::Ray r) {
   Face* closest = NULL;
   for (std::vector<Face*>::iterator it = mesh->faces.begin(); it != mesh->faces.end(); it++) {
     std::pair<float, glm::vec4> t = r.intersect(*it);
-    if (t.first < min) {
+    if (t.first < min && t.first > camera->near_clip) {
       min = t.first;
       p = t.second;
       closest = *it;
@@ -87,6 +99,11 @@ glm::vec4 Raytrace::Ray::V = glm::vec4();
 glm::vec4 Raytrace::Ray::H = glm::vec4();
 Camera* Raytrace::Ray::camera = NULL;
 
+void Raytrace::Ray::init(Camera *cam) {
+  camera = cam;
+  init();
+}
+
 void Raytrace::Ray::init() {
   if (camera == NULL) return;
   len = glm::distance(camera->ref, camera->eye) * tan(camera->fovy / 2);
@@ -108,7 +125,7 @@ std::pair<float, glm::vec4> Raytrace::Ray::intersect(Face *f) {
   glm::vec4 a = f->start_edge->vert->pos;
   glm::vec4 b = f->start_edge->next->vert->pos;
   glm::vec4 c = f->start_edge->next->next->vert->pos;
-  f->norm = glm::vec4(glm::normalize(glm::cross(glm::vec3(b - a), glm::vec3(c - a))), 0);
+  if (f->norm[3] != 0) f->norm = glm::vec4(glm::normalize(glm::cross(glm::vec3(b - a), glm::vec3(c - a))), 0);
   float t = glm::dot(f->norm, a - pos) / glm::dot(f->norm, dir);
   glm::vec4 p = pos + t * dir;
   for (HalfEdge *e = f->start_edge->next; e->next != f->start_edge; e = e->next) {
