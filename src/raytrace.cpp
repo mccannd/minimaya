@@ -21,7 +21,7 @@ void Raytrace::renderToFile(QString filename) {
   for (int x = 0; x < camera->width; x++) {
     for (int y = 0; y < camera->height; y++) {
       glm::vec4 samples;
-      int n = 2;
+      int n = 1;
       float incr = 1.0f / n;
       for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
