@@ -1,13 +1,10 @@
 
 #include "mygl.h"
 #include <la.h>
-
 #include <iostream>
 #include <QApplication>
 #include <QKeyEvent>
 #include <QFileDialog>
-
-
 
 MyGL::MyGL(QWidget *parent)
     : GLWidget277(parent)
@@ -53,12 +50,10 @@ void MyGL::initializeGL()
     vao.create();
 
     geom_cylinder.create();
-
     geom_sphere.create();
-
     geom_mesh.create();
     geom_mesh.unitCube(); // initialize mesh as a unit cube
-
+//    geom_ray.create();
 
     // create a root skellington joint
     root_joint = new Joint();

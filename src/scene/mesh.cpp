@@ -273,7 +273,7 @@ void Mesh::recolorFace(Face *f, float r, float g, float b)
     this->create();
 }
 
-Vertex* Mesh::divideEdge(HalfEdge *e, boolean updateBuffers)
+Vertex* Mesh::divideEdge(HalfEdge *e, bool updateBuffers)
 {
     // check that the edge is in this mesh
     if(std::find(edges.begin(), edges.end(), e) == edges.end()) {
