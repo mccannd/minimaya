@@ -20,8 +20,6 @@ Lattice::Lattice(Mesh* m, int a, int b, int c)
     x = a;
     y = b;
     z = c;
-
-    boundaries(m);
 }
 
 void Lattice::boundaries(Mesh* m) {
@@ -51,8 +49,33 @@ void Lattice::boundaries(Mesh* m) {
     }
 }
 
+void Lattice::updateDivisions(int xdivs, int ydivs, int zdivs) {
+    if (xdivs < 1) {
+        x = 1;
+    } else {
+        x = xdivs;
+    }
+    if (ydivs < 1) {
+        y = 1;
+    } else {
+        y = ydivs;
+    }
+    if (zdivs < 1) {
+        z = 1;
+    } else {
+        z = zdivs;
+    }
+
+    updating_divisions = true;
+    this->create();
+}
+
 void Lattice::create()
 {
+    if (!updating_divisions) {
+        boundaries(mesh);
+    }
+    updating_divisions = false;
     vector<vec4> lattice_vert_pos = {};
 //    vector<vec4> lattice_vert_nor = {};
     vector<vec4> lattice_vert_col = {};
@@ -104,43 +127,8 @@ void Lattice::create()
             }
         }
     }
-//    for (int i = 0; i < LATTICE_VERT_COUNT - 1; i++) {
-//        lattice_idx.push_back(i);
-//        lattice_idx.push_back(i + 1);
-//    }
-
-//    lattice_idx[(LATTICE_VERT_COUNT - 1) * 2] = LATTICE_VERT_COUNT - 1;
-//    lattice_idx[(LATTICE_VERT_COUNT - 1) * 2 + 1] = 0;
-
-
-//    for(std::vector<Face*>::size_type i = 0; i < faces.size(); i++) {
-//        HalfEdge* curr = faces[i]->start_edge;
-
-//        vec4 nor = cross(curr->vert->pos - curr->sym->vert->pos,
-//                         curr->next->vert->pos - curr->vert->pos);
-
-//        int n = 0;
-//        int root = lattice_vert_pos.size();
-
-//        do {
-//            n++;
-//            lattice_vert_pos.push_back(curr->vert->pos);
-//            lattice_vert_nor.push_back(nor);
-//            lattice_vert_col.push_back(faces[i]->color);
-//            curr = curr->next;
-//        } while (curr != faces[i]->start_edge);
-
-//        for (int k = 1; k < n - 1; k++) {
-//            lattice_idx.push_back(root);
-//            lattice_idx.push_back(root + k);
-//            lattice_idx.push_back(root + k + 1);
-//        }
-//    }
 
     int LATTICE_IDX_COUNT = lattice_idx.size();
-
-    // cout << LATTICE_IDX_COUNT << ":" << LATTICE_VERT_COUNT << "\n";
-
     count = LATTICE_IDX_COUNT;
 
     bufIdx.create();

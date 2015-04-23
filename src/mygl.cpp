@@ -177,7 +177,32 @@ void MyGL::keyPressEvent(QKeyEvent *e)
         camera.fovy += 5.0f * DEG2RAD;
     } else if (e->key() == Qt::Key_2) {
         camera.fovy -= 5.0f * DEG2RAD;
+    } else if (e->key() == Qt::Key_W) {
+        geom_lattice->updateDivisions(geom_lattice->x,
+                                      geom_lattice->y + 1,
+                                      geom_lattice->z);
+    } else if (e->key() == Qt::Key_A) {
+        geom_lattice->updateDivisions(geom_lattice->x - 1,
+                                      geom_lattice->y,
+                                      geom_lattice->z);
+    } else if (e->key() == Qt::Key_S) {
+        geom_lattice->updateDivisions(geom_lattice->x,
+                                      geom_lattice->y - 1,
+                                      geom_lattice->z);
+    } else if (e->key() == Qt::Key_D) {
+        geom_lattice->updateDivisions(geom_lattice->x + 1,
+                                      geom_lattice->y,
+                                      geom_lattice->z);
+    } else if (e->key() == Qt::Key_E) {
+        geom_lattice->updateDivisions(geom_lattice->x,
+                                      geom_lattice->y,
+                                      geom_lattice->z + 1);
+    } else if (e->key() == Qt::Key_Q) {
+        geom_lattice->updateDivisions(geom_lattice->x,
+                                      geom_lattice->y,
+                                      geom_lattice->z - 1);
     }
+
     camera.RecomputeEye();
     update();  // Calls paintGL, among other things
 }
@@ -315,6 +340,7 @@ void MyGL::importOBJ()
                                                     QString("/home"),
                                                     QString("Mesh Files (*.obj)"));
     geom_mesh.parseObj(fileName);
+    geom_lattice->create();
     update();
     emit meshChanged();
 }
