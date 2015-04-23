@@ -13,6 +13,7 @@
 #include <scene/joint.h>
 #include <la.h>
 #include "skeletonparser.h"
+#include "raytrace.h"
 
 
 class MyGL

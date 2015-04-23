@@ -16,7 +16,9 @@ SOURCES += \
     $$PWD/scene/mesh.cpp \
     $$PWD/scene/joint.cpp \
     $$PWD/skeletonparser.cpp \
-    $$PWD/interpolationutils.cpp
+    $$PWD/interpolationutils.cpp \
+    $$PWD/raytrace.cpp \
+    $$PWD/bmp/EasyBMP.cpp
 
 HEADERS += \
     $$PWD/mainwindow.h \
@@ -33,4 +35,9 @@ HEADERS += \
     $$PWD/scene/mesh.h \
     $$PWD/scene/joint.h \
     $$PWD/skeletonparser.h \
-    $$PWD/interpolationutils.h
+    $$PWD/interpolationutils.h \
+    $$PWD/raytrace.h \
+    $$PWD/bmp/EasyBMP.h \
+    $$PWD/bmp/EasyBMP_BMP.h \
+    $$PWD/bmp/EasyBMP_DataStructures.h \
+    $$PWD/bmp/EasyBMP_VariousBMPutilities.h

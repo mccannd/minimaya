@@ -18,6 +18,8 @@ public:
     glm::vec4 color;
     HalfEdge* start_edge;
 
+    glm::vec4 norm;
+
     int getID();
 };
 
