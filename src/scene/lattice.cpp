@@ -90,8 +90,6 @@ void Lattice::create()
                                  (maxz - minz)/z * k + minz,
                                  1);
                 lattice_vert_pos.push_back(temp);
-
-                cout << temp;
             }
         }
     }
