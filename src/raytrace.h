@@ -3,6 +3,7 @@
 #include <tuple>
 #include <map>
 #include <utility>
+#include <vector>
 
 #include <la.h>
 
@@ -23,16 +24,37 @@ class Raytrace {
         static void init(Camera *cam);
         static void init();
 
-        static float size(glm::vec4 &a, glm::vec4 &b, glm::vec4 &c);
-
         glm::vec4 pos;
         glm::vec4 dir;
 
         Ray(float px, float py);
         Ray(glm::vec4 pos, glm::vec4 dir);
 
-        std::pair<float, glm::vec4> intersect(Face *f);
+        float intersect(Face *f);
         bool within(glm::vec4 &p, glm::vec4 &a, glm::vec4 &b, glm::vec4 &c);
+    };
+
+    class Octree {
+      private:
+        glm::vec3 lo, hi;
+        int depth;
+
+        Node* children[8];
+
+        std::vector<Face*> faces;
+
+        void split();
+        void relocate(Face *f);
+
+        static std::pair<glm::vec3, glm::vec3> getBounds(Face *f);
+        static bool bounded(glm::vec3 lo, glm::vec3 hi, std::pair<glm::vec3, glm::vec3> bounds);
+
+      public:
+        Octree(int depth, glm::vec3 lo_bound, glm::vec3 hi_bound);
+
+        void add(Face *f);
+        std::pair<Face*, float> cast(Ray r);
+        bool intersect(Ray r)
     };
 
     typedef std::tuple<Raytrace::Ray, Raytrace::Ray, Raytrace::Ray> OutgoingRays;
