@@ -9,7 +9,7 @@
 //      bufJWeight(QOpenGLBuffer::VertexBuffer) {
 //}
 
-Lattice::Lattice(Mesh* m, int a, int b, int c)
+Lattice::Lattice(Mesh* m)
     : bufIdx(QOpenGLBuffer::IndexBuffer),
       bufPos(QOpenGLBuffer::VertexBuffer),
       bufNor(QOpenGLBuffer::VertexBuffer),
@@ -17,9 +17,9 @@ Lattice::Lattice(Mesh* m, int a, int b, int c)
       bufJID(QOpenGLBuffer::VertexBuffer),
       bufJWeight(QOpenGLBuffer::VertexBuffer) {
     mesh = m;
-    x = a;
-    y = b;
-    z = c;
+    x = 2;
+    y = 2;
+    z = 2;
 }
 
 void Lattice::boundaries(Mesh* m) {
@@ -47,6 +47,7 @@ void Lattice::boundaries(Mesh* m) {
             minz = pos[2];
         }
     }
+    updating_divisions = false;
 }
 
 void Lattice::updateDivisions(int xdivs, int ydivs, int zdivs) {
@@ -70,16 +71,43 @@ void Lattice::updateDivisions(int xdivs, int ydivs, int zdivs) {
     this->create();
 }
 
+void Lattice::freeFormDeformation() {
+    int n = mesh->vertices.size();
+    for(std::vector<Vertex*>::size_type i = 0; i < n; i++) {
+        vec4 x = mesh->vertices[i]->pos;
+
+        vec4 sum_s = vec4(0, 0, 0, 0);
+        vec4 sum_t = vec4(0, 0, 0, 0);
+        vec4 sum_u = vec4(0, 0, 0, 0);
+
+        for (int i = 0; i < n; i++) {
+            sum_s += binomialSpline(n, i, (x[0])) * ctrlpts[i]->pos; // s
+            sum_t += binomialSpline(n, i, (x[1])) * ctrlpts[i]->pos; // t
+            sum_u += binomialSpline(n, i, (x[2])) * ctrlpts[i]->pos; // u
+        }
+
+        mesh->vertices[i]->pos = sum_s * sum_t * sum_u;
+    }
+
+
+}
+
+float Lattice::binomialSpline(int n, int i, float f) {
+    return combination(n, i) * pow(f, n) * pow((1 - f), n - i);
+}
+
 void Lattice::create()
 {
     if (!updating_divisions) {
         boundaries(mesh);
     }
-    updating_divisions = false;
+
     vector<vec4> lattice_vert_pos = {};
-//    vector<vec4> lattice_vert_nor = {};
     vector<vec4> lattice_vert_col = {};
     vector<GLuint> lattice_idx = {};
+
+    ctrlpts.erase(ctrlpts.begin(), ctrlpts.end());
+    int num = 0;
 
     // All vertex positions
     for (int i = 0; i <= x; i++) {
@@ -89,9 +117,15 @@ void Lattice::create()
                                  (maxy - miny)/y * j + miny,
                                  (maxz - minz)/z * k + minz,
                                  1);
-                lattice_vert_pos.push_back(temp);
+
+                ctrlpts.push_back(new Vertex(temp, num++));
+                // lattice_vert_pos.push_back(temp);
             }
         }
+    }
+
+    for(std::vector<Vertex*>::size_type i = 0; i < ctrlpts.size(); i++) {
+        lattice_vert_pos.push_back(ctrlpts[i]->pos);
     }
 
     int LATTICE_VERT_COUNT = lattice_vert_pos.size();

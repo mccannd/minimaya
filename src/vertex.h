@@ -25,6 +25,7 @@ public:
     // constructors
     Vertex(int id);
     Vertex(float x, float y, float z, int id);
+    Vertex(glm::vec4 p, int id);
     ~Vertex();
 
     glm::vec4 pos; // location of vertex
