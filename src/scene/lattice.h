@@ -8,6 +8,7 @@
 #include <iostream>
 #include <scene/mesh.h>
 #include "mymath.h"
+#include <math.h>
 
 using namespace std;
 using namespace glm;
@@ -31,9 +32,11 @@ private:
     float maxz = -INFINITY;
     float minz = INFINITY;
     bool updating_divisions = false;
+
+    vector<Vertex*> ctrlpts = {};
 public:
 //    Lattice();
-    Lattice(Mesh* m, int a, int b, int c);
+    Lattice(Mesh* m);
 
     int x;
     int y;
@@ -41,6 +44,8 @@ public:
 
     void boundaries(Mesh *m);
     void updateDivisions(int xdivs, int ydivs, int zdivs);
+    void freeFormDeformation(); // Mesh has changed after this
+    float binomialSpline(int n, int i, float f);
 
     void create();
     void destroy();

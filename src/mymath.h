@@ -12,3 +12,5 @@ public:
 
 /// Prints the vector to a stream in a nice format
 std::ostream &operator<<(std::ostream &o, const vec4 &v);
+int combination(int n, int i);
+int factorial(int n);

@@ -22,6 +22,17 @@ Vertex::Vertex(float x, float y, float z, int id)
     this->setText(s);
 }
 
+Vertex::Vertex(glm::vec4 p, int id)
+    : bufIdx(QOpenGLBuffer::IndexBuffer),
+      bufPos(QOpenGLBuffer::VertexBuffer),
+      bufCol(QOpenGLBuffer::VertexBuffer)
+{
+    this->id = id;
+    this->pos = p;
+    QString s = QString::fromStdString("Vertex " + std::to_string(id));
+    this->setText(s);
+}
+
 
 Vertex::~Vertex()
 {
