@@ -18,7 +18,8 @@ SOURCES += \
     $$PWD/skeletonparser.cpp \
     $$PWD/interpolationutils.cpp \
     $$PWD/scene/lattice.cpp \
-    $$PWD/mymath.cpp
+    $$PWD/mymath.cpp \
+    $$PWD/scene/latticeray.cpp
 
 HEADERS += \
     $$PWD/mainwindow.h \
@@ -37,4 +38,5 @@ HEADERS += \
     $$PWD/skeletonparser.h \
     $$PWD/interpolationutils.h \
     $$PWD/scene/lattice.h \
-    $$PWD/mymath.h
+    $$PWD/mymath.h \
+    $$PWD/scene/latticeray.h

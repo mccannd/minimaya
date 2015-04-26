@@ -1,14 +1,5 @@
 #include "lattice.h"
 
-//Lattice::Lattice()
-//    : bufIdx(QOpenGLBuffer::IndexBuffer),
-//      bufPos(QOpenGLBuffer::VertexBuffer),
-//      bufNor(QOpenGLBuffer::VertexBuffer),
-//      bufCol(QOpenGLBuffer::VertexBuffer),
-//      bufJID(QOpenGLBuffer::VertexBuffer),
-//      bufJWeight(QOpenGLBuffer::VertexBuffer) {
-//}
-
 Lattice::Lattice(Mesh* m)
     : bufIdx(QOpenGLBuffer::IndexBuffer),
       bufPos(QOpenGLBuffer::VertexBuffer),
@@ -20,6 +11,22 @@ Lattice::Lattice(Mesh* m)
     x = 2;
     y = 2;
     z = 2;
+
+    boundaries(mesh);
+    int num = 0;
+
+    // All vertex positions
+    for (int i = 0; i <= x; i++) {
+        for (int j = 0; j <= y; j++) {
+            for (int k = 0; k <= z; k++) {
+                vec4 temp = vec4((maxx - minx)/x * i + minx,
+                                 (maxy - miny)/y * j + miny,
+                                 (maxz - minz)/z * k + minz,
+                                 1);
+                ctrlpts.push_back(new Vertex(temp, num++));
+            }
+        }
+    }
 }
 
 void Lattice::boundaries(Mesh* m) {
@@ -50,6 +57,27 @@ void Lattice::boundaries(Mesh* m) {
     updating_divisions = false;
 }
 
+void Lattice::recreateLattice() {
+    ctrlpts.erase(ctrlpts.begin(), ctrlpts.end());
+    int num = 0;
+
+    // All vertex positions
+    for (int i = 0; i <= x; i++) {
+        for (int j = 0; j <= y; j++) {
+            for (int k = 0; k <= z; k++) {
+                vec4 temp = vec4((maxx - minx)/x * i + minx,
+                                 (maxy - miny)/y * j + miny,
+                                 (maxz - minz)/z * k + minz,
+                                 1);
+
+                ctrlpts.push_back(new Vertex(temp, num++));
+            }
+        }
+    }
+
+    this->create();
+}
+
 void Lattice::updateDivisions(int xdivs, int ydivs, int zdivs) {
     if (xdivs < 1) {
         x = 1;
@@ -67,8 +95,7 @@ void Lattice::updateDivisions(int xdivs, int ydivs, int zdivs) {
         z = zdivs;
     }
 
-    updating_divisions = true;
-    this->create();
+    recreateLattice();
 }
 
 void Lattice::freeFormDeformation() {
@@ -88,8 +115,6 @@ void Lattice::freeFormDeformation() {
 
         mesh->vertices[i]->pos = sum_s * sum_t * sum_u;
     }
-
-
 }
 
 float Lattice::binomialSpline(int n, int i, float f) {
@@ -98,31 +123,10 @@ float Lattice::binomialSpline(int n, int i, float f) {
 
 void Lattice::create()
 {
-    if (!updating_divisions) {
-        boundaries(mesh);
-    }
 
     vector<vec4> lattice_vert_pos = {};
     vector<vec4> lattice_vert_col = {};
     vector<GLuint> lattice_idx = {};
-
-    ctrlpts.erase(ctrlpts.begin(), ctrlpts.end());
-    int num = 0;
-
-    // All vertex positions
-    for (int i = 0; i <= x; i++) {
-        for (int j = 0; j <= y; j++) {
-            for (int k = 0; k <= z; k++) {
-                vec4 temp = vec4((maxx - minx)/x * i + minx,
-                                 (maxy - miny)/y * j + miny,
-                                 (maxz - minz)/z * k + minz,
-                                 1);
-
-                ctrlpts.push_back(new Vertex(temp, num++));
-                // lattice_vert_pos.push_back(temp);
-            }
-        }
-    }
 
     for(std::vector<Vertex*>::size_type i = 0; i < ctrlpts.size(); i++) {
         lattice_vert_pos.push_back(ctrlpts[i]->pos);
@@ -177,11 +181,6 @@ void Lattice::create()
     bufCol.bind();
     bufCol.setUsagePattern(QOpenGLBuffer::StaticDraw);
     bufCol.allocate(lattice_vert_col.data(), LATTICE_VERT_COUNT * sizeof(vec4));
-
-//    bufNor.create();
-//    bufNor.bind();
-//    bufNor.setUsagePattern(QOpenGLBuffer::StaticDraw);
-//    bufNor.allocate(lattice_vert_nor.data(), LATTICE_VERT_COUNT * sizeof(vec4));
 }
 
 void Lattice::destroy()

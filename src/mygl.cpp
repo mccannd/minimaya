@@ -136,6 +136,18 @@ void MyGL::paintGL()
 
     prog_wire.draw(*this, *geom_lattice);
 
+    for(std::vector<Vertex*>::size_type i = 0; i < selected_lattice_vertices.size(); i++) {
+        selected_lattice_vertices[i]->create();
+        prog_wire.draw(*this, *selected_lattice_vertices[i]);
+    }
+
+    if (lattice_ray != NULL) {
+        mat4 model = mat4(1.0f);
+        prog_wire.setModelMatrix(model);
+        lattice_ray->create();
+        prog_wire.draw(*this, *lattice_ray);
+    }
+
     glEnable(GL_DEPTH_TEST);
 }
 
@@ -201,10 +213,82 @@ void MyGL::keyPressEvent(QKeyEvent *e)
         geom_lattice->updateDivisions(geom_lattice->x,
                                       geom_lattice->y,
                                       geom_lattice->z - 1);
+    } else if (e->key() == Qt::Key_U) {
+        for(std::vector<Vertex*>::size_type i = 0; i < selected_lattice_vertices.size(); i++) {
+            selected_lattice_vertices[i]->pos += vec4(0, 1, 0, 0);
+        }
+
+        cout << "here";
+
+        geom_lattice->freeFormDeformation();
+        geom_lattice->create();
+        update();
     }
 
     camera.RecomputeEye();
     update();  // Calls paintGL, among other things
+}
+
+void MyGL::mousePressEvent(QMouseEvent *e) {
+    prevPos = e->pos();
+}
+
+void MyGL::mouseReleaseEvent(QMouseEvent *e) {
+    prevPos = e->pos();
+    lattice_ray = latticeRaycast(e->x(), e->y());
+
+    selected_lattice_vertices.empty();
+    for(std::vector<Vertex*>::size_type i = 0; i < geom_lattice->ctrlpts.size(); i++) {
+        mat4 m = translate(mat4(1.0f), vec3(geom_lattice->ctrlpts[i]->pos));
+        if (lattice_ray->latticeIntersect(m, &camera) > 0) {
+            selected_lattice_vertices.push_back(geom_lattice->ctrlpts[i]);
+        }
+    }
+
+//    if (!ray_pierced.empty()) {
+//        node* closest_t = ray_pierced[0];
+//        for(std::vector<node*>::size_type i = 0; i < ray_pierced.size(); i++) {
+//            if (ray_pierced[i]->world_t < closest_t->world_t) {
+//                closest_t = ray_pierced[i];
+//            }
+//        }
+//        emit sig_sendCurrentNode(closest_t);
+//    }
+    update();
+}
+
+void MyGL::mouseMoveEvent(QMouseEvent *e)
+{
+//     int dx = e->x() - prevPos.x();
+//     int dy = e->y() - prevPos.y();
+
+//     if (e->buttons() & Qt::LeftButton) {
+//         camera.theta += dx * 0.0002;
+//         camera.phi += dy * 0.0002;
+//     }
+
+//     camera.RecomputeEye();
+//     update();
+}
+
+/// Raycasting
+LatticeRay* MyGL::latticeRaycast(int x, int y) {
+    float sx = (2 * x/camera.width) - 1;
+    float sy = 1 - (2 * y/camera.height);
+
+    vec3 F = normalize(vec3(camera.ref) - vec3(camera.eye));
+    vec3 R = normalize(cross(F, vec3(camera.up)));
+    vec3 U = normalize(cross(R, F));
+
+    float length = distance(camera.ref, camera.eye) * tan(camera.fovy/2);
+    vec3 V = U * length;
+    vec3 H = length * camera.width/camera.height * R;
+    vec3 p = vec3(camera.ref) + sx * H + sy * V;
+
+    vec4 ray_origin = camera.eye;
+    vec4 ray_direction = normalize(vec4(p[0], p[1], p[2], 1) - camera.eye);
+
+    return new LatticeRay(ray_origin, ray_direction);
 }
 
 /// mesh interface functions

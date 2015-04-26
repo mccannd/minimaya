@@ -14,3 +14,4 @@ public:
 std::ostream &operator<<(std::ostream &o, const vec4 &v);
 int combination(int n, int i);
 int factorial(int n);
+vec4 cross(vec4 v1, vec4 v2);

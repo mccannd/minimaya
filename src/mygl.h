@@ -12,6 +12,7 @@
 #include <scene/mesh.h>
 #include <scene/joint.h>
 #include <scene/lattice.h>
+#include <scene/latticeray.h>
 #include <la.h>
 #include "skeletonparser.h"
 
@@ -21,6 +22,8 @@ class MyGL
 {
     Q_OBJECT
 private:
+    QPoint prevPos;
+
     QOpenGLVertexArrayObject vao;
 
     Cylinder geom_cylinder;
@@ -54,6 +57,7 @@ public:
     bool skeleton_visible = true;
     // determines whether the mesh is rendered with lambert or skeleton
     bool skeleton_bound = false;
+    bool lattice_active = true;
 
     // mesh interface functions
     void divideEdge();
@@ -80,8 +84,16 @@ public:
     void updateSkeletonList();
     void updateSkeletonTransformations();
 
+    // Deformation
+    LatticeRay* latticeRaycast(int x, int y);
+    LatticeRay* lattice_ray = NULL;
+    vector<Vertex*> selected_lattice_vertices = {};
+
 protected:
     void keyPressEvent(QKeyEvent *e);
+    void mousePressEvent(QMouseEvent *e);
+    void mouseMoveEvent(QMouseEvent *e);
+    void mouseReleaseEvent(QMouseEvent *e);
 signals:
     void meshChanged();
     void vertexChosen(float x, float y, float z);
