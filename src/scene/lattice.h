@@ -9,6 +9,8 @@
 #include <scene/mesh.h>
 #include "mymath.h"
 #include <math.h>
+#include "camera.h"
+#include "latticeray.h"
 
 using namespace std;
 using namespace glm;
@@ -33,10 +35,10 @@ private:
     float minz = INFINITY;
     bool updating_divisions = false;
 
-    vector<Vertex*> ctrlpts = {};
+
 public:
-//    Lattice();
     Lattice(Mesh* m);
+    vector<Vertex*> ctrlpts = {};
 
     int x;
     int y;
@@ -46,6 +48,7 @@ public:
     void updateDivisions(int xdivs, int ydivs, int zdivs);
     void freeFormDeformation(); // Mesh has changed after this
     float binomialSpline(int n, int i, float f);
+    void recreateLattice();
 
     void create();
     void destroy();

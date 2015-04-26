@@ -19,7 +19,8 @@ SOURCES += \
     $$PWD/interpolationutils.cpp \
     $$PWD/scene/keyframeselectable.cpp
     $$PWD/scene/lattice.cpp \
-    $$PWD/mymath.cpp
+    $$PWD/mymath.cpp \
+    $$PWD/scene/latticeray.cpp
 
 HEADERS += \
     $$PWD/mainwindow.h \
@@ -39,4 +40,5 @@ HEADERS += \
     $$PWD/interpolationutils.h \
     $$PWD/scene/keyframeselectable.h
     $$PWD/scene/lattice.h \
-    $$PWD/mymath.h
+    $$PWD/mymath.h \
+    $$PWD/scene/latticeray.h
