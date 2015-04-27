@@ -224,7 +224,58 @@ void MyGL::keyPressEvent(QKeyEvent *e)
         geom_mesh.create();
         update();
         emit meshChanged();
+    } else if (e->key() == Qt::Key_J) {
+        for(std::vector<Vertex*>::size_type i = 0; i < selected_lattice_vertices.size(); i++) {
+            selected_lattice_vertices[i]->pos += vec4(0, -1, 0, 0);
+        }
+
+        geom_lattice->freeFormDeformation();
+        geom_lattice->create();
+        geom_mesh.create();
+        update();
+        emit meshChanged();
+    } else if (e->key() == Qt::Key_K) {
+        for(std::vector<Vertex*>::size_type i = 0; i < selected_lattice_vertices.size(); i++) {
+            selected_lattice_vertices[i]->pos += vec4(1, 0, 0, 0);
+        }
+
+        geom_lattice->freeFormDeformation();
+        geom_lattice->create();
+        geom_mesh.create();
+        update();
+        emit meshChanged();
+    } else if (e->key() == Qt::Key_H) {
+        for(std::vector<Vertex*>::size_type i = 0; i < selected_lattice_vertices.size(); i++) {
+            selected_lattice_vertices[i]->pos += vec4(-1, 0, 0, 0);
+        }
+
+        geom_lattice->freeFormDeformation();
+        geom_lattice->create();
+        geom_mesh.create();
+        update();
+        emit meshChanged();
+    } else if (e->key() == Qt::Key_Y) {
+        for(std::vector<Vertex*>::size_type i = 0; i < selected_lattice_vertices.size(); i++) {
+            selected_lattice_vertices[i]->pos += vec4(0, 0, 1, 0);
+        }
+
+        geom_lattice->freeFormDeformation();
+        geom_lattice->create();
+        geom_mesh.create();
+        update();
+        emit meshChanged();
+    } else if (e->key() == Qt::Key_G) {
+        for(std::vector<Vertex*>::size_type i = 0; i < selected_lattice_vertices.size(); i++) {
+            selected_lattice_vertices[i]->pos += vec4(0, 0, -1, 0);
+        }
+
+        geom_lattice->freeFormDeformation();
+        geom_lattice->create();
+        geom_mesh.create();
+        update();
+        emit meshChanged();
     }
+
 
     camera.RecomputeEye();
     update();  // Calls paintGL, among other things
