@@ -308,9 +308,6 @@ bool Joint::bindJWeight()
 }
 
 /// --- Geometric information utilities
-///
-///
-
 glm::mat4 Joint::getLocalTransformation()
 {
     glm::vec3 pos = glm::vec3(position[0], position[1], position[2]);

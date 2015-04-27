@@ -28,6 +28,7 @@ Lattice::Lattice(Mesh* m)
     }
 }
 
+// Calculates the boundaries of the lattice
 void Lattice::boundaries(Mesh* m) {
     for(std::vector<Vertex*>::size_type i = 0; i < m->vertices.size(); i++) {
         vec4 pos = m->vertices[i]->pos;
@@ -60,7 +61,10 @@ void Lattice::boundaries(Mesh* m) {
     U = vec3(0.f, 0.f, maxz - minz);
 }
 
+// Recompute the lattice, creating a new lattice basically
 void Lattice::recreateLattice() {
+    // Recompute the boundaries if they've changed, not if more divisions
+    // are made.
     if (!updating_divisions) {
         boundaries(mesh);
     }
@@ -77,7 +81,6 @@ void Lattice::recreateLattice() {
                                  (maxy - miny)/y * j + miny,
                                  (maxz - minz)/z * k + minz,
                                  1);
-
                 ctrlpts.push_back(new Vertex(temp, num++));
             }
         }
@@ -86,6 +89,7 @@ void Lattice::recreateLattice() {
     this->create();
 }
 
+// Called when changes to the lattice subdivisions are made
 void Lattice::updateDivisions(int xdivs, int ydivs, int zdivs) {
     if (xdivs < 1) {
         x = 1;
@@ -107,8 +111,26 @@ void Lattice::updateDivisions(int xdivs, int ydivs, int zdivs) {
     recreateLattice();
 }
 
+void Lattice::twisting() {
+//    for(std::vector<Vertex*>::size_type i = 0; i < ctrlpts.size(); i++) {
+
+//        float extent = i %
+
+
+//        // Twist around the Z-Axis
+//        vec4 P = ctrlpts[i]->pos;
+//        float x_prime = P[0] * cos(q) - P[1] * sin(q);
+//        float y_prime = P[0] * sin(q) + P[1] * cos(q);
+
+//        ctrlpts[i]->pos = vec4(x_prime, y_prime, P[2], 1);
+//    }
+//    freeFormDeformation();
+}
+
+// Free Form Deformation (FFD)
+// Uses Bernstein Formula
 void Lattice::freeFormDeformation() {
-    int n = ctrlpts.size() - 1;
+//    int n = ctrlpts.size() - 1;
     for(std::vector<Vertex*>::size_type v = 0; v < mesh->vertices.size(); v++) {
         vec3 X = vec3(mesh->vertices[v]->pos);
 
@@ -135,10 +157,12 @@ void Lattice::freeFormDeformation() {
     }
 }
 
+// Binomial Spline
 float Lattice::binomialSpline(int n, int i, float f) {
-    return combination(n, i) * pow(f, i) * pow((1 - f), n - i);
+    return combination(n, i) * pow((1 - f), n - i) * pow(f, i);
 }
 
+// Creates the lattice
 void Lattice::create() {
     vector<vec4> lattice_vert_pos = {};
     vector<vec4> lattice_vert_col = {};
@@ -237,7 +261,7 @@ bool Lattice::bindCol()
     return bufCol.bind();
 }
 
-// skeleton bindings
+// skeleton bindings (that I don't use?)s
 bool Lattice::bindJID()
 {
     return bufJID.bind();
