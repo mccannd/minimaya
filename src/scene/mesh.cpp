@@ -259,6 +259,7 @@ void Mesh::moveVertex(Vertex* v, float x, float y, float z)
 
     // reposition with new coordinates
     v->pos = glm::vec4(x, y, z, 1);
+    v->orig_pos = v->pos;
 
     // update the buffers
     this->create();
@@ -754,6 +755,7 @@ void Mesh::subdivide(QListWidget *edgeList, QListWidget *faceList,
 
             Vertex* mid = this->divideEdge(e, false);
             mid->pos = glm::vec4(x, y, z, 1);
+            mid->orig_pos = mid->pos;
 
             // add the midpoint to the hashset
             midpoints.insert(mid);
@@ -831,6 +833,7 @@ void Mesh::subdivide(QListWidget *edgeList, QListWidget *faceList,
 
         // set the vert up!
         v->pos = glm::vec4(x, y, z, 1);
+        v->orig_pos = v->pos;
     }
 
     /// --- Quadrangulate original faces ---

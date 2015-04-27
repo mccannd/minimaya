@@ -132,7 +132,7 @@ void Lattice::twisting() {
 void Lattice::freeFormDeformation() {
 //    int n = ctrlpts.size() - 1;
     for(std::vector<Vertex*>::size_type v = 0; v < mesh->vertices.size(); v++) {
-        vec3 X = vec3(mesh->vertices[v]->pos);
+        vec3 X = vec3(mesh->vertices[v]->orig_pos);
 
         float s = dot(cross(T, U), (X - X0)) / (dot(cross(T, U), S));
         float t = dot(cross(S, U), (X - X0)) / (dot(cross(S, U), T));
