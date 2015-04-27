@@ -11,6 +11,7 @@
 #include <scene/mesh.h>
 
 #include <bmp/EasyBMP.h>
+#include <QRunnable>
 
 class Raytrace {
   public:
@@ -34,29 +35,26 @@ class Raytrace {
         bool within(glm::vec4 &p, glm::vec4 &a, glm::vec4 &b, glm::vec4 &c);
     };
 
-    class Octree {
-      private:
-        glm::vec3 lo, hi;
-        int depth;
+    typedef std::tuple<Raytrace::Ray, Raytrace::Ray, Raytrace::Ray> OutgoingRays;
 
-        Octree* children[8] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
-        std::vector<Face*> faces = {};
-
-        void split();
-        void relocate(Face *f);
-
-        static std::pair<glm::vec3, glm::vec3> getBounds(Face *f);
-        static bool bounded(glm::vec3 lo, glm::vec3 hi, std::pair<glm::vec3, glm::vec3> bounds);
-
+    class Pixel : public QRunnable {
       public:
-        Octree(int depth, glm::vec3 lo_bound, glm::vec3 hi_bound);
+        static const int SAMPLES = 1;
+        static Raytrace *RT;
 
-        void add(Face *f);
-        std::pair<Face*, float> cast(Ray r);
-        bool intersect(Ray r);
+        RGBApixel *out;
+        int x, y;
+
+        Pixel(RGBApixel* out, int x, int y);
+
+        void run();
+
+      private:
+        glm::vec4 castRay(float x, float y);
+        std::pair<Face*, Raytrace::OutgoingRays> traceRay(Raytrace::Ray r);
     };
 
-    typedef std::tuple<Raytrace::Ray, Raytrace::Ray, Raytrace::Ray> OutgoingRays;
+    
 
     static glm::vec4 background;
     static glm::vec4 light_source;
@@ -68,12 +66,7 @@ class Raytrace {
   private:
     Camera *camera;
     Mesh *mesh;
-    Octree *octree;
 
     BMP out;
-
-    void setPixel(int x, int y, glm::vec4 color);
-    glm::vec4 castRay(float x, float y);
-    std::pair<Face*, Raytrace::OutgoingRays> traceRay(Raytrace::Ray r);
 };
 

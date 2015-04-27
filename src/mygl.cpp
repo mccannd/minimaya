@@ -58,7 +58,7 @@ void MyGL::initializeGL()
 
     geom_mesh.create();
     //geom_mesh.unitCube(); // initialize mesh as a unit cube
-    QString filename = QString("C:/Users/molisani/Google Drive/Penn/15A/CIS 277 - Computer Graphics/minimaya/render_test.obj");
+    QString filename = QString("C:/Users/molisani/sphere.obj");
     geom_mesh.parseObj(filename);
 
 
