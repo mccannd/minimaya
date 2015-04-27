@@ -39,9 +39,8 @@ class Raytrace {
         glm::vec3 lo, hi;
         int depth;
 
-        Node* children[8];
-
-        std::vector<Face*> faces;
+        Octree* children[8] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+        std::vector<Face*> faces = {};
 
         void split();
         void relocate(Face *f);
@@ -54,7 +53,7 @@ class Raytrace {
 
         void add(Face *f);
         std::pair<Face*, float> cast(Ray r);
-        bool intersect(Ray r)
+        bool intersect(Ray r);
     };
 
     typedef std::tuple<Raytrace::Ray, Raytrace::Ray, Raytrace::Ray> OutgoingRays;
@@ -69,6 +68,7 @@ class Raytrace {
   private:
     Camera *camera;
     Mesh *mesh;
+    Octree *octree;
 
     BMP out;
 

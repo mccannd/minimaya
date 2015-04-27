@@ -86,6 +86,7 @@ void MyGL::initializeGL()
 void MyGL::resizeGL(int w, int h)
 {
     camera = Camera(w, h);
+    rt = new Raytrace(&camera, &geom_mesh);
 
     glm::mat4 viewproj = camera.getViewProj();
 
@@ -181,8 +182,7 @@ void MyGL::keyPressEvent(QKeyEvent *e)
     } else if (e->key() == Qt::Key_2) {
         camera.fovy -= 5.0f * DEG2RAD;
     } else if (e->key() == Qt::Key_R) {
-        Raytrace rt(&camera, &geom_mesh);
-        rt.renderToFile("render.bmp");
+        rt->renderToFile("render.bmp");
     }
     camera.RecomputeEye();
     update();  // Calls paintGL, among other things

@@ -37,6 +37,8 @@ private:
 
     Camera camera;
 
+    Raytrace *rt;
+
     std::vector<HalfEdge*> drawn_edges = {};
     std::vector<Joint*> skeleton_list = {};
 public:

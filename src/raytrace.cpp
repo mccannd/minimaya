@@ -13,6 +13,10 @@ glm::vec4 Raytrace::light_source = glm::vec4(-1, 5, -1, 1);
 Raytrace::Raytrace(Camera *cam, Mesh *m) {
   camera = cam;
   mesh = m;
+  octree = new Octree(0, glm::vec3(-5, -5, -5), glm::vec3(5, 5, 5));
+  for (std::vector<Face*>::iterator it = mesh->faces.begin(); it != mesh->faces.end(); it++) {
+    octree->add(*it);
+  }
 }
 
 void Raytrace::renderToFile(QString filename) {
@@ -22,7 +26,7 @@ void Raytrace::renderToFile(QString filename) {
   for (int x = 0; x < camera->width; x++) {
     for (int y = 0; y < camera->height; y++) {
       glm::vec4 samples;
-      int n = 1;
+      int n = 1;                                            // Number of Samples
       float incr = 1.0f / n;
       for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
@@ -71,24 +75,15 @@ glm::vec4 Raytrace::castRay(float x, float y) {
 
 std::pair<Face*, Raytrace::OutgoingRays> Raytrace::traceRay(Raytrace::Ray r) {
   // Only traces with convex planar polygons
-  float min = camera->far_clip;
-  
-  Face* closest = NULL;
-  for (std::vector<Face*>::iterator it = mesh->faces.begin(); it != mesh->faces.end(); it++) {
-    float t = r.intersect(*it);
-    if (t < min && t > camera->near_clip) {
-      min = t;
-      closest = *it;
-    }
-  }
-  glm::vec4 p = r.pos + t * r.dir;
-  if (closest != NULL) {
-    return std::make_pair(closest, std::make_tuple(
-      Ray(p, glm::reflect(r.dir, closest->norm)), 
-      Ray(p, glm::refract(r.dir, closest->norm, 1.0f)), 
+  std::pair<Face*, float> cast = octree->cast(r);
+  glm::vec4 p = r.pos + cast.second * r.dir;
+  if (cast.first != NULL) {
+    return std::make_pair(cast.first, std::make_tuple(
+      Ray(p, glm::reflect(r.dir, cast.first->norm)), 
+      Ray(p, glm::refract(r.dir, cast.first->norm, 1.0f)), 
       Ray(p, light_source - p)));
   } else {
-    return std::make_pair(closest, std::make_tuple(
+    return std::make_pair(cast.first, std::make_tuple(
       Ray(p, r.dir), 
       Ray(p, r.dir), 
       Ray(p, light_source - p)));
@@ -137,7 +132,7 @@ bool Raytrace::Ray::within(glm::vec4 &norm, glm::vec4 &p, glm::vec4 &a, glm::vec
   return glm::dot(glm::vec3(norm), glm::cross(glm::vec3(p - a), glm::vec3(b - a))) < 0.0f;
 }
 
-std::pair<float, glm::vec4> Raytrace::Ray::intersect(Face *f) {
+float Raytrace::Ray::intersect(Face *f) {
   glm::vec4 a = f->start_edge->vert->pos;
   glm::vec4 b = f->start_edge->next->vert->pos;
   glm::vec4 c = f->start_edge->next->next->vert->pos;
@@ -150,20 +145,20 @@ std::pair<float, glm::vec4> Raytrace::Ray::intersect(Face *f) {
     inside &= within(f->norm, p, e->vert->pos, e->next->vert->pos);
     e = e->next;
   } while (e != f->start_edge);
-  return (inside) ? std::make_pair(t, p) : std::make_pair(FLT_MAX, glm::vec4(0, 0, 0, 1));
+  return (inside) ? t : FLT_MAX;
 }
 
 
 
 
 
-Octree::Octree(int depth, glm::vec3 lo, glm::vec3 hi) {
+Raytrace::Octree::Octree(int depth, glm::vec3 lo, glm::vec3 hi) {
   this->depth = depth;
   this->lo = lo;
   this->hi = hi;
 }
 
-void Octree::split() {
+void Raytrace::Octree::split() {
   glm::vec3 mid = (lo + hi) / 2.0f;
   children[0] = new Octree(depth + 1, glm::vec3(lo[0],  lo[1],  lo[2] ), glm::vec3(mid[0], mid[1], mid[2]));
   children[1] = new Octree(depth + 1, glm::vec3(lo[0],  lo[1],  mid[2]), glm::vec3(mid[0], mid[1], hi[2] ));
@@ -175,7 +170,7 @@ void Octree::split() {
   children[7] = new Octree(depth + 1, glm::vec3(mid[0], mid[1], mid[2]), glm::vec3(hi[0],  hi[1],  hi[2] ));
 }
 
-void Octree::relocate(Face *f) {
+void Raytrace::Octree::relocate(Face *f) {
   if (children[0] == NULL) return;
   std::pair<glm::vec3, glm::vec3> bounds = getBounds(f);
   if (bounded(children[0]->lo, children[0]->hi, bounds)) children[0]->add(f);
@@ -188,7 +183,7 @@ void Octree::relocate(Face *f) {
   if (bounded(children[7]->lo, children[7]->hi, bounds)) children[7]->add(f);
 }
 
-std::pair<glm::vec3, glm::vec3> Octree::getBounds(Face *f) {
+std::pair<glm::vec3, glm::vec3> Raytrace::Octree::getBounds(Face *f) {
   glm::vec3 min(FLT_MAX, FLT_MAX, FLT_MAX);
   glm::vec3 max(-FLT_MAX, -FLT_MAX, -FLT_MAX);
   HalfEdge* e = f->start_edge;
@@ -205,7 +200,7 @@ std::pair<glm::vec3, glm::vec3> Octree::getBounds(Face *f) {
   return std::make_pair(min, max);
 }
 
-bool Octree::bounded(glm::vec3 lo, glm::vec3 hi, std::pair<glm::vec3, glm::vec3> bounds) {
+bool Raytrace::Octree::bounded(glm::vec3 lo, glm::vec3 hi, std::pair<glm::vec3, glm::vec3> bounds) {
   if (bounds.second[0] < lo[0]) return false;
   if (bounds.second[1] < lo[1]) return false;
   if (bounds.second[2] < lo[2]) return false;
@@ -215,40 +210,67 @@ bool Octree::bounded(glm::vec3 lo, glm::vec3 hi, std::pair<glm::vec3, glm::vec3>
   return true;
 }
 
-void Octree::add(Face *f) {
-  if (faces.size() == 1 && depth < 4) {
-    relocate(faces.front());
-    faces.pop_back();
-    relocate(f);
+void Raytrace::Octree::add(Face *f) {
+  if (depth < 8) {
+    if (children[0] != NULL) {
+      relocate(f);
+    } else if (faces.size() > 0) {
+      split();
+      relocate(faces.front());
+      faces.pop_back();
+      relocate(f);
+    } else {
+      faces.push_back(f);
+    }
   } else {
     faces.push_back(f);
   }
 }
 
-bool Octree::intersect(Ray r) {
-  return true; // TODO: ray cube intersection
+
+bool Raytrace::Octree::intersect(Ray r) {
+  float t_near = -FLT_MAX;
+  float t_far = FLT_MAX;
+  for (int i = 0; i < 3; i++) {
+    if (r.dir[i] == 0) {
+      if (r.pos[i] < lo[i] || r.pos[i] > hi[i]) return false;
+    }
+    float t0 = (lo[i] - r.pos[i]) / r.dir[i];
+    float t1 = (hi[i] - r.pos[i]) / r.dir[i];
+    if (t0 > t1) {
+      float swap = t0;
+      t0 = t1;
+      t1 = swap;
+    }
+    if (t0 > t_near) t_near = t0;
+    if (t1 < t_far) t_far = t1;
+    if (t_near > t_far) return false;
+  }
+  return true;
 }
 
-std::pair<Face*, float> Octree::cast(Ray r) {
-  if (faces.size() > 0) {
+std::pair<Face*, float> Raytrace::Octree::cast(Ray r) {
+  if (children[0] == NULL) {
     if (intersect(r)) {
       float min = FLT_MAX;
       Face* closest = NULL;
       for (std::vector<Face*>::iterator it = faces.begin(); it != faces.end(); it++) {
         float t = r.intersect(*it);
-        if (t < min) {
+        if (t < min && t > 0.0f) {
           min = t;
           closest = *it;
         }
       }
       return std::make_pair(closest, min);
-    } else return std::make_pair(NULL, FLT_MAX);
+    } else {
+      return std::make_pair((Face*) NULL, FLT_MAX);
+    }
   } else {
     float min = FLT_MAX;
     Face* closest = NULL;
     for (int i = 0; i < 8; i++) {
       std::pair<Face*, float> t = children[i]->cast(r);
-      if (t.second < min) {
+      if (t.second < min && t.second > 0.0f) {
         min = t.second;
         closest = t.first;
       }
