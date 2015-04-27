@@ -43,6 +43,10 @@ public:
     int x;
     int y;
     int z;
+    vec3 X0;
+    vec3 S;
+    vec3 T;
+    vec3 U;
 
     void boundaries(Mesh *m);
     void updateDivisions(int xdivs, int ydivs, int zdivs);

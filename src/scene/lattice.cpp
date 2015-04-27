@@ -14,7 +14,6 @@ Lattice::Lattice(Mesh* m)
 
     boundaries(mesh);
     int num = 0;
-
     // All vertex positions
     for (int i = 0; i <= x; i++) {
         for (int j = 0; j <= y; j++) {
@@ -54,10 +53,19 @@ void Lattice::boundaries(Mesh* m) {
             minz = pos[2];
         }
     }
-    updating_divisions = false;
+
+    X0 = vec3(minx, miny, minz);
+    S = vec3(maxx - minx, 0.f, 0.f);
+    T = vec3(0.f, maxy - miny, 0.f);
+    U = vec3(0.f, 0.f, maxz - minz);
 }
 
 void Lattice::recreateLattice() {
+    if (!updating_divisions) {
+        boundaries(mesh);
+    }
+    updating_divisions = false;
+
     ctrlpts.erase(ctrlpts.begin(), ctrlpts.end());
     int num = 0;
 
@@ -95,35 +103,43 @@ void Lattice::updateDivisions(int xdivs, int ydivs, int zdivs) {
         z = zdivs;
     }
 
+    updating_divisions = true;
     recreateLattice();
 }
 
 void Lattice::freeFormDeformation() {
-    int n = mesh->vertices.size();
-    for(std::vector<Vertex*>::size_type i = 0; i < n; i++) {
-        vec4 x = mesh->vertices[i]->pos;
+    int n = ctrlpts.size() - 1;
+    for(std::vector<Vertex*>::size_type v = 0; v < mesh->vertices.size(); v++) {
+        vec3 X = vec3(mesh->vertices[v]->pos);
 
-        vec4 sum_s = vec4(0, 0, 0, 0);
-        vec4 sum_t = vec4(0, 0, 0, 0);
-        vec4 sum_u = vec4(0, 0, 0, 0);
+        float s = dot(cross(T, U), (X - X0)) / (dot(cross(T, U), S));
+        float t = dot(cross(S, U), (X - X0)) / (dot(cross(S, U), T));
+        float u = dot(cross(S, T), (X - X0)) / (dot(cross(S, T), U));
 
-        for (int i = 0; i < n; i++) {
-            sum_s += binomialSpline(n, i, (x[0])) * ctrlpts[i]->pos; // s
-            sum_t += binomialSpline(n, i, (x[1])) * ctrlpts[i]->pos; // t
-            sum_u += binomialSpline(n, i, (x[2])) * ctrlpts[i]->pos; // u
+        // New X
+        vec3 x_prime = vec3(0.f, 0.f, 0.f);
+        for (int i = 0; i <= x; i++) {
+            vec3 sum_t = vec3(0.f, 0.f, 0.f);
+            for (int j = 0; j <= y; j++) {
+                vec3 sum_u = vec3(0.f, 0.f, 0.f);
+                for (int k = 0; k <= z; k++) {
+                    sum_u += binomialSpline(z, k, u) *
+                             vec3(ctrlpts[i * (y + 1) * (z + 1) + j * (z + 1) + k]->pos);
+                }
+                sum_t += binomialSpline(y, j, t) * sum_u;
+            }
+            x_prime += binomialSpline(x, i, s) * sum_t;
         }
 
-        mesh->vertices[i]->pos = sum_s * sum_t * sum_u;
+        mesh->vertices[v]->pos = vec4(x_prime, 1);
     }
 }
 
 float Lattice::binomialSpline(int n, int i, float f) {
-    return combination(n, i) * pow(f, n) * pow((1 - f), n - i);
+    return combination(n, i) * pow(f, i) * pow((1 - f), n - i);
 }
 
-void Lattice::create()
-{
-
+void Lattice::create() {
     vector<vec4> lattice_vert_pos = {};
     vector<vec4> lattice_vert_col = {};
     vector<GLuint> lattice_idx = {};
