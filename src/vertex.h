@@ -29,6 +29,7 @@ public:
     ~Vertex();
 
     glm::vec4 pos; // location of vertex
+    glm::vec4 orig_pos; // Saved for deformation purposes
     HalfEdge* edge = NULL;
     glm::ivec2 jointIDs;
     glm::vec2 weights;
