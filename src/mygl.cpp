@@ -118,6 +118,9 @@ void MyGL::paintGL()
     // draw selected mesh features
     glDisable(GL_DEPTH_TEST);
 
+    prog_wire.draw(*this, *geom_lattice);
+
+
     for (unsigned int i = 0; i < drawn_edges.size(); i++) {
         if (drawn_edges[i] != NULL) {
             drawn_edges[i]->create();
@@ -133,8 +136,6 @@ void MyGL::paintGL()
     if (skeleton_visible) {
         drawSkeleton(root_joint);
     }
-
-    prog_wire.draw(*this, *geom_lattice);
 
     for(std::vector<Vertex*>::size_type i = 0; i < selected_lattice_vertices.size(); i++) {
         selected_lattice_vertices[i]->create();
@@ -218,11 +219,11 @@ void MyGL::keyPressEvent(QKeyEvent *e)
             selected_lattice_vertices[i]->pos += vec4(0, 1, 0, 0);
         }
 
-        cout << "here";
-
         geom_lattice->freeFormDeformation();
         geom_lattice->create();
+        geom_mesh.create();
         update();
+        emit meshChanged();
     }
 
     camera.RecomputeEye();
@@ -424,7 +425,7 @@ void MyGL::importOBJ()
                                                     QString("/home"),
                                                     QString("Mesh Files (*.obj)"));
     geom_mesh.parseObj(fileName);
-    geom_lattice->create();
+    geom_lattice->recreateLattice();
     update();
     emit meshChanged();
 }

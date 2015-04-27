@@ -11,14 +11,14 @@ std::ostream &operator<<(std::ostream &o, const vec4 &v) {
     return o;
 }
 
-// n choose i
-int combination(int n, int i) {
-    factorial(n) / (factorial(i) * factorial(n - i));
+// n choose r
+int combination(int n, int r) {
+    return factorial(n) / (factorial(r) * factorial(n - r));
 }
 
 int factorial(int n) {
-    if (n == 1) {
-        return n;
+    if (n <= 1) {
+        return 1;
     } else {
         return n * factorial(n - 1);
     }
