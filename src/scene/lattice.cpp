@@ -134,6 +134,41 @@ void Lattice::twisting(float q, int deformation_axis) {
     freeFormDeformation();
 }
 
+void Lattice::bending(float q, int deformation_axis) {
+
+}
+
+void Lattice::tapering(float q, int deformation_axis) {
+    for (int i = 0; i <= x; i++) {
+        for (int j = 0; j <= y; j++) {
+            for (int k = 0; k <= z; k++) {
+                int idx = i * (y + 1) * (z + 1) + j * (z + 1) + k;
+
+                if (deformation_axis == 0) {
+                    float fx = (maxx - ctrlpts[idx]->pos[0]) / (float) (maxx - minx);
+                    ctrlpts[idx]->pos = vec4(ctrlpts[idx]->pos[0],
+                                             ctrlpts[idx]->pos[1] * fx,
+                                             ctrlpts[idx]->pos[2],
+                                             1);
+                } else if (deformation_axis == 1) {
+                    float fy = (maxy - ctrlpts[idx]->pos[1]) / (float) (maxy - miny);
+                    ctrlpts[idx]->pos = vec4(ctrlpts[idx]->pos[0],
+                                             ctrlpts[idx]->pos[1],
+                                             ctrlpts[idx]->pos[2] * fy,
+                                             1);
+                } else if (deformation_axis == 2) {
+                    float fz = (maxz - ctrlpts[idx]->pos[0]) / (float) (maxz - minz);
+                    ctrlpts[idx]->pos = vec4(ctrlpts[idx]->pos[0] * fz,
+                                             ctrlpts[idx]->pos[1],
+                                             ctrlpts[idx]->pos[2],
+                                             1);
+                }
+            }
+        }
+    }
+    freeFormDeformation();
+}
+
 // Free Form Deformation (FFD)
 // Uses Bernstein Formula
 void Lattice::freeFormDeformation() {

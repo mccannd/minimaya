@@ -53,7 +53,11 @@ public:
     void freeFormDeformation(); // Mesh has changed after this
     float binomialSpline(int n, int i, float f);
     void recreateLattice();
+
+    // Global
     void twisting(float q, int deformation_axis); // q = angle in radians
+    void bending(float q, int deformation_axis);
+    void tapering(float q, int deformation_axis);
 
     void create();
     void destroy();
