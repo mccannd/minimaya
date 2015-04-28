@@ -111,20 +111,27 @@ void Lattice::updateDivisions(int xdivs, int ydivs, int zdivs) {
     recreateLattice();
 }
 
-void Lattice::twisting() {
-//    for(std::vector<Vertex*>::size_type i = 0; i < ctrlpts.size(); i++) {
+// q = angle in degrees
+void Lattice::twisting(float q, int deformation_axis) {
+    for (int i = 0; i <= x; i++) {
+        for (int j = 0; j <= y; j++) {
+            for (int k = 0; k <= z; k++) {
+                int idx = i * (y + 1) * (z + 1) + j * (z + 1) + k;
 
-//        float extent = i %
-
-
-//        // Twist around the Z-Axis
-//        vec4 P = ctrlpts[i]->pos;
-//        float x_prime = P[0] * cos(q) - P[1] * sin(q);
-//        float y_prime = P[0] * sin(q) + P[1] * cos(q);
-
-//        ctrlpts[i]->pos = vec4(x_prime, y_prime, P[2], 1);
-//    }
-//    freeFormDeformation();
+                if (deformation_axis == 0) {
+                    ctrlpts[idx]->pos = ctrlpts[idx]->pos *
+                            mat4_cast(angleAxis(q * ((float) i)/x, vec3(1, 0, 0)));
+                } else if (deformation_axis == 1) {
+                    ctrlpts[idx]->pos = ctrlpts[idx]->pos *
+                            mat4_cast(angleAxis(q * ((float) j)/y, vec3(0, 1, 0)));
+                } else if (deformation_axis == 2) {
+                    ctrlpts[idx]->pos = ctrlpts[idx]->pos *
+                            mat4_cast(angleAxis(q * ((float) k)/z, vec3(0, 0, 1)));
+                }
+            }
+        }
+    }
+    freeFormDeformation();
 }
 
 // Free Form Deformation (FFD)
