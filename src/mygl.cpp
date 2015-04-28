@@ -275,7 +275,7 @@ void MyGL::keyPressEvent(QKeyEvent *e)
         update();
         emit meshChanged();
     } else if (e->key() == Qt::Key_T) {
-        geom_lattice->twisting(10 * DEG2RAD, deformation_axis);
+        geom_lattice->tapering(10 * DEG2RAD, deformation_axis);
         geom_lattice->create();
         geom_mesh.create();
         update();
