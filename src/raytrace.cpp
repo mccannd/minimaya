@@ -54,7 +54,8 @@ void Raytrace::Pixel::run() {
       float jitter_y = rand() / (float) RAND_MAX;
       float sx = x + ((i + jitter_x) * incr);
       float sy = y + ((j + jitter_y) * incr);
-      samples += castRay(Ray(sx, sy), 0);
+      Ray r(sx, sy);
+      samples += castRay(r, 0);
     }
   }
   glm::vec4 c = 255.0f * glm::abs(samples * incr * incr);
@@ -85,7 +86,7 @@ glm::vec4 Raytrace::Pixel::castRay(Raytrace::Ray r, int depth) {
     float specular = std::pow(glm::dot(H, trace.first->norm), mat.specl);
     //light += (specular > 1.0f) ? 1.0f : (specular < 0.0f) ? 0.0f : specular;
 
-    //if (traceRay(std::get<2>(trace.second), depth + 1).first != NULL) light = 0.2f;
+    if (traceRay(to_light).first != NULL) light = 0.2f;
 
     final += glm::vec4(glm::vec3(light * trace.first->color), mat.alpha);
 
