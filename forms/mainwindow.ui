@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1001</width>
+    <width>1002</width>
     <height>768</height>
    </rect>
   </property>
@@ -49,7 +49,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>4</number>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideLeft</enum>
@@ -816,6 +816,73 @@ Color</string>
       </property>
      </widget>
     </widget>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>Keys</string>
+     </attribute>
+     <widget class="QListWidget" name="keys_list">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>321</width>
+        <height>361</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="keyframe_save">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>380</y>
+        <width>321</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Save Keyframe</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="keyframe_remove">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>420</y>
+        <width>321</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Remove Selected Keyframe</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="keyframe_play">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>460</y>
+        <width>321</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Play Keyframe Animation</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="keyframe_clear">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>500</y>
+        <width>321</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Delete all Keyframes</string>
+      </property>
+     </widget>
+    </widget>
    </widget>
    <widget class="QPushButton" name="pushButton_6">
     <property name="geometry">
@@ -901,7 +968,7 @@ Color</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1001</width>
+     <width>1002</width>
      <height>26</height>
     </rect>
    </property>

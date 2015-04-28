@@ -7,6 +7,7 @@
 #include <QOpenGLContext>
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
+#include <QVector>
 
 
 
@@ -50,6 +51,13 @@ public:
     glm::mat4 getOverallTransformation();
     void setBindMatrix();
     void rename(QString name);
+
+    // animation utilities
+    QVector<glm::quat> keysRotation;
+    QVector<glm::vec4> keysPosition;
+    void keyframeSnapshot(); // save the state of rotation and position
+    void applyKeyframe(unsigned int index); // apply this key's properties
+    void clearKeyframes();
 
     // graphics: drawable lines
     void create();

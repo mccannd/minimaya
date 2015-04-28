@@ -120,6 +120,47 @@ Joint::~Joint()
 }
 
 
+
+/// --- Animation utilities
+///
+///
+
+// save a keyframe of this joint plus all children
+void Joint::keyframeSnapshot()
+{
+    keysRotation.push_back(rotation);
+    keysPosition.push_back(position);
+
+    for (unsigned int i = 0; i < children.size(); i++) {
+        children[i]->keyframeSnapshot();
+    }
+}
+
+// apply the state of a certain key to all nodes
+void Joint::applyKeyframe(unsigned int index)
+{
+    assert (index < keysRotation.size());
+
+    rotation = keysRotation[index];
+    position = keysPosition[index];
+
+    for (unsigned int i = 0; i < children.size(); i++) {
+        children[i]->applyKeyframe(index);
+    }
+}
+
+// delete all keyframes
+void Joint::clearKeyframes()
+{
+    keysPosition.clear();
+    keysRotation.clear();
+
+    for (unsigned int i = 0; i < children.size(); i++) {
+        children[i]->clearKeyframes();
+    }
+}
+
+
 /// --- OpenGL utilities
 ///
 ///

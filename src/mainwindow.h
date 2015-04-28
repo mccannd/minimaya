@@ -3,6 +3,7 @@
 #include <QMainWindow>
 #include <QListWidgetItem>
 #include <QTreeWidgetItem>
+#include "scene/keyframeselectable.h"
 
 
 namespace Ui
@@ -69,8 +70,13 @@ private slots:
 
     void on_pushButton_18_clicked();
 
+    void on_keyframe_save_clicked();
+
+    void on_keys_list_itemClicked(QListWidgetItem *item);
+
 private:
     Ui::MainWindow *ui;
+    int keyframeID = 0;
 
 public slots:
     void refreshLists();

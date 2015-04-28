@@ -255,4 +255,31 @@ void MainWindow::on_pushButton_18_clicked()
     ui->mygl->updateSkeletonList();
     ui->mygl->updateSkeletonTransformations();
     ui->mygl->skeleton_bound = true;
+
+    // add the bind position as a keyframe
+    keyframeID = 0;
+    ui->mygl->root_joint->keyframeSnapshot();
+    KeyframeSelectable* bind = new KeyframeSelectable(keyframeID++);
+    bind->setText("Bind Pose");
+    ui->keys_list->addItem(bind);
+}
+
+void MainWindow::on_keyframe_save_clicked()
+{
+    if (ui->mygl->skeleton_bound) {
+        ui->mygl->root_joint->keyframeSnapshot();
+        KeyframeSelectable* kfs = new KeyframeSelectable(keyframeID);
+        kfs->setText(QString("Keyframe %1").arg(keyframeID));
+        keyframeID++;
+        ui->keys_list->addItem(kfs);
+    }
+}
+
+void MainWindow::on_keys_list_itemClicked(QListWidgetItem *item)
+{
+    KeyframeSelectable* kfs = (KeyframeSelectable*) item;
+    unsigned int index = kfs->keyID;
+    ui->mygl->root_joint->applyKeyframe(index);
+    // make the window respond to the new transformations
+    ui->mygl->updateSkeletonTransformations();
 }
