@@ -50,7 +50,7 @@ class Raytrace {
         void run();
 
       private:
-        glm::vec4 castRay(float x, float y);
+        glm::vec4 castRay(Raytrace::Ray r, int depth);
         std::pair<Face*, Raytrace::OutgoingRays> traceRay(Raytrace::Ray r);
     };
 

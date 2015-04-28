@@ -54,7 +54,7 @@ void Raytrace::Pixel::run() {
       float jitter_y = rand() / (float) RAND_MAX;
       float sx = x + ((i + jitter_x) * incr);
       float sy = y + ((j + jitter_y) * incr);
-      samples += castRay(sx, sy);
+      samples += castRay(Ray(sx, sy), 0);
     }
   }
   glm::vec4 c = 255.0f * glm::abs(samples * incr * incr);
@@ -64,22 +64,36 @@ void Raytrace::Pixel::run() {
   out->Alpha = c[3];
 }
 
-glm::vec4 Raytrace::Pixel::castRay(float x, float y) {
-  Ray r(x, y);
+
+glm::vec4 Raytrace::Pixel::castRay(Raytrace::Ray r, int depth) {
+  if (depth > 2) return background;
   // Only traces with convex planar polygons
   std::pair<Face*, OutgoingRays> trace = traceRay(r);
+  
+
   if (trace.first != NULL) {
+    Material mat = trace.first->mat_attr;
+
+    glm::vec4 final;
+    float light = 0.2f;
+
     Ray to_light = std::get<2>(trace.second);
     float diffuse = glm::dot(trace.first->norm, glm::normalize(to_light.dir));
-    if (diffuse < 0.0f) diffuse = 0.0f;
-    else if (traceRay(to_light).first != NULL) diffuse = 0.0f; // shadow
-    else {
-      glm::vec4 H = (to_light.dir - to_light.pos + RT->camera->eye) / 2.0f;
-      float specular = std::pow(glm::dot(H, trace.first->norm), 12.8);
-      //if (specular > 0.0f) diffuse += specular;
-    }
-    if (diffuse > 1.0f) diffuse = 1.0f;
-    return (0.2f + diffuse) * trace.first->color;
+    light += (diffuse > 1.0f) ? 1.0f : (diffuse < 0.0f) ? 0.0f : diffuse;
+
+    glm::vec4 H = (to_light.dir - to_light.pos + RT->camera->eye) / 2.0f;
+    float specular = std::pow(glm::dot(H, trace.first->norm), mat.specl);
+    //light += (specular > 1.0f) ? 1.0f : (specular < 0.0f) ? 0.0f : specular;
+
+    //if (traceRay(std::get<2>(trace.second), depth + 1).first != NULL) light = 0.2f;
+
+    final += glm::vec4(glm::vec3(light * trace.first->color), mat.alpha);
+
+    if (mat.alpha < 1.0f) final += (1.0f - mat.alpha) * castRay(std::get<1>(trace.second), depth + 1);
+
+    if (mat.rflec > 0.0f) final = (1 - mat.rflec) * final + (mat.rflec * castRay(std::get<0>(trace.second), depth + 1));
+
+    return final;
   } else return background;
 }
 
@@ -100,7 +114,7 @@ std::pair<Face*, Raytrace::OutgoingRays> Raytrace::Pixel::traceRay(Raytrace::Ray
   if (closest != NULL) {
     return std::make_pair(closest, std::make_tuple(
       Ray(p, glm::reflect(r.dir, closest->norm)), 
-      Ray(p, glm::refract(r.dir, closest->norm, 1.0f)), 
+      Ray(p, glm::refract(r.dir, closest->norm, closest->mat_attr.rfrac)), 
       Ray(p, light_source - p)));
   } else {
     return std::make_pair(closest, std::make_tuple(
