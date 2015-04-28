@@ -58,6 +58,7 @@ public:
     // determines whether the mesh is rendered with lambert or skeleton
     bool skeleton_bound = false;
     bool lattice_active = true;
+    int deformation_axis = 0;
 
     // mesh interface functions
     void divideEdge();
