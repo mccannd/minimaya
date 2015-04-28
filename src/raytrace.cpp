@@ -55,7 +55,7 @@ void Raytrace::Pixel::run() {
       float sx = x + ((i + jitter_x) * incr);
       float sy = y + ((j + jitter_y) * incr);
       Ray r(sx, sy);
-      samples += castRay(r, 0);
+      samples += castRay(r, 5);
     }
   }
   glm::vec4 c = 255.0f * glm::abs(samples * incr * incr);
@@ -67,7 +67,7 @@ void Raytrace::Pixel::run() {
 
 
 glm::vec4 Raytrace::Pixel::castRay(Raytrace::Ray r, int depth) {
-  if (depth > 5) return background;
+  if (depth < 1) return background;
   // Only traces with convex planar polygons
   std::pair<Face*, OutgoingRays> trace = traceRay(r);
   
@@ -90,9 +90,9 @@ glm::vec4 Raytrace::Pixel::castRay(Raytrace::Ray r, int depth) {
 
     final += mat.alpha * (light + 0.2f) * trace.first->color;
 
-    if (mat.alpha < 1.0f) final += (1.0f - mat.alpha) * castRay(std::get<1>(trace.second), depth + 1);
+    if (mat.alpha < 1.0f) final += (1 - mat.alpha) * castRay(std::get<1>(trace.second), depth - 1);
 
-    if (mat.rflec > 0.0f) final = (1 - mat.rflec) * final + (mat.rflec * castRay(std::get<0>(trace.second), depth + 1));
+    if (mat.rflec > 0.0f) final = (1 - mat.rflec) * final + (mat.rflec * castRay(std::get<0>(trace.second), depth - 1));
 
     return final;
   } else return background;
@@ -105,7 +105,7 @@ std::pair<Face*, Raytrace::OutgoingRays> Raytrace::Pixel::traceRay(Raytrace::Ray
 
   for (std::vector<Face*>::iterator it = RT->mesh->faces.begin(); it != RT->mesh->faces.end(); it++) {
     float t = r.intersect(*it);
-    if (t < min && t > RT->camera->near_clip) {
+    if (t < min && t > 0.0001) {
       min = t;
       closest = *it;
     }

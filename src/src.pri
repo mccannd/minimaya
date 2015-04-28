@@ -18,6 +18,7 @@ SOURCES += \
     $$PWD/skeletonparser.cpp \
     $$PWD/interpolationutils.cpp \
     $$PWD/raytrace.cpp \
+    $$PWD/material.cpp \
     $$PWD/bmp/EasyBMP.cpp
 
 HEADERS += \
@@ -37,6 +38,7 @@ HEADERS += \
     $$PWD/skeletonparser.h \
     $$PWD/interpolationutils.h \
     $$PWD/raytrace.h \
+    $$PWD/material.h \
     $$PWD/bmp/EasyBMP.h \
     $$PWD/bmp/EasyBMP_BMP.h \
     $$PWD/bmp/EasyBMP_DataStructures.h \

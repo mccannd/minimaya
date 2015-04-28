@@ -4,9 +4,8 @@
 #include "QListWidgetItem"
 
 
-typedef struct {
-  float rflec, alpha, rfrac, specl;
-} Material;
+#include "material.h"
+
 
 class HalfEdge;
 class Face : public QListWidgetItem
@@ -20,7 +19,7 @@ public:
 
     glm::vec4 color;
     HalfEdge* start_edge;
-    Material mat_attr;
+    Material mat_attr = Material::RUBBER;
 
     glm::vec4 norm = glm::vec4(0, 0, 0, -1);
 
