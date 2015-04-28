@@ -10,7 +10,7 @@
 
 glm::vec4 Raytrace::background = glm::vec4(0, 0, 0, 1);
 
-glm::vec4 Raytrace::light_source = glm::vec4(-1, 5, -1, 1);
+glm::vec4 Raytrace::light_source = glm::vec4(5, 5, 3, 1);
 
 Raytrace::Raytrace(Camera *cam, Mesh *m) {
   camera = cam;
@@ -67,7 +67,7 @@ void Raytrace::Pixel::run() {
 
 
 glm::vec4 Raytrace::Pixel::castRay(Raytrace::Ray r, int depth) {
-  if (depth > 2) return background;
+  if (depth > 5) return background;
   // Only traces with convex planar polygons
   std::pair<Face*, OutgoingRays> trace = traceRay(r);
   
@@ -76,19 +76,19 @@ glm::vec4 Raytrace::Pixel::castRay(Raytrace::Ray r, int depth) {
     Material mat = trace.first->mat_attr;
 
     glm::vec4 final;
-    float light = 0.2f;
+    float light = 0.0f;
 
     Ray to_light = std::get<2>(trace.second);
     float diffuse = glm::dot(trace.first->norm, glm::normalize(to_light.dir));
     light += (diffuse > 1.0f) ? 1.0f : (diffuse < 0.0f) ? 0.0f : diffuse;
 
-    glm::vec4 H = (to_light.dir - to_light.pos + RT->camera->eye) / 2.0f;
+    glm::vec4 H = glm::normalize((to_light.dir - to_light.pos + RT->camera->eye) / 2.0f);
     float specular = std::pow(glm::dot(H, trace.first->norm), mat.specl);
-    //light += (specular > 1.0f) ? 1.0f : (specular < 0.0f) ? 0.0f : specular;
+    light += (specular > 1.0f) ? 1.0f : (specular < 0.0f) ? 0.0f : specular;
 
-    if (traceRay(to_light).first != NULL) light = 0.2f;
+    if (traceRay(to_light).first != NULL) light = 0.0f;
 
-    final += glm::vec4(glm::vec3(light * trace.first->color), mat.alpha);
+    final += mat.alpha * (light + 0.2f) * trace.first->color;
 
     if (mat.alpha < 1.0f) final += (1.0f - mat.alpha) * castRay(std::get<1>(trace.second), depth + 1);
 

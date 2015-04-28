@@ -9,7 +9,7 @@ Face::Face(int id)
     mat_attr.rflec = 0.0f;
     mat_attr.alpha = 1.0f;
     mat_attr.rfrac = 1.0f;
-    mat_attr.specl = 1.0f;
+    mat_attr.specl = 20.0f;
 }
 
 Face::Face(glm::vec4 c, int id)
@@ -21,7 +21,7 @@ Face::Face(glm::vec4 c, int id)
     mat_attr.rflec = 0.0f;
     mat_attr.alpha = 1.0f;
     mat_attr.rfrac = 1.0f;
-    mat_attr.specl = 1.0f;
+    mat_attr.specl = 20.0f;
 }
 
 Face::~Face()
