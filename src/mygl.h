@@ -15,7 +15,7 @@
 #include <scene/latticeray.h>
 #include <la.h>
 #include "skeletonparser.h"
-
+#include <scene/controls.h>
 
 class MyGL
     : public GLWidget277
@@ -33,6 +33,7 @@ private:
     ShaderProgram prog_skeleton;
     Mesh geom_mesh;
     Lattice* geom_lattice;
+    Controls* lattice_controls;
 
     Face* selected_face = NULL;
     HalfEdge* selected_edge = NULL;
@@ -89,7 +90,7 @@ public:
     LatticeRay* latticeRaycast(int x, int y);
     LatticeRay* lattice_ray = NULL;
     vector<Vertex*> selected_lattice_vertices = {};
-    float test = 10;
+    float test = 0.05;
 
 protected:
     void keyPressEvent(QKeyEvent *e);

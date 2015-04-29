@@ -20,7 +20,8 @@ SOURCES += \
     $$PWD/scene/keyframeselectable.cpp \
     $$PWD/scene/lattice.cpp \
     $$PWD/mymath.cpp \
-    $$PWD/scene/latticeray.cpp
+    $$PWD/scene/latticeray.cpp \
+    $$PWD/scene/controls.cpp
 
 HEADERS += \
     $$PWD/mainwindow.h \
@@ -41,4 +42,5 @@ HEADERS += \
     $$PWD/scene/keyframeselectable.h \
     $$PWD/scene/lattice.h \
     $$PWD/mymath.h \
-    $$PWD/scene/latticeray.h
+    $$PWD/scene/latticeray.h \
+    $$PWD/scene/controls.h

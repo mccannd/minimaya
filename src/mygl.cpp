@@ -23,7 +23,7 @@ MyGL::~MyGL()
     geom_mesh.clearAll();
     geom_mesh.destroy();
     geom_lattice->destroy();
-
+    lattice_controls->destroy();
     delete root_joint;
 }
 
@@ -56,6 +56,8 @@ void MyGL::initializeGL()
     geom_mesh.unitCube(); // initialize mesh as a unit cube
     geom_lattice = new Lattice(&geom_mesh);
     geom_lattice->create();
+    lattice_controls = new Controls();
+    lattice_controls->create();
 
     // create a root skellington joint
     root_joint = new Joint();
@@ -148,6 +150,8 @@ void MyGL::paintGL()
         lattice_ray->create();
         prog_wire.draw(*this, *lattice_ray);
     }
+
+    prog_wire.draw(*this, *lattice_controls);
 
     glEnable(GL_DEPTH_TEST);
 }
@@ -275,7 +279,7 @@ void MyGL::keyPressEvent(QKeyEvent *e)
         update();
         emit meshChanged();
     } else if (e->key() == Qt::Key_T) {
-        geom_lattice->bending(test * DEG2RAD, 2);
+        geom_lattice->tapering((test) * DEG2RAD, 1);
         geom_lattice->create();
         geom_mesh.create();
         update();
