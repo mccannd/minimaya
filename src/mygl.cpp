@@ -300,7 +300,6 @@ void MyGL::mouseReleaseEvent(QMouseEvent *e) {
     std::vector<Vertex*> ray_pierced = {};
     std::vector<float> world_t = {};
 
-
     selected_lattice_vertices = {};
     for(std::vector<Vertex*>::size_type i = 0; i < geom_lattice->ctrlpts.size(); i++) {
         mat4 m = translate(mat4(1.0f), vec3(geom_lattice->ctrlpts[i]->pos));
