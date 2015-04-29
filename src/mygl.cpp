@@ -478,3 +478,38 @@ void MyGL::updateSkeletonTransformations()
     //std::cout << "\n";
     prog_skeleton.setJointTransformArray(trans);
 }
+
+void MyGL::playAnimation(QListWidget *kf)
+{
+
+    // there must be at least two items to interpolate
+    if (kf->count() < 3) {
+        return;
+    }
+
+    timeline = kf;
+    maxKeyframe = timeline->count() - 1;
+    currentKeyframe = 0;
+
+    if (!buttonConnected) {
+        connect(&animationTimer, SIGNAL(timeout()),
+            this, SLOT(updateAnimationFrame()));
+        buttonConnected = true;
+    }
+
+    animationTimer.start(33);
+}
+
+void MyGL::updateAnimationFrame()
+{
+
+    root_joint->applyKeyframe(currentKeyframe);
+    updateSkeletonTransformations();
+    timeline->setCurrentRow(currentKeyframe);
+    update();
+    currentKeyframe++;
+    if (currentKeyframe >= maxKeyframe) {
+        animationTimer.stop();
+        return;
+    }
+}

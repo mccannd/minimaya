@@ -74,9 +74,13 @@ private slots:
 
     void on_keys_list_itemClicked(QListWidgetItem *item);
 
+    void on_keyframe_play_clicked();
+
+    void on_keyframe_clear_clicked();
+
 private:
     Ui::MainWindow *ui;
-    int keyframeID = 0;
+    int numAnimframes = 72;
 
 public slots:
     void refreshLists();

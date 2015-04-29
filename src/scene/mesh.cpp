@@ -627,10 +627,10 @@ void Mesh::linearBinding(Joint *root)
         // map these joints to vertex weights
         currentVertex->jointIDs = glm::ivec2(firstID, secondID);
         currentVertex->weights = glm::vec2(secondDistance, firstDistance);
-        std::cout<<"Bound vertex " << currentVertex->getID() <<" to joints: <"
-                << firstID << ", " << secondID <<
-                   "> with weights: <" << secondDistance <<
-                   ", " << firstDistance << ">\n";
+//        std::cout<<"Bound vertex " << currentVertex->getID() <<" to joints: <"
+//                << firstID << ", " << secondID <<
+//                   "> with weights: <" << secondDistance <<
+//                   ", " << firstDistance << ">\n";
 
     }
 

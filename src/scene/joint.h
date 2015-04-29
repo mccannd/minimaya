@@ -53,10 +53,24 @@ public:
     void rename(QString name);
 
     // animation utilities
-    QVector<glm::quat> keysRotation;
-    QVector<glm::vec4> keysPosition;
-    void keyframeSnapshot(); // save the state of rotation and position
-    void applyKeyframe(unsigned int index); // apply this key's properties
+
+    QMap<int, glm::quat> keysRotation;
+    QMap<int, glm::vec4> keysPosition;
+
+    QVector<glm::quat> frameRotation;
+    QVector<glm::vec4> framePosition;
+
+    QMap<int, glm::quat> controlPointKeysRotation;
+    QMap<int, glm::vec4> controlPointKeysPosition;
+
+    // makes the extended vectors for smoothly interpolated animation
+    void makeControlPoints();
+
+    // create the frames
+    void createAllFrames(unsigned int numFrames);
+
+    void keyframeSnapshot(int frame); // save the state of rotation and position
+    void applyKeyframe(int index); // apply this key's properties
     void clearKeyframes();
 
     // graphics: drawable lines

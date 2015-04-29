@@ -2,6 +2,7 @@
 
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLShaderProgram>
+#include <QTimer>
 
 #include <glwidget277.h>
 #include <la.h>
@@ -38,6 +39,13 @@ private:
 
     std::vector<HalfEdge*> drawn_edges = {};
     std::vector<Joint*> skeleton_list = {};
+
+    int currentKeyframe = 0;
+    int maxKeyframe;
+
+    QTimer animationTimer;
+    QListWidget* timeline;
+    bool buttonConnected = false;
 public:
     explicit MyGL(QWidget *parent = 0);
     ~MyGL();
@@ -79,6 +87,8 @@ public:
     void updateSkeletonList();
     void updateSkeletonTransformations();
 
+    void playAnimation(QListWidget *kf);
+
 protected:
     void keyPressEvent(QKeyEvent *e);
 signals:
@@ -89,5 +99,6 @@ public slots:
     void faceSelected(QListWidgetItem* f);
     void edgeSelected(QListWidgetItem* e);
     void vertexSelected(QListWidgetItem* v);
+    void updateAnimationFrame();
 
 };

@@ -1,6 +1,7 @@
 #include "joint.h"
 #include <assert.h>
 #include <cmath>
+#include <iostream>
 
 
 /// --- Contstructors ---
@@ -126,23 +127,34 @@ Joint::~Joint()
 ///
 
 // save a keyframe of this joint plus all children
-void Joint::keyframeSnapshot()
+void Joint::keyframeSnapshot(int frame)
 {
-    keysRotation.push_back(rotation);
-    keysPosition.push_back(position);
+    // overwrite a previous keyframe if the frame is the same
+    if (keysRotation.contains(frame)) {
+        keysRotation.remove(frame);
+        keysPosition.remove(frame);
+    }
+
+    keysRotation[frame] = rotation;
+    keysPosition[frame] = position;
+
+    controlPointKeysRotation.clear();
+    controlPointKeysPosition.clear();
 
     for (unsigned int i = 0; i < children.size(); i++) {
-        children[i]->keyframeSnapshot();
+        children[i]->keyframeSnapshot(frame);
     }
 }
 
 // apply the state of a certain key to all nodes
-void Joint::applyKeyframe(unsigned int index)
+void Joint::applyKeyframe(int index)
 {
-    assert (index < keysRotation.size());
+    if (index > frameRotation.size() ||
+            frameRotation.size() == 0) return;
 
-    rotation = keysRotation[index];
-    position = keysPosition[index];
+    //std::cout <<"Applying frame "<<index<<"\n";
+    rotation = frameRotation[index];
+    position = framePosition[index];
 
     for (unsigned int i = 0; i < children.size(); i++) {
         children[i]->applyKeyframe(index);
@@ -155,10 +167,237 @@ void Joint::clearKeyframes()
     keysPosition.clear();
     keysRotation.clear();
 
+    controlPointKeysRotation.clear();
+    controlPointKeysPosition.clear();
+
+    frameRotation.clear();
+    framePosition.clear();
+
+
     for (unsigned int i = 0; i < children.size(); i++) {
         children[i]->clearKeyframes();
     }
 }
+
+// make the extended vectors for smoothly interpolated animation
+void Joint::makeControlPoints()
+{
+    if (keysPosition.size() < 1) return;
+
+    controlPointKeysPosition.clear();
+    controlPointKeysRotation.clear();
+
+    if (keysPosition.size() == 1) {
+        QList<int> frame = keysPosition.keys();
+
+        controlPointKeysPosition[frame[0]] =
+                (keysPosition[frame[0]]);
+        controlPointKeysRotation[frame[0]] =
+                (keysRotation[frame[0]]);
+
+    } else {
+
+
+        QList<int> keyList = keysPosition.keys();
+
+
+        for (int i = 0; i < keyList.size(); i++) {
+            if (i == 0) {
+                controlPointKeysPosition[keyList[i]] =
+                        keysPosition[keyList[i]];
+                int t1 = keyList[i];
+                int t2 = keyList[i+1];
+                int time = (int) ((1.0 / 6.0) * (t2 - t1)) + t1;
+                if (time == t1) time++;
+                controlPointKeysPosition[keyList[i] + 1] =
+                        keysPosition[keyList[i]];
+
+//                std::cout<<"pos " << keyList[i] << "\n";
+//                std::cout<<"pos " << keyList[i] + 1 << "\n";
+            } else if (i == keyList.size() - 1){
+                int t1 = keyList[i-1];
+                int t2 = keyList[i];
+                int time = t2 - (int) ((1.0 / 6.0) * (t2 - t1));
+                if (time == t2) time--;
+                controlPointKeysPosition[keyList[i] - 1] =
+                        keysPosition[keyList[i]];
+                controlPointKeysPosition[keyList[i]] =
+                        keysPosition[keyList[i]];
+
+//                std::cout<<"pos " << keyList[i] - 1 << "\n";
+//                std::cout<<"pos " << keyList[i] << "\n";
+            } else {
+                // get the vectors before and after this key
+                glm::vec4 prev = keysPosition[keyList[i - 1]];
+                glm::vec4 next = keysPosition[keyList[i + 1]];
+                //int t1 = keyList[i - 1];
+                //int t2 = keyList[i + 1];
+                // calculate a slope and divide by six
+                glm::vec4 slope = (1.0f / 4.0f) * (next - prev);
+
+                //int tslope = (int) ((1.0f / 4.0f) * (t2 - t1));
+                controlPointKeysPosition[keyList[i] - 1] =
+                        keysPosition[keyList[i]] - slope;
+                controlPointKeysPosition[keyList[i]] =
+                        keysPosition[keyList[i]];
+                controlPointKeysPosition[keyList[i] + 1] =
+                        keysPosition[keyList[i]] + slope;
+
+//                std::cout<<"pos " << keyList[i] - 1 << "\n";
+//                std::cout<<"pos " << keyList[i] << "\n";
+//                std::cout<<"pos " << keyList[i] + 1 << "\n";
+            }
+        }
+
+        keyList = keysRotation.keys();
+
+        for (int i = 0; i < keyList.size() - 1; i++) {
+            glm::quat inter1;
+            glm::quat inter2;
+            if (i == 0) {
+                inter1 = glm::intermediate(keysRotation[keyList[i]],
+                                           keysRotation[keyList[i]],
+                                           keysRotation[keyList[i + 1]]);
+            } else {
+                inter1 = glm::intermediate(keysRotation[keyList[i - 1]],
+                                           keysRotation[keyList[i]],
+                                           keysRotation[keyList[i + 1]]);
+            }
+
+            if (i + 1 == keyList.size() - 1) {
+                inter1 = glm::intermediate(keysRotation[keyList[i]],
+                                           keysRotation[keyList[i + 1]],
+                                           keysRotation[keyList[i + 1]]);
+            } else {
+
+                    inter1 = glm::intermediate(keysRotation[keyList[i]],
+                                               keysRotation[keyList[i + 1]],
+                                               keysRotation[keyList[i + 2]]);
+
+
+            }
+
+            controlPointKeysRotation[keyList[i]] = keysRotation[keyList[i]];
+            controlPointKeysRotation[keyList[i] + 1] = inter1;
+            controlPointKeysRotation[keyList[i + 1] - 1] = inter2;
+
+//            std::cout<<"rot " << keyList[i] << "\n";
+//            std::cout<<"rot " << keyList[i] + 1 << "\n";
+//            std::cout<<"rot " << keyList[i+1] - 1 << "\n";
+
+
+        }
+
+        controlPointKeysRotation[keyList[keyList.size() - 1]] =
+                keysRotation[keyList[keyList.size() - 1]];
+
+//        std::cout<<"rot " << keyList[keyList.size() - 1] << "\n";
+    }
+
+
+    // calculate the control points for all joints
+    for (unsigned int i = 0; i < children.size(); i++) {
+        children[i]->makeControlPoints();
+    }
+
+}
+
+void Joint::createAllFrames(unsigned int numFrames)
+{
+    if (keysPosition.size() < 1) {
+        return;
+    }
+
+    frameRotation.clear();
+    framePosition.clear();
+    makeControlPoints();
+
+    // create a number of frames equal to numFrames
+    // pad the beginning if the first frame isnt a key
+
+    QList<int> frames = controlPointKeysPosition.keys();
+
+    int firstFrame = frames[0];
+    if (firstFrame > 0) {
+        for (int f = 0; f < firstFrame; f++) {
+            frameRotation.push_back(controlPointKeysRotation[firstFrame]);
+            framePosition.push_back(controlPointKeysPosition[firstFrame]);
+        }
+    }
+
+//    std::cout<< frames.size() << " control points\n";
+
+    for (unsigned int i = 0; i < frames.size() - 1; i += 3) {
+        // find the time interval, in frames, between ctrlpts
+
+        int keyframe1 = frames[i];
+
+        int keyframe2 = frames[i + 3];
+
+        //std::cout<<"Interpolating " <<keyframe1 << " " <<keyframe2 << "\n";
+        for (int f = keyframe1; f < keyframe2; f++) {
+
+
+            // calculate a time t for interpolation
+            float t = (float)(f - keyframe1) /
+                    (float)(keyframe2 - keyframe1);
+
+            // calculate a new position based on ctrlpts
+            // find the position through de castlejau
+            glm::vec4 m1 = (1 - t) * controlPointKeysPosition[frames[i]] +
+                    t * controlPointKeysPosition[frames[i + 1]];
+            glm::vec4 m2 = (1 - t) * controlPointKeysPosition[frames[i + 1]] +
+                    t * controlPointKeysPosition[frames[i + 2]];
+            glm::vec4 m3 = (1 - t) * controlPointKeysPosition[frames[i + 2]] +
+                    t * controlPointKeysPosition[frames[i + 3]];
+
+//            std::cout<<m1.x <<" "<<m1.y<<" "<<m1.z<<"\n";
+//            std::cout<<m2.x <<" "<<m2.y<<" "<<m2.z<<"\n";
+//            std::cout<<m3.x <<" "<<m3.y<<" "<<m3.z<<"\n\n";
+
+            // find second midpoints
+            glm::vec4 mm1 = (1 - t) * m1 + t * m2;
+            glm::vec4 mm2 = (1 - t) * m2 + t * m3;
+
+//            std::cout<<mm1.x <<" "<<mm1.y<<" "<<mm1.z<<"\n";
+//            std::cout<<mm2.x <<" "<<mm2.y<<" "<<mm2.z<<"\n";
+
+            // set to final midpoint
+            glm::vec4 newPosition = (1 - t) * mm1 + t * mm2;
+//            std::cout<<"result" << newPosition.x <<" "<<newPosition.y<<
+//                       " "<<newPosition.z<<"\n";
+            framePosition.push_back(newPosition);
+
+
+            // calculate a new rotation based on ctrlpts
+            glm::quat newRotation = glm::squad(controlPointKeysRotation[frames[i]],
+                                  controlPointKeysRotation[frames[i + 1]],
+                                  controlPointKeysRotation[frames[i + 2]],
+                                  controlPointKeysRotation[frames[i + 3]],
+                                  t);
+            frameRotation.push_back(newRotation);
+
+        }
+
+
+    }
+
+    // pad the end if the last frame isnt a key
+    int lastFrame = frames[frames.size() - 1];
+    if (lastFrame < numFrames) {
+        for (int f = lastFrame; f <= numFrames; f++) {
+            frameRotation.push_back(keysRotation[lastFrame]);
+            framePosition.push_back(keysPosition[lastFrame]);
+
+        }
+    }
+
+    // calculate the frames for all joints
+    for (unsigned int i = 0; i < children.size(); i++) {
+        children[i]->createAllFrames(numFrames);
+    }
+}
+
 
 
 /// --- OpenGL utilities

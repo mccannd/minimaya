@@ -256,22 +256,24 @@ void MainWindow::on_pushButton_18_clicked()
     ui->mygl->updateSkeletonTransformations();
     ui->mygl->skeleton_bound = true;
 
-    // add the bind position as a keyframe
-    keyframeID = 0;
-    ui->mygl->root_joint->keyframeSnapshot();
-    KeyframeSelectable* bind = new KeyframeSelectable(keyframeID++);
-    bind->setText("Bind Pose");
-    ui->keys_list->addItem(bind);
+    // create an empty timeline
+    ui->keys_list->clear();
+    for (int i = 0; i < numAnimframes; i++) {
+
+        KeyframeSelectable* kfs = new KeyframeSelectable(i);
+        kfs->setText(QString("%1").arg(i));
+        ui->keys_list->addItem(kfs);
+    }
 }
 
 void MainWindow::on_keyframe_save_clicked()
 {
     if (ui->mygl->skeleton_bound) {
-        ui->mygl->root_joint->keyframeSnapshot();
-        KeyframeSelectable* kfs = new KeyframeSelectable(keyframeID);
-        kfs->setText(QString("Keyframe %1").arg(keyframeID));
-        keyframeID++;
-        ui->keys_list->addItem(kfs);
+        int index = ui->keys_list->currentRow();
+        ui->mygl->root_joint->keyframeSnapshot(index);
+        ui->keys_list->currentItem()->setText(
+                    QString("%1 (Keyframe)").arg(index));
+        ui->mygl->root_joint->createAllFrames(numAnimframes);
     }
 }
 
@@ -282,4 +284,26 @@ void MainWindow::on_keys_list_itemClicked(QListWidgetItem *item)
     ui->mygl->root_joint->applyKeyframe(index);
     // make the window respond to the new transformations
     ui->mygl->updateSkeletonTransformations();
+}
+
+void MainWindow::on_keyframe_play_clicked()
+{
+    if (ui->mygl->skeleton_bound) {
+        ui->mygl->playAnimation(ui->keys_list);
+    }
+}
+
+void MainWindow::on_keyframe_clear_clicked()
+{
+    if (ui->mygl->skeleton_bound) {
+        ui->mygl->root_joint->clearKeyframes();
+        // create an empty timeline
+        ui->keys_list->clear();
+        for (int i = 0; i < numAnimframes; i++) {
+
+            KeyframeSelectable* kfs = new KeyframeSelectable(i);
+            kfs->setText(QString("%1").arg(i));
+            ui->keys_list->addItem(kfs);
+        }
+    }
 }
