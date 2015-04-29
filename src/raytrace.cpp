@@ -10,7 +10,7 @@
 
 glm::vec4 Raytrace::background = glm::vec4(0, 0, 0, 1);
 
-glm::vec4 Raytrace::light_source = glm::vec4(5, 5, 3, 1);
+glm::vec4 Raytrace::light_source = glm::vec4(2, 5, 2, 1);
 
 Raytrace::Raytrace(Camera *cam, Mesh *m) {
   camera = cam;
@@ -84,15 +84,16 @@ glm::vec4 Raytrace::Pixel::castRay(Raytrace::Ray r, int depth) {
 
     glm::vec4 H = glm::normalize((to_light.dir - to_light.pos + RT->camera->eye) / 2.0f);
     float specular = std::pow(glm::dot(H, trace.first->norm), mat.specl);
-    light += (specular > 1.0f) ? 1.0f : (specular < 0.0f) ? 0.0f : specular;
+    //light += (specular > 1.0f) ? 1.0f : (specular < 0.0f) ? 0.0f : specular;
+    // still funky...
 
     if (traceRay(to_light).first != NULL) light = 0.0f;
 
-    final += mat.alpha * (light + 0.2f) * trace.first->color;
+    final += mat.alpha * (0.8f * light + 0.2f) * trace.first->color;
 
-    if (mat.alpha < 1.0f) final += (1 - mat.alpha) * castRay(std::get<1>(trace.second), depth - 1);
+    if (mat.alpha < 1.0f) final += (1.0f - mat.alpha) * castRay(std::get<1>(trace.second), depth - 1);
 
-    if (mat.rflec > 0.0f) final = (1 - mat.rflec) * final + (mat.rflec * castRay(std::get<0>(trace.second), depth - 1));
+    if (mat.rflec > 0.0f) final = (1.0f - mat.rflec) * final + (mat.rflec * castRay(std::get<0>(trace.second), depth - 1));
 
     return final;
   } else return background;

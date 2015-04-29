@@ -58,7 +58,7 @@ void MyGL::initializeGL()
 
     geom_mesh.create();
     //geom_mesh.unitCube(); // initialize mesh as a unit cube
-    QString filename = QString("C:/Users/molisani/primitives.obj");
+    QString filename = QString("C:/Users/molisani/strips.obj");
     geom_mesh.parseObj(filename);
 
 
@@ -217,6 +217,8 @@ void MyGL::recolorFace(float r, float g, float b)
     if (g < 0) g = 0;
     if (b > 1) b = 1;
     if (b < 0) b = 0;
+
+    selected_face->mat_attr = Material::MIRROR;
 
     geom_mesh.recolorFace(selected_face, r, g, b);
     //std::cout<<"FEHS COLOR\n";
