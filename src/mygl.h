@@ -70,6 +70,7 @@ public:
     void deleteVertex();
     void resetMesh();
     void subdivideMesh(QListWidget* e, QListWidget* f, QListWidget* v);
+    void smoothNormals();
 
     void selectNextEdge(QListWidget* qlw);
     void selectSymEdge(QListWidget *qlw);

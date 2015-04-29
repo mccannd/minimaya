@@ -25,6 +25,40 @@ Mesh::Mesh()
 }
 
 
+glm::vec4 averagedNormal(Vertex* v)
+{
+    float numEdges = 0.0;
+    glm::vec3 normalSum = glm::vec3(0, 0, 0);
+    // get an edge that points to this vertex
+    HalfEdge* incomingEdge = v->edge;
+    HalfEdge* start = incomingEdge;
+
+    do {
+        // calculate normal between this edge and next edgeglm::vec4 a = edge->sym->vert->pos;
+        glm::vec4 a = incomingEdge->sym->vert->pos;
+        glm::vec4 b = incomingEdge->vert->pos;
+        glm::vec4 c = incomingEdge->next->vert->pos;
+        a = a - b;
+        c = c - b;
+        glm::vec3 a3 = glm::vec3(a[0], a[1], a[2]);
+        glm::vec3 c3 = glm::vec3(c[0], c[1], c[2]);
+        glm::vec3 cross3 = glm::cross(c3, a3);
+
+        cross3 = glm::normalize(cross3);
+        normalSum = normalSum + cross3;
+
+
+        incomingEdge = incomingEdge->next->sym;
+        numEdges++;
+    } while (incomingEdge != start);
+
+    // average the sum of normals
+    normalSum = (1.0f / numEdges) * normalSum;
+    // return this as a vec4
+    return glm::vec4(normalSum[0], normalSum[1], normalSum[2], 0);
+
+}
+
 // refresh all information necessary for opengl to draw
 void Mesh::updateBuffers()
 {
@@ -62,6 +96,12 @@ void Mesh::updateBuffers()
         // traverse all other vertices, each completing a triangle of IDs
         do {
             // calculate normal for this vertex
+            glm::vec4 normal;
+
+            if (smoothNormals) {
+                normal = averagedNormal(edge->vert);
+            } else {
+
             glm::vec4 a = edge->sym->vert->pos;
             glm::vec4 b = edge->vert->pos;
             glm::vec4 c = edge->next->vert->pos;
@@ -92,8 +132,10 @@ void Mesh::updateBuffers()
                 }
             }
 
-            glm::vec4 normal = glm::vec4(0.0 - cross3[0],
+            normal = glm::vec4(0.0 - cross3[0],
                     0.0 - cross3[1], 0.0 - cross3[2], 0);
+
+            }
 
 
             meshVertexPositions.push_back(edge->vert->pos);

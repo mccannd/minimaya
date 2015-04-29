@@ -307,3 +307,8 @@ void MainWindow::on_keyframe_clear_clicked()
         }
     }
 }
+
+void MainWindow::on_vertex_normals_checkbox_clicked()
+{
+    ui->mygl->smoothNormals();
+}

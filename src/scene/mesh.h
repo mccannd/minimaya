@@ -69,6 +69,8 @@ public:
     void triangulateFace(Face* f);
     void deleteVertex(Vertex* v);
 
+    bool smoothNormals = true;
+
     void parseObj(QString& fileName);
 
     // binds a skeleton to each vertex

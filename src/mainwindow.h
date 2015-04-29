@@ -78,6 +78,8 @@ private slots:
 
     void on_keyframe_clear_clicked();
 
+    void on_vertex_normals_checkbox_clicked();
+
 private:
     Ui::MainWindow *ui;
     int numAnimframes = 72;

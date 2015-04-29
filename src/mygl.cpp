@@ -513,3 +513,9 @@ void MyGL::updateAnimationFrame()
         return;
     }
 }
+
+void MyGL::smoothNormals()
+{
+    geom_mesh.smoothNormals = !geom_mesh.smoothNormals;
+    geom_mesh.create();
+}
