@@ -1,7 +1,5 @@
 # pragma once
 
-#ifndef FACE_H
-#define FACE_H
 #include "la.h"
 #include "QListWidgetItem"
 
@@ -20,5 +18,3 @@ public:
 
     int getID();
 };
-
-#endif // FACE_H

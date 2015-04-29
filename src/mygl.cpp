@@ -1,13 +1,10 @@
 
 #include "mygl.h"
 #include <la.h>
-
 #include <iostream>
 #include <QApplication>
 #include <QKeyEvent>
 #include <QFileDialog>
-
-
 
 MyGL::MyGL(QWidget *parent)
     : GLWidget277(parent)
@@ -25,7 +22,8 @@ MyGL::~MyGL()
     // ensure that the data in the mesh does not leak
     geom_mesh.clearAll();
     geom_mesh.destroy();
-
+    geom_lattice->destroy();
+    lattice_controls->destroy();
     delete root_joint;
 }
 
@@ -53,12 +51,13 @@ void MyGL::initializeGL()
     vao.create();
 
     geom_cylinder.create();
-
     geom_sphere.create();
-
     geom_mesh.create();
     geom_mesh.unitCube(); // initialize mesh as a unit cube
-
+    geom_lattice = new Lattice(&geom_mesh);
+    geom_lattice->create();
+    lattice_controls = new Controls();
+    lattice_controls->create();
 
     // create a root skellington joint
     root_joint = new Joint();
@@ -121,6 +120,9 @@ void MyGL::paintGL()
     // draw selected mesh features
     glDisable(GL_DEPTH_TEST);
 
+    prog_wire.draw(*this, *geom_lattice);
+
+
     for (unsigned int i = 0; i < drawn_edges.size(); i++) {
         if (drawn_edges[i] != NULL) {
             drawn_edges[i]->create();
@@ -136,6 +138,20 @@ void MyGL::paintGL()
     if (skeleton_visible) {
         drawSkeleton(root_joint);
     }
+
+    for(std::vector<Vertex*>::size_type i = 0; i < selected_lattice_vertices.size(); i++) {
+        selected_lattice_vertices[i]->create();
+        prog_wire.draw(*this, *selected_lattice_vertices[i]);
+    }
+
+    if (lattice_ray != NULL) {
+        mat4 model = mat4(1.0f);
+        prog_wire.setModelMatrix(model);
+        lattice_ray->create();
+        prog_wire.draw(*this, *lattice_ray);
+    }
+
+    prog_wire.draw(*this, *lattice_controls);
 
     glEnable(GL_DEPTH_TEST);
 }
@@ -178,9 +194,178 @@ void MyGL::keyPressEvent(QKeyEvent *e)
         camera.fovy += 5.0f * DEG2RAD;
     } else if (e->key() == Qt::Key_2) {
         camera.fovy -= 5.0f * DEG2RAD;
+    } else if (e->key() == Qt::Key_W) {
+        geom_lattice->updateDivisions(geom_lattice->x,
+                                      geom_lattice->y + 1,
+                                      geom_lattice->z);
+    } else if (e->key() == Qt::Key_A) {
+        geom_lattice->updateDivisions(geom_lattice->x - 1,
+                                      geom_lattice->y,
+                                      geom_lattice->z);
+    } else if (e->key() == Qt::Key_S) {
+        geom_lattice->updateDivisions(geom_lattice->x,
+                                      geom_lattice->y - 1,
+                                      geom_lattice->z);
+    } else if (e->key() == Qt::Key_D) {
+        geom_lattice->updateDivisions(geom_lattice->x + 1,
+                                      geom_lattice->y,
+                                      geom_lattice->z);
+    } else if (e->key() == Qt::Key_E) {
+        geom_lattice->updateDivisions(geom_lattice->x,
+                                      geom_lattice->y,
+                                      geom_lattice->z + 1);
+    } else if (e->key() == Qt::Key_Q) {
+        geom_lattice->updateDivisions(geom_lattice->x,
+                                      geom_lattice->y,
+                                      geom_lattice->z - 1);
+    } else if (e->key() == Qt::Key_U) {
+        for(std::vector<Vertex*>::size_type i = 0; i < selected_lattice_vertices.size(); i++) {
+            selected_lattice_vertices[i]->pos += vec4(0, 1, 0, 0);
+        }
+
+        geom_lattice->freeFormDeformation();
+        geom_lattice->create();
+        geom_mesh.create();
+        update();
+        emit meshChanged();
+    } else if (e->key() == Qt::Key_J) {
+        for(std::vector<Vertex*>::size_type i = 0; i < selected_lattice_vertices.size(); i++) {
+            selected_lattice_vertices[i]->pos += vec4(0, -1, 0, 0);
+        }
+
+        geom_lattice->freeFormDeformation();
+        geom_lattice->create();
+        geom_mesh.create();
+        update();
+        emit meshChanged();
+    } else if (e->key() == Qt::Key_K) {
+        for(std::vector<Vertex*>::size_type i = 0; i < selected_lattice_vertices.size(); i++) {
+            selected_lattice_vertices[i]->pos += vec4(1, 0, 0, 0);
+        }
+
+        geom_lattice->freeFormDeformation();
+        geom_lattice->create();
+        geom_mesh.create();
+        update();
+        emit meshChanged();
+    } else if (e->key() == Qt::Key_H) {
+        for(std::vector<Vertex*>::size_type i = 0; i < selected_lattice_vertices.size(); i++) {
+            selected_lattice_vertices[i]->pos += vec4(-1, 0, 0, 0);
+        }
+
+        geom_lattice->freeFormDeformation();
+        geom_lattice->create();
+        geom_mesh.create();
+        update();
+        emit meshChanged();
+    } else if (e->key() == Qt::Key_Y) {
+        for(std::vector<Vertex*>::size_type i = 0; i < selected_lattice_vertices.size(); i++) {
+            selected_lattice_vertices[i]->pos += vec4(0, 0, 1, 0);
+        }
+
+        geom_lattice->freeFormDeformation();
+        geom_lattice->create();
+        geom_mesh.create();
+        update();
+        emit meshChanged();
+    } else if (e->key() == Qt::Key_G) {
+        for(std::vector<Vertex*>::size_type i = 0; i < selected_lattice_vertices.size(); i++) {
+            selected_lattice_vertices[i]->pos += vec4(0, 0, -1, 0);
+        }
+
+        geom_lattice->freeFormDeformation();
+        geom_lattice->create();
+        geom_mesh.create();
+        update();
+        emit meshChanged();
+    } else if (e->key() == Qt::Key_T) {
+        geom_lattice->squashing((test), 0);
+        geom_lattice->create();
+        geom_mesh.create();
+        update();
+        emit meshChanged();
+
+        test += 0.05;
     }
+
+
     camera.RecomputeEye();
     update();  // Calls paintGL, among other things
+}
+
+void MyGL::mousePressEvent(QMouseEvent *e) {
+    prevPos = e->pos();
+}
+
+
+// For lattice
+void MyGL::mouseReleaseEvent(QMouseEvent *e) {
+    prevPos = e->pos();
+    lattice_ray = latticeRaycast(e->x(), e->y());
+
+    std::vector<Vertex*> ray_pierced = {};
+    std::vector<float> world_t = {};
+
+    if(!QGuiApplication::queryKeyboardModifiers().testFlag(Qt::ShiftModifier))
+    {
+        selected_lattice_vertices = {};
+    }
+
+    for(std::vector<Vertex*>::size_type i = 0; i < geom_lattice->ctrlpts.size(); i++) {
+        mat4 m = translate(mat4(1.0f), vec3(geom_lattice->ctrlpts[i]->pos));
+        float t = lattice_ray->latticeIntersect(m, &camera);
+        if (t > 0) {
+            ray_pierced.push_back(geom_lattice->ctrlpts[i]);
+            world_t.push_back(t);
+        }
+    }
+
+    if (!ray_pierced.empty()) {
+        Vertex* closest_t = ray_pierced[0];
+        float closest_world_t = world_t[0];
+        for(std::vector<Vertex*>::size_type i = 1; i < ray_pierced.size(); i++) {
+            if (world_t[i] < closest_world_t) {
+                closest_t = ray_pierced[i];
+                closest_world_t = world_t[i];
+            }
+        }
+        selected_lattice_vertices.push_back(closest_t);
+    }
+    update();
+}
+
+void MyGL::mouseMoveEvent(QMouseEvent *e)
+{
+//     int dx = e->x() - prevPos.x();
+//     int dy = e->y() - prevPos.y();
+
+//     if (e->buttons() & Qt::LeftButton) {
+//         camera.theta += dx * 0.0002;
+//         camera.phi += dy * 0.0002;
+//     }
+
+//     camera.RecomputeEye();
+//     update();
+}
+
+/// Raycasting
+LatticeRay* MyGL::latticeRaycast(int x, int y) {
+    float sx = (2 * x/camera.width) - 1;
+    float sy = 1 - (2 * y/camera.height);
+
+    vec3 F = normalize(vec3(camera.ref) - vec3(camera.eye));
+    vec3 R = normalize(cross(F, vec3(camera.up)));
+    vec3 U = normalize(cross(R, F));
+
+    float length = distance(camera.ref, camera.eye) * tan(camera.fovy/2);
+    vec3 V = U * length;
+    vec3 H = length * camera.width/camera.height * R;
+    vec3 p = vec3(camera.ref) + sx * H + sy * V;
+
+    vec4 ray_origin = camera.eye;
+    vec4 ray_direction = normalize(vec4(p[0], p[1], p[2], 1) - camera.eye);
+
+    return new LatticeRay(ray_origin, ray_direction);
 }
 
 /// mesh interface functions
@@ -316,6 +501,7 @@ void MyGL::importOBJ()
                                                     QString("/home"),
                                                     QString("Mesh Files (*.obj)"));
     geom_mesh.parseObj(fileName);
+    geom_lattice->recreateLattice();
     update();
     emit meshChanged();
 }

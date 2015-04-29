@@ -11,9 +11,6 @@
 #include <QFile>
 #include <QPair>
 
-static const int CYL_IDX_COUNT = 240;
-static const int CYL_VERT_COUNT = 80;
-
 Mesh::Mesh()
     : bufIdx(QOpenGLBuffer::IndexBuffer),
       bufPos(QOpenGLBuffer::VertexBuffer),
@@ -304,6 +301,7 @@ void Mesh::moveVertex(Vertex* v, float x, float y, float z)
 
     // reposition with new coordinates
     v->pos = glm::vec4(x, y, z, 1);
+    v->orig_pos = v->pos;
 
     // update the buffers
     this->create();
@@ -315,7 +313,7 @@ void Mesh::recolorFace(Face *f, float r, float g, float b)
     this->create();
 }
 
-Vertex* Mesh::divideEdge(HalfEdge *e, boolean updateBuffers)
+Vertex* Mesh::divideEdge(HalfEdge *e, bool updateBuffers)
 {
     // check that the edge is in this mesh
     if(std::find(edges.begin(), edges.end(), e) == edges.end()) {
@@ -799,6 +797,7 @@ void Mesh::subdivide(QListWidget *edgeList, QListWidget *faceList,
 
             Vertex* mid = this->divideEdge(e, false);
             mid->pos = glm::vec4(x, y, z, 1);
+            mid->orig_pos = mid->pos;
 
             // add the midpoint to the hashset
             midpoints.insert(mid);
@@ -876,6 +875,7 @@ void Mesh::subdivide(QListWidget *edgeList, QListWidget *faceList,
 
         // set the vert up!
         v->pos = glm::vec4(x, y, z, 1);
+        v->orig_pos = v->pos;
     }
 
     /// --- Quadrangulate original faces ---

@@ -12,15 +12,19 @@
 #include <scene/camera.h>
 #include <scene/mesh.h>
 #include <scene/joint.h>
+#include <scene/lattice.h>
+#include <scene/latticeray.h>
 #include <la.h>
 #include "skeletonparser.h"
-
+#include <scene/controls.h>
 
 class MyGL
     : public GLWidget277
 {
     Q_OBJECT
 private:
+    QPoint prevPos;
+
     QOpenGLVertexArrayObject vao;
 
     Cylinder geom_cylinder;
@@ -29,7 +33,8 @@ private:
     ShaderProgram prog_wire;
     ShaderProgram prog_skeleton;
     Mesh geom_mesh;
-
+    Lattice* geom_lattice;
+    Controls* lattice_controls;
 
     Face* selected_face = NULL;
     HalfEdge* selected_edge = NULL;
@@ -61,6 +66,8 @@ public:
     bool skeleton_visible = true;
     // determines whether the mesh is rendered with lambert or skeleton
     bool skeleton_bound = false;
+    bool lattice_active = true;
+    int deformation_axis = 1;
 
     // mesh interface functions
     void divideEdge();
@@ -90,8 +97,17 @@ public:
 
     void playAnimation(QListWidget *kf);
 
+    // Deformation
+    LatticeRay* latticeRaycast(int x, int y);
+    LatticeRay* lattice_ray = NULL;
+    vector<Vertex*> selected_lattice_vertices = {};
+    float test = 0.05;
+
 protected:
     void keyPressEvent(QKeyEvent *e);
+    void mousePressEvent(QMouseEvent *e);
+    void mouseMoveEvent(QMouseEvent *e);
+    void mouseReleaseEvent(QMouseEvent *e);
 signals:
     void meshChanged();
     void vertexChosen(float x, float y, float z);
