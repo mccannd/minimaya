@@ -58,7 +58,7 @@ public:
     // determines whether the mesh is rendered with lambert or skeleton
     bool skeleton_bound = false;
     bool lattice_active = true;
-    int deformation_axis = 0;
+    int deformation_axis = 1;
 
     // mesh interface functions
     void divideEdge();
@@ -89,6 +89,7 @@ public:
     LatticeRay* latticeRaycast(int x, int y);
     LatticeRay* lattice_ray = NULL;
     vector<Vertex*> selected_lattice_vertices = {};
+    float test = 10;
 
 protected:
     void keyPressEvent(QKeyEvent *e);

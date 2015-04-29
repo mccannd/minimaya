@@ -134,10 +134,89 @@ void Lattice::twisting(float q, int deformation_axis) {
     freeFormDeformation();
 }
 
+// q is angle
 void Lattice::bending(float q, int deformation_axis) {
+    for (int i = 0; i <= x; i++) {
+        for (int j = 0; j <= y; j++) {
+            for (int k = 0; k <= z; k++) {
+                int idx = i * (y + 1) * (z + 1) + j * (z + 1) + k;
+                if (deformation_axis == 0) {
+                    // Bend on X Axis
+                    float X = ctrlpts[idx]->orig_pos[0];
+                    float Y = ctrlpts[idx]->orig_pos[1];
+                    float Z = ctrlpts[idx]->orig_pos[2];
 
+                    float theta = q * (X - minx);
+
+                    float y_prime;
+                    float x_prime;
+
+                    if (minx <= X && X <= maxx ) {
+                        x_prime = -sin(theta) * (Y - 1/q) + minx;
+                        y_prime = cos(theta) * (Y - 1/q) + (1/q);
+                    } else if (X < minx) {
+                        x_prime = -sin(theta) * (Y - 1/q) + minx + cos(theta) * (X - minx);
+                        y_prime = cos(theta) * (Y - 1/q) + (1/q) + sin(theta) * (X - minx);
+                    } else {
+                        x_prime = -sin(theta) * (Y - 1/q) + minx + cos(theta) * (X - maxx);
+                        y_prime = cos(theta) * (Y - 1/q) + (1/q) + sin(theta) * (X - maxx);
+                    }
+
+                    ctrlpts[idx]->pos = vec4(x_prime, y_prime, Z, 1);
+                } else if (deformation_axis == 1) {
+                    // Bend on Y Axis
+                    float X = ctrlpts[idx]->orig_pos[0];
+                    float Y = ctrlpts[idx]->orig_pos[1];
+                    float Z = ctrlpts[idx]->orig_pos[2];
+
+                    float theta = q * (Y - miny);
+
+                    float y_prime;
+                    float z_prime;
+
+                    if (miny <= Y && Y <= maxy ) {
+                        y_prime = -sin(theta) * (Z - 1/q) + miny;
+                        z_prime = cos(theta) * (Z - 1/q) + (1/q);
+                    } else if (Y < miny) {
+                        y_prime = -sin(theta) * (Z - 1/q) + miny + cos(theta) * (Y - miny);
+                        z_prime = cos(theta) * (Z - 1/q) + (1/q) + sin(theta) * (Y - miny);
+                    } else {
+                        y_prime = -sin(theta) * (Z - 1/q) + miny + cos(theta) * (Y - maxy);
+                        z_prime = cos(theta) * (Z - 1/q) + (1/q) + sin(theta) * (Y - maxy);
+                    }
+
+                    ctrlpts[idx]->pos = vec4(X, y_prime, z_prime, 1);
+                } else if (deformation_axis == 2) {
+                    // Bend on Z Axis
+                    float X = ctrlpts[idx]->orig_pos[0];
+                    float Y = ctrlpts[idx]->orig_pos[1];
+                    float Z = ctrlpts[idx]->orig_pos[2];
+
+                    float theta = q * (Z - minz);
+
+                    float x_prime;
+                    float z_prime;
+
+                    if (minz <= Z && Z <= maxz ) {
+                        z_prime = -sin(theta) * (X - 1/q) + minz;
+                        x_prime = cos(theta) * (X - 1/q) + (1/q);
+                    } else if (Z < minz) {
+                        z_prime = -sin(theta) * (X - 1/q) + minz + cos(theta) * (Z - minz);
+                        x_prime = cos(theta) * (X - 1/q) + (1/q) + sin(theta) * (Z - minz);
+                    } else {
+                        z_prime = -sin(theta) * (X - 1/q) + miny + cos(theta) * (Z - maxz);
+                        x_prime = cos(theta) * (X - 1/q) + (1/q) + sin(theta) * (Z - maxz);
+                    }
+
+                    ctrlpts[idx]->pos = vec4(x_prime, Y, z_prime, 1);
+                }
+            }
+        }
+    }
+    freeFormDeformation();
 }
 
+// q is the amoutn to which we taper. q = [0, 1]
 void Lattice::tapering(float q, int deformation_axis) {
     for (int i = 0; i <= x; i++) {
         for (int j = 0; j <= y; j++) {
@@ -145,19 +224,19 @@ void Lattice::tapering(float q, int deformation_axis) {
                 int idx = i * (y + 1) * (z + 1) + j * (z + 1) + k;
 
                 if (deformation_axis == 0) {
-                    float fx = (maxx - ctrlpts[idx]->pos[0]) / (float) (maxx - minx);
+                    float fx = q * (maxx - ctrlpts[idx]->pos[0]) / (float) (maxx - minx);
                     ctrlpts[idx]->pos = vec4(ctrlpts[idx]->pos[0],
                                              ctrlpts[idx]->pos[1] * fx,
                                              ctrlpts[idx]->pos[2],
                                              1);
                 } else if (deformation_axis == 1) {
-                    float fy = (maxy - ctrlpts[idx]->pos[1]) / (float) (maxy - miny);
+                    float fy = q * (maxy - ctrlpts[idx]->pos[1]) / (float) (maxy - miny);
                     ctrlpts[idx]->pos = vec4(ctrlpts[idx]->pos[0],
                                              ctrlpts[idx]->pos[1],
                                              ctrlpts[idx]->pos[2] * fy,
                                              1);
                 } else if (deformation_axis == 2) {
-                    float fz = (maxz - ctrlpts[idx]->pos[0]) / (float) (maxz - minz);
+                    float fz = q * (maxz - ctrlpts[idx]->pos[0]) / (float) (maxz - minz);
                     ctrlpts[idx]->pos = vec4(ctrlpts[idx]->pos[0] * fz,
                                              ctrlpts[idx]->pos[1],
                                              ctrlpts[idx]->pos[2],
