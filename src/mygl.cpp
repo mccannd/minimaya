@@ -297,23 +297,31 @@ void MyGL::mouseReleaseEvent(QMouseEvent *e) {
     prevPos = e->pos();
     lattice_ray = latticeRaycast(e->x(), e->y());
 
-    selected_lattice_vertices.empty();
+    std::vector<Vertex*> ray_pierced = {};
+    std::vector<float> world_t = {};
+
+
+    selected_lattice_vertices = {};
     for(std::vector<Vertex*>::size_type i = 0; i < geom_lattice->ctrlpts.size(); i++) {
         mat4 m = translate(mat4(1.0f), vec3(geom_lattice->ctrlpts[i]->pos));
-        if (lattice_ray->latticeIntersect(m, &camera) > 0) {
-            selected_lattice_vertices.push_back(geom_lattice->ctrlpts[i]);
+        float t = lattice_ray->latticeIntersect(m, &camera);
+        if (t > 0) {
+            ray_pierced.push_back(geom_lattice->ctrlpts[i]);
+            world_t.push_back(t);
         }
     }
 
-//    if (!ray_pierced.empty()) {
-//        node* closest_t = ray_pierced[0];
-//        for(std::vector<node*>::size_type i = 0; i < ray_pierced.size(); i++) {
-//            if (ray_pierced[i]->world_t < closest_t->world_t) {
-//                closest_t = ray_pierced[i];
-//            }
-//        }
-//        emit sig_sendCurrentNode(closest_t);
-//    }
+    if (!ray_pierced.empty()) {
+        Vertex* closest_t = ray_pierced[0];
+        float closest_world_t = world_t[0];
+        for(std::vector<Vertex*>::size_type i = 1; i < ray_pierced.size(); i++) {
+            if (world_t[i] < closest_world_t) {
+                closest_t = ray_pierced[i];
+                closest_world_t = world_t[i];
+            }
+        }
+        selected_lattice_vertices.push_back(closest_t);
+    }
     update();
 }
 
