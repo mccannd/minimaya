@@ -32,6 +32,7 @@ private:
     ShaderProgram prog_lambert;
     ShaderProgram prog_wire;
     ShaderProgram prog_skeleton;
+    ShaderProgram prog_toon_outline, prog_toon_ramp;
     Mesh geom_mesh;
     Lattice* geom_lattice;
     Controls* lattice_controls;

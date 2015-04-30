@@ -75,6 +75,9 @@ void MyGL::initializeGL()
 
     prog_skeleton.create(":/glsl/skeleton.vert.glsl", ":/glsl/lambert.frag.glsl");
 
+    prog_toon_outline.create(":/glsl/outline.vert.glsl", ":/glsl/outline.frag.glsl");
+    prog_toon_ramp.create(":/glsl/ramp.vert.glsl", ":/glsl/ramp.frag.glsl");
+
     // We have to have a VAO bound in OpenGL 3.2 Core. But if we're not
     // using multiple VAOs, we can just bind one once.
     vao.bind();
@@ -90,6 +93,8 @@ void MyGL::resizeGL(int w, int h)
     prog_lambert.setViewProjMatrix(viewproj);
     prog_wire.setViewProjMatrix(viewproj);
     prog_skeleton.setViewProjMatrix(viewproj);
+    prog_toon_outline.setViewProjMatrix(viewproj);
+    prog_toon_ramp.setViewProjMatrix(viewproj);
 
     printGLErrorLog();
 }
@@ -111,11 +116,23 @@ void MyGL::paintGL()
     prog_skeleton.setViewProjMatrix(camera.getViewProj());
     prog_skeleton.setModelMatrix(glm::mat4(1.0f));
 
-    if (!skeleton_bound) {
-        prog_lambert.draw(*this, geom_mesh);
-    } else {
-        prog_skeleton.draw(*this, geom_mesh);
-    }
+    prog_toon_outline.setViewProjMatrix(camera.getViewProj());
+    prog_toon_outline.setModelMatrix(glm::mat4(1.0f));
+
+    prog_toon_ramp.setViewProjMatrix(camera.getViewProj());
+    prog_toon_ramp.setModelMatrix(glm::mat4(1.0f));
+
+    // if (!skeleton_bound) {
+    //     prog_lambert.draw(*this, geom_mesh);
+    // } else {
+    //     prog_skeleton.draw(*this, geom_mesh);
+    // }
+
+    glDisable(GL_DEPTH_TEST);
+    prog_toon_outline.draw(*this, geom_mesh);
+    glEnable(GL_DEPTH_TEST);
+    prog_toon_ramp.draw(*this, geom_mesh);
+
 
     // draw selected mesh features
     glDisable(GL_DEPTH_TEST);
