@@ -12,10 +12,14 @@ glm::vec4 Raytrace::background = glm::vec4(0, 0, 0, 1);
 
 glm::vec4 Raytrace::light_source = glm::vec4(2, 5, 2, 1);
 
+Face* Raytrace::sphere = new Face(-1);
+
+
 Raytrace::Raytrace(Camera *cam, Mesh *m) {
   camera = cam;
   mesh = m;
   Ray::init(camera);
+  sphere->mat_attr = Material::GLASS;
 }
 
 void Raytrace::renderToFile(QString filename) {
@@ -84,7 +88,7 @@ glm::vec4 Raytrace::Pixel::castRay(Raytrace::Ray r, int depth) {
 
     glm::vec4 H = glm::normalize((to_light.dir - to_light.pos + RT->camera->eye) / 2.0f);
     float specular = std::pow(glm::dot(H, trace.first->norm), mat.specl);
-    //light += (specular > 1.0f) ? 1.0f : (specular < 0.0f) ? 0.0f : specular;
+    light += (specular > 1.0f) ? 1.0f : (specular < 0.0f) ? 0.0f : specular;
     // still funky...
 
     if (traceRay(to_light).first != NULL) light = 0.0f;
@@ -112,11 +116,17 @@ std::pair<Face*, Raytrace::OutgoingRays> Raytrace::Pixel::traceRay(Raytrace::Ray
     }
   }
 
+  float sph = intersectSphere(r);
+  if (sph < min && sph > 0.0001) {
+    min = sph;
+    closest = Raytrace::sphere;
+  }
+
   glm::vec4 p = r.pos + min * r.dir;
   if (closest != NULL) {
     return std::make_pair(closest, std::make_tuple(
       Ray(p, glm::reflect(r.dir, closest->norm)), 
-      Ray(p, glm::refract(r.dir, closest->norm, closest->mat_attr.rfrac)), 
+      Ray(p, glm::refract(r.dir, closest->norm, 1 / closest->mat_attr.rfrac)), 
       Ray(p, light_source - p)));
   } else {
     return std::make_pair(closest, std::make_tuple(
@@ -124,6 +134,22 @@ std::pair<Face*, Raytrace::OutgoingRays> Raytrace::Pixel::traceRay(Raytrace::Ray
       Ray(p, r.dir), 
       Ray(p, light_source - p)));
   }
+}
+
+float Raytrace::Pixel::intersectSphere(Raytrace::Ray r) {
+  glm::vec4 sph(0, 0, 0, 1);
+  float R = 1.0f;
+  float a = pow(r.dir[0], 2) + pow(r.dir[1], 2) + pow(r.dir[2], 2);
+  float b = 2 * (r.dir[0] * (r.pos[0] - sph[0]) + r.dir[1] * (r.pos[1] - sph[1]) + r.dir[2] * (r.pos[2] - sph[2]));
+  float c = pow(r.pos[0] - sph[0], 2) + pow(r.pos[1] - sph[1], 2) + pow(r.pos[2] - sph[2], 2) - (R * R);
+  float disc = b * b - 4 * a * c;
+  if (disc < -0.001f) return FLT_MAX;
+
+  float t = (-b - sqrt(disc)) / (2 * a);
+  if (t < -0.001f) t = (-b + sqrt(disc)) / (2 * a);
+
+  Raytrace::sphere->norm = glm::normalize((r.pos + t * r.dir) - sph);
+  return t;
 }
 
 

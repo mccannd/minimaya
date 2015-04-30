@@ -39,7 +39,7 @@ class Raytrace {
 
     class Pixel : public QRunnable {
       public:
-        static const int SAMPLES = 1;
+        static const int SAMPLES = 2;
         static Raytrace *RT;
 
         RGBApixel *out;
@@ -52,12 +52,14 @@ class Raytrace {
       private:
         glm::vec4 castRay(Raytrace::Ray r, int depth);
         std::pair<Face*, Raytrace::OutgoingRays> traceRay(Raytrace::Ray r);
+        float intersectSphere(Raytrace::Ray r);
     };
 
     
 
     static glm::vec4 background;
     static glm::vec4 light_source;
+    static Face *sphere;
 
     Raytrace(Camera *cam, Mesh *m);
 
