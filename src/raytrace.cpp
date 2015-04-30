@@ -93,7 +93,7 @@ glm::vec4 Raytrace::Pixel::castRay(Raytrace::Ray r, int depth) {
 
     if (traceRay(to_light).first != NULL) light = 0.0f;
 
-    final += mat.alpha * (0.8f * light + 0.2f) * trace.first->color;
+    final += mat.alpha * (0.4f * light + 0.2f) * trace.first->color;
 
     if (mat.alpha < 1.0f) final += (1.0f - mat.alpha) * castRay(std::get<1>(trace.second), depth - 1);
 
@@ -116,10 +116,12 @@ std::pair<Face*, Raytrace::OutgoingRays> Raytrace::Pixel::traceRay(Raytrace::Ray
     }
   }
 
-  float sph = intersectSphere(r);
-  if (sph < min && sph > 0.0001) {
-    min = sph;
-    closest = Raytrace::sphere;
+  if (perfect_sphere) {
+    float sph = intersectSphere(r);
+    if (sph < min && sph > 0.0001) {
+      min = sph;
+      closest = Raytrace::sphere;
+    }
   }
 
   glm::vec4 p = r.pos + min * r.dir;

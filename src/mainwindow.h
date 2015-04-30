@@ -70,6 +70,8 @@ private slots:
 
     void on_pushButton_18_clicked();
 
+    void on_pushButton_20_clicked();
+
     void on_keyframe_save_clicked();
 
     void on_keys_list_itemClicked(QListWidgetItem *item);

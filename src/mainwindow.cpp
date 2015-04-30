@@ -355,3 +355,13 @@ void MainWindow::on_light_b_valueChanged(double arg1)
                                (float) ui->light_g->value(),
                                (float) arg1);
 }
+
+void MainWindow::on_pushButton_20_clicked()
+{
+    float rflec = ui->rflec_box->value();
+    float rfrac = ui->rfrac_box->value();
+    float alpha = ui->alpha_box->value();
+    float specl = ui->specl_box->value();
+
+    ui->mygl->materializeFace(rflec, rfrac, alpha, specl);
+}
