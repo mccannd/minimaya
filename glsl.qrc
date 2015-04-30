@@ -2,6 +2,10 @@
     <qresource prefix="/">
         <file>glsl/lambert.frag.glsl</file>
         <file>glsl/lambert.vert.glsl</file>
+        <file>glsl/outline.frag.glsl</file>
+        <file>glsl/outline.vert.glsl</file>
+        <file>glsl/ramp.frag.glsl</file>
+        <file>glsl/ramp.vert.glsl</file>
         <file>glsl/wire.frag.glsl</file>
         <file>glsl/wire.vert.glsl</file>
         <file>glsl/skeleton.vert.glsl</file>
