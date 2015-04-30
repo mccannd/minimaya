@@ -285,23 +285,7 @@ void MyGL::keyPressEvent(QKeyEvent *e)
         update();
         emit meshChanged();
     } else if (e->key() == Qt::Key_T) {
-        geom_lattice->squashing((test + 1), 0);
-        geom_lattice->create();
-        geom_mesh.create();
-        update();
-        emit meshChanged();
-
-        test += 0.5;
-    } else if (e->key() == Qt::Key_V) {
-        geom_lattice->squashing((test + 1), 1);
-        geom_lattice->create();
-        geom_mesh.create();
-        update();
-        emit meshChanged();
-
-        test += 1;
-    } else if (e->key() == Qt::Key_B) {
-        geom_lattice->twisting((test + 1) * DEG2RAD, 1);
+        geom_lattice->stretching((test), 1);
         geom_lattice->create();
         geom_mesh.create();
         update();

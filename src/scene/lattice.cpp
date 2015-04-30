@@ -120,35 +120,108 @@ void Lattice::squashing(float q, int deformation_axis) {
                 float Y = ctrlpts[idx]->orig_pos[1];
                 float Z = ctrlpts[idx]->orig_pos[2];
 
-//                float dist = distance(vec4(X, Y, Z, 1), vec4(0, 0, 0, 1));
-//                float hey = (fabs(Y - (maxy - miny)/2) / (maxy - miny) + 1) * 5;
-
-                float why = fabs((Y - miny)/(maxy - miny) - 0.5);
-
                 if (deformation_axis == 0) {
                     if (q != 0) {
-//                        ctrlpts[idx]->pos = ctrlpts[idx]->orig_pos *
-//                                scale(mat4(), vec3(1/((q*why/10 + 1) * (q/10 + 1)),
-//                                                   (q*why/10 + 1) * (q*why/10 + 1),
-//                                                   (q*why/10 + 1) * (q*why/10 + 1)));
-                        ctrlpts[idx]->pos = ctrlpts[idx]->orig_pos *
-                                scale(mat4(), vec3(1/(q/36 + 1),
-                                                   (q/36 + 1) * (q/36 + 1),
-                                                   (q/36 + 1) * (q/36 + 1)));
+                        float mid = (maxx + minx)/2;
+                        float dist = fabs(X - mid);
+
+                        if (dist == 0) {
+                            dist = 1;
+                        }
+
+                        float scale_x = X * (1 - q/36);
+                        float scale_y = Y + (1/dist) * q/36 * Y;
+                        float scale_z = Z + (1/dist) * q/36 * Z;
+
+                        ctrlpts[idx]->pos = vec4(scale_x, scale_y, scale_z, 1);
                     }
                 } else if (deformation_axis == 1) {
                     if (q != 0) {
-                        ctrlpts[idx]->pos = ctrlpts[idx]->orig_pos *
-                                scale(mat4(), vec3((q/36 + 1) * (q/36 + 1),
-                                                   1/(q/36 + 1),
-                                                   (q/36 + 1) * (q/36 + 1)));
+                        float mid = (maxy + miny)/2;
+                        float dist = fabs(Y - mid);
+
+                        if (dist == 0) {
+                            dist = 1;
+                        }
+
+                        float scale_y = Y * (1 - q/36);
+                        float scale_x = X + (1/dist) * q/36 * X;
+                        float scale_z = Z + (1/dist) * q/36 * Z;
+
+                        ctrlpts[idx]->pos = vec4(scale_x, scale_y, scale_z, 1);
                     }
                 } else if (deformation_axis == 2) {
                     if (q != 0) {
-                        ctrlpts[idx]->pos = ctrlpts[idx]->orig_pos *
-                                scale(mat4(), vec3((q/36 + 1) * (q/36 + 1),
-                                                   (q/36 + 1) * (q/36 + 1),
-                                                   1/(q/36 + 1)));
+                        float mid = (maxz + minz)/2;
+                        float dist = fabs(Z - mid);
+
+                        if (dist == 0) {
+                            dist = 1;
+                        }
+
+                        float scale_z = Z * (1 - q/36);
+                        float scale_y = Y + (1/dist) * q/36 * Y;
+                        float scale_x = X + (1/dist) * q/36 * X;
+
+                        ctrlpts[idx]->pos = vec4(scale_x, scale_y, scale_z, 1);
+                    }
+                }
+            }
+        }
+    }
+    freeFormDeformation();
+}
+
+void Lattice::stretching(float q, int deformation_axis) {
+    for (int i = 0; i <= x; i++) {
+        for (int j = 0; j <= y; j++) {
+            for (int k = 0; k <= z; k++) {
+                int idx = i * (y + 1) * (z + 1) + j * (z + 1) + k;
+                float X = ctrlpts[idx]->orig_pos[0];
+                float Y = ctrlpts[idx]->orig_pos[1];
+                float Z = ctrlpts[idx]->orig_pos[2];
+
+                if (deformation_axis == 0) {
+                    if (q != 0) {
+                        float dist = fabs(X - minx);
+
+                        if (dist == 0) {
+                            dist = 1;
+                        }
+
+                        float scale_x = X * (1 + q/36);
+                        float scale_y = Y - (1/dist) * q/36 * Y;
+                        float scale_z = Z - (1/dist) * q/36 * Z;
+
+                        ctrlpts[idx]->pos = vec4(scale_x, scale_y, scale_z, 1);
+                    }
+                } else if (deformation_axis == 1) {
+                    if (q != 0) {
+                        float dist = fabs(Y - miny);
+
+                        if (dist == 0) {
+                            dist = 1;
+                        }
+
+                        float scale_y = Y * (1 + q/36);
+                        float scale_x = X - (1/dist) * q/36 * X;
+                        float scale_z = Z - (1/dist) * q/36 * Z;
+
+                        ctrlpts[idx]->pos = vec4(scale_x, scale_y, scale_z, 1);
+                    }
+                } else if (deformation_axis == 2) {
+                    if (q != 0) {
+                        float dist = fabs(Z - minz);
+
+                        if (dist == 0) {
+                            dist = 1;
+                        }
+
+                        float scale_z = Z * (1 + q/36);
+                        float scale_x = X - (1/dist) * q/36 * X;
+                        float scale_y = Y - (1/dist) * q/36 * Y;
+
+                        ctrlpts[idx]->pos = vec4(scale_x, scale_y, scale_z, 1);
                     }
                 }
             }

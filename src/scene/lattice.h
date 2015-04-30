@@ -59,6 +59,7 @@ public:
     void bending(float q, int deformation_axis);
     void tapering(float q, int deformation_axis);
     void squashing(float q, int deformation_axis);
+    void stretching(float q, int deformation_axis);
 
     void create();
     void destroy();
