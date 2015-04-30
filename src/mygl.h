@@ -33,6 +33,7 @@ private:
     ShaderProgram prog_lambert;
     ShaderProgram prog_wire;
     ShaderProgram prog_skeleton;
+    ShaderProgram prog_toon_outline, prog_toon_ramp;
     Mesh geom_mesh;
     Lattice* geom_lattice;
     Controls* lattice_controls;
@@ -69,6 +70,8 @@ public:
     bool skeleton_visible = true;
     // determines whether the mesh is rendered with lambert or skeleton
     bool skeleton_bound = false;
+
+    int shader_select = 0;
 
     // Deformation Stuff
     bool lattice_active = false;
