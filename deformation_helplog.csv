@@ -1,0 +1,34 @@
+Timestamp,Topic,Question,Solution,Sources
+4/25/2015 17:19:55,Shader,Fixing Dan's Shader,,Adam
+4/25/2015 17:20:28,Git,Can't push to master,On the wrong repository,Kai
+4/25/2015 17:21:22,Deformation,Conceptual Understanding of Deformation,Kai showed me a Blender demonstration,Kai
+4/25/2015 17:22:13,Deformation,,"Create overlapping boxes and then a lattice to keep track of them.
+(I ended up not going with this idea)",Paul
+4/25/2015 17:24:38,Deformation,"Is it a full grid in the inside?
+Data structure to contain the lattice? I currently am just containing the vertices without connecting them. Other ideas included halfedge (which doesn't work I assume because the middle vertices wouldn't work) and creating boxes with a lattice on top.","Yes.
+Either the first or third would work.
+The Half-edge idea won't work.",Adam
+4/25/2015 18:32:20,Deformation,"Slide Clarification
+And full understanding of the bezier curves",See notes,"Steph, Becca"
+4/25/2015 18:32:36,vec4 operations,,,http://en.wikibooks.org/wiki/GLSL_Programming/Vector_and_Matrix_Operations
+4/26/2015 9:13:08,Mouse Events,,,http://doc.qt.io/qt-4.8/qmouseevent.html
+4/27/2015 0:44:45,"vec3, vec4, mat4 Operations",Multply vec4 by scaler?,Turn it into a vec3 then multiply it by a scalar,http://en.wikibooks.org/wiki/GLSL_Programming/Vector_and_Matrix_Operations
+4/27/2015 0:59:05,Deformation,FFD Equation?,See PDF attached from slides,http://delivery.acm.org/10.1145/20000/15903/p151-sederberg.pdf?ip=165.123.202.199&id=15903&acc=ACTIVE%20SERVICE&key=A792924B58C015C1%2E18947888DF2D0EEA%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35&CFID=667745273&CFTOKEN=43248088&__acm__=1430109295_9249f64c5080e8361ebcbb761b25769a
+4/27/2015 9:47:49,Deformation,Rotation,,https://www.siggraph.org/education/materials/HyperGraph/modeling/mod_tran/3drota.htm
+4/27/2015 14:48:36,Deformation,Kai Demo Please,"Kai demoed on cow, I checked my cow.
+Realized my cow was wrong. Going to debug my cow.",Kai
+4/27/2015 21:05:40,Deformation,What could be wrong with my cow? It extends pass the lattice.,Are you deforming on a deformed cow? You should be deforming on the mesh the same all the time.,Kai
+4/27/2015 21:08:09,Deformation,Am I breaking raytracing?,No. Raytracing should be able to handle it.,Adam.
+4/27/2015 21:08:24,Deformation,Bending,See picture of board,Adam
+4/27/2015 21:13:10,Deformation,"Should the mesh be allowed to change as we're deforming? Because otherwise this is break deformation.
+
+I'm deforming such that I change the actual mesh vertex and keep track of the original mesh vertex before deformation.",You can just restrict that the mesh isn't changed. ,"Paul, Adam"
+4/27/2015 21:13:50,Deformation,Rotation about an abritrary axis,"(I ended up not using this, but if I choose to do this sometime perhaps)",https://www.siggraph.org/education/materials/HyperGraph/modeling/mod_tran/3drota.htm
+4/27/2015 21:54:56,Deformation,,,https://www.cs.drexel.edu/~david/Classes/CS586/Papers/p21-barr.pdf
+4/28/2015 15:06:16,Rendering,,All of these photos are bouncing around and into your retina. The scene you can put as integral light. Is like visible or is something in between?,http://www.dca.fee.unicamp.br/~leopini/DISCIPLINAS/IA725/ia725-12010/kajiya-SIG86-p143.pdf
+4/30/2015 8:15:22,Deformation,Squashing/Stretching,"Kai showed me squash/stretch
+Adam & Reuban Explained the concept","Adam, Reuban, Kai
+
+Shoutout to Steph for making me realize that we had to do squash/stretch!"
+4/30/2015 8:16:44,GUI,Adding name to tab?,"There is a ""currentTabText"" field when you select the QTabWidget. It is near the bottom of the attribute page.",https://piazza.com/class/i4wx333fals13n?cid=412
+4/30/2015 8:17:12,GUI,Add tab page?,Right Click on Tab Widget > Add Page,Dan
