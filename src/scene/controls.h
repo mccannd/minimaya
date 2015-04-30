@@ -33,6 +33,7 @@ public:
     vec4 ori;
     vec4 dir;
     int TRS;
+    int active = -1;
 
     void setDirection(vec4 v1);
     vec4 getDirection() const;

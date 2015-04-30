@@ -289,6 +289,24 @@ void Controls::create()
     CONTROLS_vert_col[66] = vec4(0, 0, 1, 1);
     CONTROLS_vert_col[67] = vec4(0, 0, 1, 1);
 
+    if (active == 0) {
+        CONTROLS_vert_col[62] = vec4(1, 0, 0, 1);
+        CONTROLS_vert_col[64] = vec4(1, 0, 0, 1);
+        CONTROLS_vert_col[66] = vec4(1, 0, 0, 1);
+    } else if (active == 1) {
+        CONTROLS_vert_col[62] = vec4(0, 1, 0, 1);
+        CONTROLS_vert_col[64] = vec4(0, 1, 0, 1);
+        CONTROLS_vert_col[66] = vec4(0, 1, 0, 1);
+    } else if (active == 2) {
+        CONTROLS_vert_col[62] = vec4(0, 0, 1, 1);
+        CONTROLS_vert_col[64] = vec4(0, 0, 1, 1);
+        CONTROLS_vert_col[66] = vec4(0, 0, 1, 1);
+    } else {
+        CONTROLS_vert_col[62] = vec4(0, 0, 0, 1);
+        CONTROLS_vert_col[64] = vec4(0, 0, 0, 1);
+        CONTROLS_vert_col[66] = vec4(0, 0, 1, 1);
+    }
+
   count = CONTROLS_IDX_COUNT;
 
   bufIdx.create();

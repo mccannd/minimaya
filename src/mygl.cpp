@@ -328,13 +328,19 @@ void MyGL::keyPressEvent(QKeyEvent *e)
 
 void MyGL::mousePressEvent(QMouseEvent *e) {
     prevPos = e->pos();
+
+    if (onscreen_controls_active) {
+            lattice_ray = latticeRaycast(e->x(), e->y());
+            lattice_controls->active = lattice_ray->onscreenIntersect(mat4(), &camera);
+            lattice_controls->create();
+            update();
+    }
 }
 
 
 // For lattice
 void MyGL::mouseReleaseEvent(QMouseEvent *e) {
     if (lattice_active && lattice_show) {
-        prevPos = e->pos();
         lattice_ray = latticeRaycast(e->x(), e->y());
 
         std::vector<Vertex*> ray_pierced = {};
@@ -381,6 +387,105 @@ void MyGL::mouseMoveEvent(QMouseEvent *e)
 
 //     camera.RecomputeEye();
 //     update();
+
+    if (onscreen_controls_active && lattice_controls->active >= 0) {
+        float diff = (e->x() - prevPos.x());
+        switch (lattice_controls->active) {
+            case 0: // X
+                if (Onscreen_Mode == 0) { // Translate
+                    for(std::vector<Vertex*>::size_type i = 0; i < geom_lattice->ctrlpts.size(); i++) {
+                        geom_lattice->ctrlpts[i]->pos[0] = geom_lattice->ctrlpts[i]->orig_pos[0] + diff;
+                    }
+                    geom_lattice->freeFormDeformation();
+                    geom_lattice->create();
+                    geom_mesh.create();
+                    update();
+                    emit meshChanged();
+                } else if (Onscreen_Mode == 1) { // Rotate
+                    for(std::vector<Vertex*>::size_type i = 0; i < geom_lattice->ctrlpts.size(); i++) {
+                        geom_lattice->ctrlpts[i]->pos = geom_lattice->ctrlpts[i]->orig_pos * mat4_cast(angleAxis(diff * DEG2RAD, vec3(0, 1, 0)));
+                    }
+                    geom_lattice->freeFormDeformation();
+                    geom_lattice->create();
+                    geom_mesh.create();
+                    update();
+                    emit meshChanged();
+                } else if (Onscreen_Mode == 2) { // Scale
+                    for(std::vector<Vertex*>::size_type i = 0; i < geom_lattice->ctrlpts.size(); i++) {
+                        geom_lattice->ctrlpts[i]->pos = geom_lattice->ctrlpts[i]->orig_pos * scale(mat4(), vec3(fabs(diff), 1, 1));
+                    }
+                    geom_lattice->freeFormDeformation();
+                    geom_lattice->create();
+                    geom_mesh.create();
+                    update();
+                    emit meshChanged();
+                }
+                break;
+            case 1: // Y
+                if (Onscreen_Mode == 0) { // Translate
+                    for(std::vector<Vertex*>::size_type i = 0; i < geom_lattice->ctrlpts.size(); i++) {
+                        geom_lattice->ctrlpts[i]->pos[1] = geom_lattice->ctrlpts[i]->orig_pos[1] + diff;
+                    }
+                    geom_lattice->freeFormDeformation();
+                    geom_lattice->create();
+                    geom_mesh.create();
+                    update();
+                    emit meshChanged();
+                } else if (Onscreen_Mode == 1) { // Rotate
+                    for(std::vector<Vertex*>::size_type i = 0; i < geom_lattice->ctrlpts.size(); i++) {
+                        geom_lattice->ctrlpts[i]->pos = geom_lattice->ctrlpts[i]->orig_pos * mat4_cast(angleAxis(diff * DEG2RAD, vec3(0, 0, 1)));
+                    }
+                    geom_lattice->freeFormDeformation();
+                    geom_lattice->create();
+                    geom_mesh.create();
+                    update();
+                    emit meshChanged();
+                } else if (Onscreen_Mode == 2) { // Scale
+                    for(std::vector<Vertex*>::size_type i = 0; i < geom_lattice->ctrlpts.size(); i++) {
+                        geom_lattice->ctrlpts[i]->pos = geom_lattice->ctrlpts[i]->orig_pos * scale(mat4(), vec3(1, fabs(diff), 1));
+                    }
+                    geom_lattice->freeFormDeformation();
+                    geom_lattice->create();
+                    geom_mesh.create();
+                    update();
+                    emit meshChanged();
+                }
+                break;
+            case 2: // Z
+                if (Onscreen_Mode == 0) { // Translate
+                    for(std::vector<Vertex*>::size_type i = 0; i < geom_lattice->ctrlpts.size(); i++) {
+                        geom_lattice->ctrlpts[i]->pos[2] = geom_lattice->ctrlpts[i]->orig_pos[2] + diff;
+                    }
+                    geom_lattice->freeFormDeformation();
+                    geom_lattice->create();
+                    geom_mesh.create();
+                    update();
+                    emit meshChanged();
+                } else if (Onscreen_Mode == 1) { // Rotate
+                    for(std::vector<Vertex*>::size_type i = 0; i < geom_lattice->ctrlpts.size(); i++) {
+                        geom_lattice->ctrlpts[i]->pos = geom_lattice->ctrlpts[i]->orig_pos * mat4_cast(angleAxis(diff * DEG2RAD, vec3(0, 1, 0)));
+                    }
+                    geom_lattice->freeFormDeformation();
+                    geom_lattice->create();
+                    geom_mesh.create();
+                    update();
+                    emit meshChanged();
+                } else if (Onscreen_Mode == 2) { // Scale
+                    for(std::vector<Vertex*>::size_type i = 0; i < geom_lattice->ctrlpts.size(); i++) {
+                        geom_lattice->ctrlpts[i]->pos = geom_lattice->ctrlpts[i]->orig_pos * scale(mat4(), vec3(1, 1, fabs(diff)));
+                    }
+                    geom_lattice->freeFormDeformation();
+                    geom_lattice->create();
+                    geom_mesh.create();
+                    update();
+                    emit meshChanged();
+                }
+                break;
+        }
+        update();
+    }
+
+//        prevPos = e->pos();
 }
 
 /// Raycasting
@@ -849,10 +954,12 @@ void MyGL::slot_Lattice_Z() {
 
 void MyGL::slot_Onscreen_Controls(bool b) {
     onscreen_controls_active = b;
+    update();
 }
 
 void MyGL::slot_Lattice_Show(bool b) {
     lattice_show = b;
+    geom_lattice->recreateLattice();
     update();
 }
 
@@ -867,12 +974,21 @@ void MyGL::slot_Deformation_Commit() {
 
 void MyGL::slot_Onscreen_Translate() {
     Onscreen_Mode = 0;
+    lattice_controls->TRS = Onscreen_Mode;
+    lattice_controls->create();
+    update();
 }
 
 void MyGL::slot_Onscreen_Rotate() {
     Onscreen_Mode = 1;
+    lattice_controls->TRS = Onscreen_Mode;
+    lattice_controls->create();
+    update();
 }
 
 void MyGL::slot_Onscreen_Scale() {
     Onscreen_Mode = 2;
+    lattice_controls->TRS = Onscreen_Mode;
+    lattice_controls->create();
+    update();
 }
