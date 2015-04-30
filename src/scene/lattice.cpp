@@ -120,20 +120,36 @@ void Lattice::squashing(float q, int deformation_axis) {
                 float Y = ctrlpts[idx]->orig_pos[1];
                 float Z = ctrlpts[idx]->orig_pos[2];
 
-                if (deformation_axis == 0) {
-//                    float mid = (maxy - miny)/2;
-//                    float curr = (Y - miny)/(maxy - miny) - mid;
+//                float dist = distance(vec4(X, Y, Z, 1), vec4(0, 0, 0, 1));
+//                float hey = (fabs(Y - (maxy - miny)/2) / (maxy - miny) + 1) * 5;
 
-//                    ctrlpts[idx]->pos = ctrlpts[idx]->orig_pos *
-//                            scale(mat4(), vec3((abs(Y) + q * q) * (abs(Y) + q * q),
-//                                        1,
-//                                        1));
+                float why = fabs((Y - miny)/(maxy - miny) - 0.5);
+
+                if (deformation_axis == 0) {
+                    if (q != 0) {
+//                        ctrlpts[idx]->pos = ctrlpts[idx]->orig_pos *
+//                                scale(mat4(), vec3(1/((q*why/10 + 1) * (q/10 + 1)),
+//                                                   (q*why/10 + 1) * (q*why/10 + 1),
+//                                                   (q*why/10 + 1) * (q*why/10 + 1)));
+                        ctrlpts[idx]->pos = ctrlpts[idx]->orig_pos *
+                                scale(mat4(), vec3(1/(q/36 + 1),
+                                                   (q/36 + 1) * (q/36 + 1),
+                                                   (q/36 + 1) * (q/36 + 1)));
+                    }
                 } else if (deformation_axis == 1) {
-                    ctrlpts[idx]->pos = ctrlpts[idx]->orig_pos *
-                            mat4_cast(angleAxis(q * ((float) j)/y, vec3(0, 1, 0)));
+                    if (q != 0) {
+                        ctrlpts[idx]->pos = ctrlpts[idx]->orig_pos *
+                                scale(mat4(), vec3((q/36 + 1) * (q/36 + 1),
+                                                   1/(q/36 + 1),
+                                                   (q/36 + 1) * (q/36 + 1)));
+                    }
                 } else if (deformation_axis == 2) {
-                    ctrlpts[idx]->pos = ctrlpts[idx]->orig_pos *
-                            mat4_cast(angleAxis(q * ((float) k)/z, vec3(0, 0, 1)));
+                    if (q != 0) {
+                        ctrlpts[idx]->pos = ctrlpts[idx]->orig_pos *
+                                scale(mat4(), vec3((q/36 + 1) * (q/36 + 1),
+                                                   (q/36 + 1) * (q/36 + 1),
+                                                   1/(q/36 + 1)));
+                    }
                 }
             }
         }
