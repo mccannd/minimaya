@@ -832,6 +832,7 @@ void MyGL::slot_Onscreen_Controls(bool b) {
 
 void MyGL::slot_Lattice_Show(bool b) {
     lattice_show = b;
+    update();
 }
 
 void MyGL::slot_Deformation_Commit() {

@@ -29,6 +29,7 @@ class LatticeRay : public ShaderProgram::Drawable
   vec4 getDirection() const;
 
   float latticeIntersect(mat4 m, Camera *c);
+  float onscreenInterset(mat4 m, Camera *c);
 
   void create();
   void destroy();
