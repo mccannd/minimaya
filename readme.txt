@@ -1,3 +1,80 @@
+MiniMaya
+
+======================
+Deformations (Dan)
+=====================
+Additional Features/Extra Credit: Move light, colored light, smooth vertex normals
+
+>>>"Keys" Tab <<<
+I'm not quite sure how this works - Ellen
+
+>>>"Light" Tab<<<
+[ ] Check Smooth Vertex Normals to show smooth vertex normals.
+Adjust X,Y,Z values to adjust position of light
+Adjust RGB values to adjust color of light
+
+======================
+RayTracing (Michael)
+=====================
+Additional Features/Extra Credit:  Toon Shader
+
+R - renders to file
+
+Also not quite sure what else to do - Ellen
+
+=====================
+Deformations (Ellen) - All under "Deformation" Tab
+=====================
+Additional Features/Extra Credit: Multiple vertices selection in DFF, Excess credit on onscreen controls, commit feature in deformations
+
+Hotfixes:
+N - Recalculates boundaries
+M - Recreates the lattice (may need to press this at the start
+
+
+GUI
+[ ] Lattice is Active - Check this to get the global deformations working
+Choose a type of global deformation, axis, and deformation intensity to do global deformations. Show lattice to see the deformation clearer.
+
+[ ] Show Lattice - Shows the lattice if lattice is active and allows you do to free form deformations
+Click to select points of the lattice. 
+SHIFT + Click to add to your selection.
+Click empty space to deselect everything.
+
+Move these points using
+U - up
+J - down
+K - right
+H - left
+Y - forward
+G - backward
+
+Change the number of subdivisions in your lattice using:
+W - increase in y
+S - decrease in y
+A - decrease in x
+D - increase in x
+E - increase in z
+Q - decrease in z
+
+Commit Deformations - Like your deformations? SAVE THEM!
+
+Onscreen Controls ***(MAY need to click blank space for it to update the display)
+Lattice needs to be active and Show Onscreen Controls needs to be active.
+Choose Translate, Rotate, or Scale.
+Translate - Shows up as just three lines
+Rotate - Shows up as three lines with circles
+Scale - Shows up as three lines and squares around it
+The center of the onscreen control will highlight to the color of the lattice
+
+
+
+
+=====================
+
+
+
+
 Homework 5 and 6: by Dan McCann
 
 
