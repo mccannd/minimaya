@@ -66,7 +66,7 @@ public:
     bool skeleton_visible = true;
     // determines whether the mesh is rendered with lambert or skeleton
     bool skeleton_bound = false;
-    bool lattice_active = true;
+    bool lattice_active = false;
     int deformation_axis = 1;
 
     // mesh interface functions

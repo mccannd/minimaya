@@ -121,10 +121,13 @@ void Lattice::squashing(float q, int deformation_axis) {
                 float Z = ctrlpts[idx]->orig_pos[2];
 
                 if (deformation_axis == 0) {
-                    ctrlpts[idx]->pos = ctrlpts[idx]->orig_pos *
-                            scale(mat4(), vec3(Y * Y + q,
-                                        1,
-                                        1));
+//                    float mid = (maxy - miny)/2;
+//                    float curr = (Y - miny)/(maxy - miny) - mid;
+
+//                    ctrlpts[idx]->pos = ctrlpts[idx]->orig_pos *
+//                            scale(mat4(), vec3((abs(Y) + q * q) * (abs(Y) + q * q),
+//                                        1,
+//                                        1));
                 } else if (deformation_axis == 1) {
                     ctrlpts[idx]->pos = ctrlpts[idx]->orig_pos *
                             mat4_cast(angleAxis(q * ((float) j)/y, vec3(0, 1, 0)));

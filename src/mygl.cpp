@@ -120,8 +120,6 @@ void MyGL::paintGL()
     // draw selected mesh features
     glDisable(GL_DEPTH_TEST);
 
-    prog_wire.draw(*this, *geom_lattice);
-
 
     for (unsigned int i = 0; i < drawn_edges.size(); i++) {
         if (drawn_edges[i] != NULL) {
@@ -139,19 +137,23 @@ void MyGL::paintGL()
         drawSkeleton(root_joint);
     }
 
-    for(std::vector<Vertex*>::size_type i = 0; i < selected_lattice_vertices.size(); i++) {
-        selected_lattice_vertices[i]->create();
-        prog_wire.draw(*this, *selected_lattice_vertices[i]);
-    }
+    if (lattice_active) {
+        prog_wire.draw(*this, *geom_lattice);
 
-    if (lattice_ray != NULL) {
-        mat4 model = mat4(1.0f);
-        prog_wire.setModelMatrix(model);
-        lattice_ray->create();
-        prog_wire.draw(*this, *lattice_ray);
-    }
+        for(std::vector<Vertex*>::size_type i = 0; i < selected_lattice_vertices.size(); i++) {
+            selected_lattice_vertices[i]->create();
+            prog_wire.draw(*this, *selected_lattice_vertices[i]);
+        }
 
-    prog_wire.draw(*this, *lattice_controls);
+        if (lattice_ray != NULL) {
+            mat4 model = mat4(1.0f);
+            prog_wire.setModelMatrix(model);
+            lattice_ray->create();
+            prog_wire.draw(*this, *lattice_ray);
+        }
+
+        prog_wire.draw(*this, *lattice_controls);
+    }
 
     glEnable(GL_DEPTH_TEST);
 }
@@ -288,7 +290,6 @@ void MyGL::keyPressEvent(QKeyEvent *e)
         test += 0.05;
     }
 
-
     camera.RecomputeEye();
     update();  // Calls paintGL, among other things
 }
@@ -300,38 +301,40 @@ void MyGL::mousePressEvent(QMouseEvent *e) {
 
 // For lattice
 void MyGL::mouseReleaseEvent(QMouseEvent *e) {
-    prevPos = e->pos();
-    lattice_ray = latticeRaycast(e->x(), e->y());
+    if (lattice_active) {
+        prevPos = e->pos();
+        lattice_ray = latticeRaycast(e->x(), e->y());
 
-    std::vector<Vertex*> ray_pierced = {};
-    std::vector<float> world_t = {};
+        std::vector<Vertex*> ray_pierced = {};
+        std::vector<float> world_t = {};
 
-    if(!QGuiApplication::queryKeyboardModifiers().testFlag(Qt::ShiftModifier))
-    {
-        selected_lattice_vertices = {};
-    }
-
-    for(std::vector<Vertex*>::size_type i = 0; i < geom_lattice->ctrlpts.size(); i++) {
-        mat4 m = translate(mat4(1.0f), vec3(geom_lattice->ctrlpts[i]->pos));
-        float t = lattice_ray->latticeIntersect(m, &camera);
-        if (t > 0) {
-            ray_pierced.push_back(geom_lattice->ctrlpts[i]);
-            world_t.push_back(t);
+        if(!QGuiApplication::queryKeyboardModifiers().testFlag(Qt::ShiftModifier))
+        {
+            selected_lattice_vertices = {};
         }
-    }
 
-    if (!ray_pierced.empty()) {
-        Vertex* closest_t = ray_pierced[0];
-        float closest_world_t = world_t[0];
-        for(std::vector<Vertex*>::size_type i = 1; i < ray_pierced.size(); i++) {
-            if (world_t[i] < closest_world_t) {
-                closest_t = ray_pierced[i];
-                closest_world_t = world_t[i];
+        for(std::vector<Vertex*>::size_type i = 0; i < geom_lattice->ctrlpts.size(); i++) {
+            mat4 m = translate(mat4(1.0f), vec3(geom_lattice->ctrlpts[i]->pos));
+            float t = lattice_ray->latticeIntersect(m, &camera);
+            if (t > 0) {
+                ray_pierced.push_back(geom_lattice->ctrlpts[i]);
+                world_t.push_back(t);
             }
         }
-        selected_lattice_vertices.push_back(closest_t);
+
+        if (!ray_pierced.empty()) {
+            Vertex* closest_t = ray_pierced[0];
+            float closest_world_t = world_t[0];
+            for(std::vector<Vertex*>::size_type i = 1; i < ray_pierced.size(); i++) {
+                if (world_t[i] < closest_world_t) {
+                    closest_t = ray_pierced[i];
+                    closest_world_t = world_t[i];
+                }
+            }
+            selected_lattice_vertices.push_back(closest_t);
+        }
+        update();
     }
-    update();
 }
 
 void MyGL::mouseMoveEvent(QMouseEvent *e)
