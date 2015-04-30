@@ -297,6 +297,8 @@ void MyGL::keyPressEvent(QKeyEvent *e)
         emit meshChanged();
     } else if (e->key() == Qt::Key_R) {
         rt->renderToFile("render.bmp");
+    } else if (e->key() == Qt::Key_M) {
+        geom_lattice->recreateLattice();
     }
 
     camera.RecomputeEye();
