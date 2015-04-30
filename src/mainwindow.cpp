@@ -312,3 +312,46 @@ void MainWindow::on_vertex_normals_checkbox_clicked()
 {
     ui->mygl->smoothNormals();
 }
+
+void MainWindow::on_light_x_valueChanged(double arg1)
+{
+    ui->mygl->updateLightPosition((float) arg1,
+                                  (float) ui->light_y->value(),
+                                  (float) ui->light_z->value());
+}
+
+void MainWindow::on_light_y_valueChanged(double arg1)
+{
+
+    ui->mygl->updateLightPosition((float) ui->light_x->value(),
+                                  (float) arg1,
+                                  (float) ui->light_z->value());
+}
+
+void MainWindow::on_light_z_valueChanged(double arg1)
+{
+    ui->mygl->updateLightPosition((float) ui->light_x->value(),
+                                  (float) ui->light_y->value(),
+                                  (float) arg1);
+}
+
+void MainWindow::on_light_r_valueChanged(double arg1)
+{
+    ui->mygl->updateLightColor((float) arg1,
+                               (float) ui->light_g->value(),
+                               (float) ui->light_b->value());
+}
+
+void MainWindow::on_light_g_valueChanged(double arg1)
+{
+    ui->mygl->updateLightColor((float) ui->light_r->value(),
+                               (float) arg1,
+                               (float) ui->light_b->value());
+}
+
+void MainWindow::on_light_b_valueChanged(double arg1)
+{
+    ui->mygl->updateLightColor((float) ui->light_r->value(),
+                               (float) ui->light_g->value(),
+                               (float) arg1);
+}

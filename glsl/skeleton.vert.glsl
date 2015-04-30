@@ -34,6 +34,10 @@ uniform mat4 u_BindMatrix[64];        // The array of mat4 that represents the b
 uniform mat4 u_TransformMatrix[64];   // transformation array of each joint
                                     // joint local space -> world space
 
+uniform vec4 u_LightPosition;
+
+uniform vec4 u_LightColor;
+
 // --------------------------------------------------------------------------------------------------------
 
 
@@ -59,7 +63,7 @@ out vec4 fs_Nor;  // --------->The array of normals that has been transformed by
 out vec4 fs_LightVec;  // ---->The direction in which our virtual light lies, relative to each vertex. This is implicitly passed to the fragment shader.
 out vec4 fs_Col;  // --------->The color of each vertex. This is implicitly passed to the fragment shader.
 
-const vec4 lightPos = vec4(5, 5, 3, 1);  // The position of our virtual light, which is used to compute the shading of
+const vec4 lightPos = vec4(0, 5, 0, 1);  // The position of our virtual light, which is used to compute the shading of
                                         // the geometry in the fragment shader.
 
 void main()
@@ -96,12 +100,12 @@ void main()
     a_norm = a_norm + b_norm;
 
 
-    fs_Col = vs_Col;  //                          Pass the vertex color positions to the fragment shader
+    fs_Col = u_LightColor * vs_Col;  //                          Pass the vertex color positions to the fragment shader
     fs_Nor = u_ModelInvTr * a_norm;  //           Transform the geometry's normals
 
     vec4 modelposition = u_Model * a_pos;  //    Temporarily store the transformed vertex positions for use below
 
-    fs_LightVec = lightPos - modelposition;  //   Compute the direction in which the light source lies
+    fs_LightVec = u_LightPosition - modelposition;  //   Compute the direction in which the light source lies
 
     gl_Position = u_ViewProj * modelposition;  // gl_Position is a built-in variable of OpenGL which is used to render the final positions
                                              // of the geometry's vertices

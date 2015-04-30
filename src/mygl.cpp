@@ -75,6 +75,10 @@ void MyGL::initializeGL()
 
     prog_skeleton.create(":/glsl/skeleton.vert.glsl", ":/glsl/lambert.frag.glsl");
 
+    // set the initial light position and color
+    updateLightPosition(5, 5, 3);
+    updateLightColor(1, 1, 1);
+
     // We have to have a VAO bound in OpenGL 3.2 Core. But if we're not
     // using multiple VAOs, we can just bind one once.
     vao.bind();
@@ -682,6 +686,18 @@ void MyGL::updateSkeletonTransformations()
     }
     //std::cout << "\n";
     prog_skeleton.setJointTransformArray(trans);
+}
+
+void MyGL::updateLightPosition(float x, float y, float z)
+{
+    prog_lambert.setLightPosition(glm::vec4(x, y, z, 1));
+    prog_skeleton.setLightPosition(glm::vec4(x, y, z, 1));
+}
+
+void MyGL::updateLightColor(float r, float g, float b)
+{
+    prog_lambert.setLightColor(glm::vec4(r, g, b, 1));
+    prog_skeleton.setLightColor(glm::vec4(r, g, b, 1));
 }
 
 void MyGL::playAnimation(QListWidget *kf)

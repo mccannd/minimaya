@@ -80,6 +80,18 @@ private slots:
 
     void on_vertex_normals_checkbox_clicked();
 
+    void on_light_x_valueChanged(double arg1);
+
+    void on_light_y_valueChanged(double arg1);
+
+    void on_light_z_valueChanged(double arg1);
+
+    void on_light_r_valueChanged(double arg1);
+
+    void on_light_g_valueChanged(double arg1);
+
+    void on_light_b_valueChanged(double arg1);
+
 private:
     Ui::MainWindow *ui;
     int numAnimframes = 72;
