@@ -211,7 +211,6 @@ void MyGL::keyPressEvent(QKeyEvent *e)
         camera.fovy += 5.0f * DEG2RAD;
     } else if (e->key() == Qt::Key_2) {
         camera.fovy -= 5.0f * DEG2RAD;
-<<<<<<< HEAD
     } else if (e->key() == Qt::Key_W) {
         geom_lattice->updateDivisions(geom_lattice->x,
                                       geom_lattice->y + 1,
