@@ -94,6 +94,10 @@ private slots:
 
     void on_light_b_valueChanged(double arg1);
 
+    void on_actionLambert_triggered();
+
+    void on_actionToon_triggered();
+
 private:
     Ui::MainWindow *ui;
     int numAnimframes = 72;
