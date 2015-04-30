@@ -137,11 +137,11 @@ void MyGL::paintGL()
         prog_wire.draw(*this, *selected_vertex);
     }
 
-    if (skeleton_visible) {
+    if (skeleton_visible && !lattice_active) {
         drawSkeleton(root_joint);
     }
 
-    if (lattice_active) {
+    if (lattice_show && lattice_active) {
         prog_wire.draw(*this, *geom_lattice);
 
         for(std::vector<Vertex*>::size_type i = 0; i < selected_lattice_vertices.size(); i++) {
@@ -149,13 +149,15 @@ void MyGL::paintGL()
             prog_wire.draw(*this, *selected_lattice_vertices[i]);
         }
 
-        if (lattice_ray != NULL) {
-            mat4 model = mat4(1.0f);
-            prog_wire.setModelMatrix(model);
-            lattice_ray->create();
-            prog_wire.draw(*this, *lattice_ray);
-        }
+//        if (lattice_ray != NULL) {
+//            mat4 model = mat4(1.0f);
+//            prog_wire.setModelMatrix(model);
+//            lattice_ray->create();
+//            prog_wire.draw(*this, *lattice_ray);
+//        }
+    }
 
+    if (onscreen_controls_active) {
         prog_wire.draw(*this, *lattice_controls);
     }
 
@@ -284,14 +286,6 @@ void MyGL::keyPressEvent(QKeyEvent *e)
         geom_mesh.create();
         update();
         emit meshChanged();
-    } else if (e->key() == Qt::Key_T) {
-        geom_lattice->stretching((test), 1);
-        geom_lattice->create();
-        geom_mesh.create();
-        update();
-        emit meshChanged();
-
-        test += 0.5;
     }
 
     camera.RecomputeEye();
@@ -305,7 +299,7 @@ void MyGL::mousePressEvent(QMouseEvent *e) {
 
 // For lattice
 void MyGL::mouseReleaseEvent(QMouseEvent *e) {
-    if (lattice_active) {
+    if (lattice_active && lattice_show) {
         prevPos = e->pos();
         lattice_ray = latticeRaycast(e->x(), e->y());
 
@@ -466,6 +460,9 @@ void MyGL::deleteVertex()
 void MyGL::subdivideMesh(QListWidget *e, QListWidget *f, QListWidget *v)
 {
     geom_mesh.subdivide(e, f, v);
+    if (lattice_active) {
+        geom_lattice->recreateLattice();
+    }
     update();
     selected_edge = NULL;
     selected_vertex = NULL;
@@ -723,4 +720,113 @@ void MyGL::smoothNormals()
 {
     geom_mesh.smoothNormals = !geom_mesh.smoothNormals;
     geom_mesh.create();
+}
+
+void MyGL::slot_Lattice_Checkbox(bool b) {
+    lattice_active = b;
+}
+
+void MyGL::slot_Lattice_Intensity(int q) {
+    deformation_intensity = q;
+
+    if (lattice_active) {
+        switch(Lattice_Mode) {
+            case 0: // Bend
+                geom_lattice->bending(deformation_intensity * DEG2RAD, deformation_axis);
+                geom_lattice->create();
+                geom_mesh.create();
+                update();
+                emit meshChanged();
+                break;
+            case 1: // Squash
+                geom_lattice->squashing(deformation_intensity, deformation_axis);
+                geom_lattice->create();
+                geom_mesh.create();
+                update();
+                emit meshChanged();
+                break;
+            case 2: // Stretch
+                geom_lattice->stretching(deformation_intensity, deformation_axis);
+                geom_lattice->create();
+                geom_mesh.create();
+                update();
+                emit meshChanged();
+                break;
+            case 3: // Taper
+                geom_lattice->tapering(deformation_intensity * DEG2RAD / 4.15f, deformation_axis);
+                geom_lattice->create();
+                geom_mesh.create();
+                update();
+                emit meshChanged();
+                break;
+            case 4: // Twist
+                geom_lattice->twisting(deformation_intensity * DEG2RAD, deformation_axis);
+                geom_lattice->create();
+                geom_mesh.create();
+                update();
+                emit meshChanged();
+                break;
+        }
+    }
+}
+
+void MyGL::slot_Lattice_Bend() {
+    Lattice_Mode = 0;
+}
+
+void MyGL::slot_Lattice_Squash() {
+    Lattice_Mode = 1;
+}
+
+void MyGL::slot_Lattice_Stretch() {
+    Lattice_Mode = 2;
+}
+
+void MyGL::slot_Lattice_Taper() {
+    Lattice_Mode = 3;
+}
+
+void MyGL::slot_Lattice_Twist() {
+    Lattice_Mode = 4;
+}
+
+void MyGL::slot_Lattice_X() {
+    deformation_axis = 0;
+}
+
+void MyGL::slot_Lattice_Y() {
+    deformation_axis = 1;
+}
+
+void MyGL::slot_Lattice_Z() {
+    deformation_axis = 2;
+}
+
+void MyGL::slot_Onscreen_Controls(bool b) {
+    onscreen_controls_active = b;
+}
+
+void MyGL::slot_Lattice_Show(bool b) {
+    lattice_show = b;
+}
+
+void MyGL::slot_Deformation_Commit() {
+    for(std::vector<Vertex*>::size_type v = 0; v < geom_mesh.vertices.size(); v++) {
+        geom_mesh.vertices[v]->orig_pos = geom_mesh.vertices[v]->pos;
+    }
+
+    geom_lattice->recreateLattice();
+    update();
+}
+
+void MyGL::slot_Onscreen_Translate() {
+    Onscreen_Mode = 0;
+}
+
+void MyGL::slot_Onscreen_Rotate() {
+    Onscreen_Mode = 1;
+}
+
+void MyGL::slot_Onscreen_Scale() {
+    Onscreen_Mode = 2;
 }

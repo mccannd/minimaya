@@ -66,8 +66,15 @@ public:
     bool skeleton_visible = true;
     // determines whether the mesh is rendered with lambert or skeleton
     bool skeleton_bound = false;
-    bool lattice_active = true;
-    int deformation_axis = 1;
+
+    // Deformation Stuff
+    bool lattice_active = false;
+    bool lattice_show = false;
+    bool onscreen_controls_active = false;
+    int deformation_axis = 0; // Default X
+    float deformation_intensity = 1; // Default Intensity
+    int Lattice_Mode = 0; // Default Bend
+    int Onscreen_Mode = 0; // Default Translate Mode
 
     // mesh interface functions
     void divideEdge();
@@ -103,7 +110,6 @@ public:
     LatticeRay* latticeRaycast(int x, int y);
     LatticeRay* lattice_ray = NULL;
     vector<Vertex*> selected_lattice_vertices = {};
-    float test = 0;
 
 protected:
     void keyPressEvent(QKeyEvent *e);
@@ -119,5 +125,20 @@ public slots:
     void edgeSelected(QListWidgetItem* e);
     void vertexSelected(QListWidgetItem* v);
     void updateAnimationFrame();
-
+    void slot_Lattice_Checkbox(bool b);
+    void slot_Lattice_Intensity(int q);
+    void slot_Lattice_Bend();
+    void slot_Lattice_Squash();
+    void slot_Lattice_Stretch();
+    void slot_Lattice_Taper();
+    void slot_Lattice_Twist();
+    void slot_Lattice_X();
+    void slot_Lattice_Y();
+    void slot_Lattice_Z();
+    void slot_Onscreen_Controls(bool b);
+    void slot_Lattice_Show(bool b);
+    void slot_Deformation_Commit();
+    void slot_Onscreen_Translate();
+    void slot_Onscreen_Rotate();
+    void slot_Onscreen_Scale();
 };

@@ -345,32 +345,26 @@ void Lattice::tapering(float q, int deformation_axis) {
         for (int j = 0; j <= y; j++) {
             for (int k = 0; k <= z; k++) {
                 int idx = i * (y + 1) * (z + 1) + j * (z + 1) + k;
-                if (deformation_axis == 0) {
+                if (deformation_axis == 1) {
                     // Bend on X Axis
                     float X = ctrlpts[idx]->orig_pos[0];
                     float Y = ctrlpts[idx]->orig_pos[1];
                     float Z = ctrlpts[idx]->orig_pos[2];
 
                     float Y0 = 0;
-
                     float theta = q * (X - Y0);
-
-                    float y_prime;
                     float x_prime;
 
                     if (minx <= X && X <= maxx ) {
                         x_prime = -sin(theta) * (Y - 1/q) + Y0;
-                        y_prime = cos(theta) * (Y - 1/q) + (1/q);
                     } else if (X < minx) {
                         x_prime = -sin(theta) * (Y - 1/q) + Y0 + cos(theta) * (X - Y0);
-                        y_prime = cos(theta) * (Y - 1/q) + (1/q) + sin(theta) * (X - Y0);
                     } else {
                         x_prime = -sin(theta) * (Y - 1/q) + Y0 + cos(theta) * (X - Y0);
-                        y_prime = cos(theta) * (Y - 1/q) + (1/q) + sin(theta) * (X - Y0);
                     }
 
                     ctrlpts[idx]->pos = vec4(x_prime, Y, Z, 1);
-                } else if (deformation_axis == 1) {
+                } else if (deformation_axis == 2) {
                     // Bend on Y Axis
                     float X = ctrlpts[idx]->orig_pos[0];
                     float Y = ctrlpts[idx]->orig_pos[1];
@@ -378,23 +372,18 @@ void Lattice::tapering(float q, int deformation_axis) {
 
                     float Y0 = 0;
                     float theta = q * (Y - Y0);
-
                     float y_prime;
-                    float z_prime;
 
                     if (miny <= Y && Y <= maxy ) {
                         y_prime = -sin(theta) * (Z - 1/q) + Y0;
-                        z_prime = cos(theta) * (Z - 1/q) + (1/q);
                     } else if (Y < miny) {
                         y_prime = -sin(theta) * (Z - 1/q) + Y0 + cos(theta) * (Y - Y0);
-                        z_prime = cos(theta) * (Z - 1/q) + (1/q) + sin(theta) * (Y - Y0);
                     } else {
                         y_prime = -sin(theta) * (Z - 1/q) + Y0 + cos(theta) * (Y - Y0);
-                        z_prime = cos(theta) * (Z - 1/q) + (1/q) + sin(theta) * (Y - Y0);
                     }
 
                     ctrlpts[idx]->pos = vec4(X, y_prime, Z, 1);
-                } else if (deformation_axis == 2) {
+                } else if (deformation_axis == 0) {
                     // Bend on Z Axis
                     float X = ctrlpts[idx]->orig_pos[0];
                     float Y = ctrlpts[idx]->orig_pos[1];
@@ -402,19 +391,14 @@ void Lattice::tapering(float q, int deformation_axis) {
 
                     float Y0 = 0;
                     float theta = q * (Z - Y0);
-
-                    float x_prime;
                     float z_prime;
 
                     if (minz <= Z && Z <= maxz ) {
                         z_prime = -sin(theta) * (X - 1/q) + Y0;
-                        x_prime = cos(theta) * (X - 1/q) + (1/q);
                     } else if (Z < minz) {
                         z_prime = -sin(theta) * (X - 1/q) + Y0 + cos(theta) * (Z - Y0);
-                        x_prime = cos(theta) * (X - 1/q) + (1/q) + sin(theta) * (Z - Y0);
                     } else {
                         z_prime = -sin(theta) * (X - 1/q) + Y0 + cos(theta) * (Z - Y0);
-                        x_prime = cos(theta) * (X - 1/q) + (1/q) + sin(theta) * (Z - Y0);
                     }
 
                     ctrlpts[idx]->pos = vec4(X, Y, z_prime, 1);
@@ -458,7 +442,6 @@ void Lattice::tapering(float q, int deformation_axis) {
 // Free Form Deformation (FFD)
 // Uses Bernstein Formula
 void Lattice::freeFormDeformation() {
-//    int n = ctrlpts.size() - 1;
     for(std::vector<Vertex*>::size_type v = 0; v < mesh->vertices.size(); v++) {
         vec3 X = vec3(mesh->vertices[v]->orig_pos);
 

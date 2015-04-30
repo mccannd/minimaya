@@ -49,14 +49,14 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>5</number>
+     <number>6</number>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideLeft</enum>
     </property>
     <widget class="QWidget" name="edge_tab">
      <attribute name="title">
-      <string>Edges</string>
+      <string>HE</string>
      </attribute>
      <widget class="QPushButton" name="pushButton">
       <property name="geometry">
@@ -110,7 +110,7 @@
     </widget>
     <widget class="QWidget" name="faces_tab">
      <attribute name="title">
-      <string>Faces</string>
+      <string>F</string>
      </attribute>
      <widget class="QPushButton" name="pushButton_4">
       <property name="geometry">
@@ -263,7 +263,7 @@ Color</string>
     </widget>
     <widget class="QWidget" name="vertices_tab">
      <attribute name="title">
-      <string>Vertices</string>
+      <string>V</string>
      </attribute>
      <widget class="QPushButton" name="pushButton_2">
       <property name="geometry">
@@ -1105,6 +1105,271 @@ Color</string>
       </property>
      </widget>
     </widget>
+    <widget class="QWidget" name="tab_3">
+     <attribute name="title">
+      <string>Deformation</string>
+     </attribute>
+     <widget class="QSlider" name="horizontalSlider_intensity">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>200</y>
+        <width>271</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="minimum">
+       <number>1</number>
+      </property>
+      <property name="maximum">
+       <number>360</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>10</y>
+        <width>151</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Lattice is Active</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="radioButton_bend">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>70</y>
+        <width>102</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Bend</string>
+      </property>
+      <attribute name="buttonGroup">
+       <string notr="true">buttonGroup_2</string>
+      </attribute>
+     </widget>
+     <widget class="QRadioButton" name="radioButton_taper">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>130</y>
+        <width>102</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Taper</string>
+      </property>
+      <attribute name="buttonGroup">
+       <string notr="true">buttonGroup_2</string>
+      </attribute>
+     </widget>
+     <widget class="QRadioButton" name="radioButton_stretch">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>110</y>
+        <width>102</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Stretch</string>
+      </property>
+      <attribute name="buttonGroup">
+       <string notr="true">buttonGroup_2</string>
+      </attribute>
+     </widget>
+     <widget class="QRadioButton" name="radioButton_squash">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>90</y>
+        <width>102</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Squash</string>
+      </property>
+      <attribute name="buttonGroup">
+       <string notr="true">buttonGroup_2</string>
+      </attribute>
+     </widget>
+     <widget class="QRadioButton" name="radioButton_twist">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>150</y>
+        <width>102</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Twist</string>
+      </property>
+      <attribute name="buttonGroup">
+       <string notr="true">buttonGroup_2</string>
+      </attribute>
+     </widget>
+     <widget class="QLabel" name="label_23">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>180</y>
+        <width>141</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Deformation Intensity</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_2">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>30</y>
+        <width>201</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Show Onscreen Controls</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="radioButton_X">
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>70</y>
+        <width>51</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>X</string>
+      </property>
+      <attribute name="buttonGroup">
+       <string notr="true">buttonGroup_3</string>
+      </attribute>
+     </widget>
+     <widget class="QRadioButton" name="radioButton_Y">
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>100</y>
+        <width>51</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Y</string>
+      </property>
+      <attribute name="buttonGroup">
+       <string notr="true">buttonGroup_3</string>
+      </attribute>
+     </widget>
+     <widget class="QRadioButton" name="radioButton_Z">
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>130</y>
+        <width>41</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Z</string>
+      </property>
+      <attribute name="buttonGroup">
+       <string notr="true">buttonGroup_3</string>
+      </attribute>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_3">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>10</y>
+        <width>111</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Show Lattice</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_19">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>230</y>
+        <width>171</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Commit Deformation</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="radioButton_Translate">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>70</y>
+        <width>102</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Translate</string>
+      </property>
+      <attribute name="buttonGroup">
+       <string notr="true">buttonGroup</string>
+      </attribute>
+     </widget>
+     <widget class="QRadioButton" name="radioButton_Scale">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>130</y>
+        <width>102</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Scale</string>
+      </property>
+      <attribute name="buttonGroup">
+       <string notr="true">buttonGroup</string>
+      </attribute>
+     </widget>
+     <widget class="QRadioButton" name="radioButton_Rotate">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>100</y>
+        <width>102</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Rotate</string>
+      </property>
+      <attribute name="buttonGroup">
+       <string notr="true">buttonGroup</string>
+      </attribute>
+     </widget>
+    </widget>
    </widget>
    <widget class="QPushButton" name="pushButton_6">
     <property name="geometry">
@@ -1191,7 +1456,7 @@ Color</string>
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1229,6 +1494,22 @@ Color</string>
     <slot>setSelectedNode(QTreeWidgetItem*)</slot>
     <slot>edgeSelected(QListWidgetItem*)</slot>
     <slot>faceSelected(QListWidgetItem*)</slot>
+    <slot>slot_Lattice_Checkbox(bool)</slot>
+    <slot>slot_Lattice_Intensity(int)</slot>
+    <slot>slot_Lattice_Bend()</slot>
+    <slot>slot_Lattice_Squash()</slot>
+    <slot>slot_Lattice_Stretch()</slot>
+    <slot>slot_Lattice_Taper()</slot>
+    <slot>slot_Lattice_Twist()</slot>
+    <slot>slot_Lattice_X()</slot>
+    <slot>slot_Lattice_Y()</slot>
+    <slot>slot_Lattice_Z()</slot>
+    <slot>slot_Onscreen_Controls(bool)</slot>
+    <slot>slot_Lattice_Show(bool)</slot>
+    <slot>slot_Deformation_Commit()</slot>
+    <slot>slot_Onscreen_Translate()</slot>
+    <slot>slot_Onscreen_Rotate()</slot>
+    <slot>slot_Onscreen_Scale()</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -1314,10 +1595,271 @@ Color</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>checkBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_Lattice_Checkbox(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>763</x>
+     <y>87</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>558</x>
+     <y>97</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider_intensity</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_Lattice_Intensity(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>771</x>
+     <y>270</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>543</x>
+     <y>270</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton_bend</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_Lattice_Bend()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>682</x>
+     <y>143</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>507</x>
+     <y>137</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton_squash</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_Lattice_Squash()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>703</x>
+     <y>158</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>542</x>
+     <y>156</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton_stretch</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_Lattice_Stretch()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>716</x>
+     <y>181</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>535</x>
+     <y>180</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton_taper</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_Lattice_Taper()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>702</x>
+     <y>196</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>542</x>
+     <y>196</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton_twist</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_Lattice_Twist()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>702</x>
+     <y>216</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>530</x>
+     <y>216</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton_X</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_Lattice_X()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>833</x>
+     <y>135</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>568</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton_Y</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_Lattice_Y()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>818</x>
+     <y>171</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>620</x>
+     <y>317</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton_Z</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_Lattice_Z()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>843</x>
+     <y>204</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>610</x>
+     <y>336</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_Onscreen_Controls(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>810</x>
+     <y>93</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>597</x>
+     <y>110</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_3</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_Lattice_Show(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>909</x>
+     <y>77</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>566</x>
+     <y>78</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_19</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_Deformation_Commit()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>909</x>
+     <y>305</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>614</x>
+     <y>397</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton_Translate</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_Onscreen_Translate()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>906</x>
+     <y>143</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>581</x>
+     <y>474</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton_Rotate</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_Onscreen_Rotate()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>927</x>
+     <y>173</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>559</x>
+     <y>492</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton_Scale</sender>
+   <signal>clicked()</signal>
+   <receiver>mygl</receiver>
+   <slot>slot_Onscreen_Scale()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>936</x>
+     <y>203</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>575</x>
+     <y>508</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>refreshLists()</slot>
   <slot>refreshVertexData(float,float,float)</slot>
   <slot>refreshJointData(QTreeWidgetItem*)</slot>
  </slots>
+ <buttongroups>
+  <buttongroup name="buttonGroup_2"/>
+  <buttongroup name="buttonGroup_3"/>
+  <buttongroup name="buttonGroup"/>
+ </buttongroups>
 </ui>
