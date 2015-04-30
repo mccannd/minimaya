@@ -83,6 +83,7 @@ public:
     void divideEdge();
     void triangulateFace();
     void recolorFace(float r, float g, float b);
+    void materializeFace(float rflec, float rfrac, float alpha, float specl);
     void moveVertex(float x, float y, float z);
     void deleteVertex();
     void resetMesh();

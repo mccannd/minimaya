@@ -49,7 +49,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>6</number>
+     <number>1</number>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideLeft</enum>
@@ -258,6 +258,161 @@ Color</string>
         <width>321</width>
         <height>421</height>
        </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_24">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>570</y>
+        <width>111</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="text">
+       <string>reflectivity</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_25">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>600</y>
+        <width>111</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>index of refractivity</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="rfrac_box">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>600</y>
+        <width>81</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="minimum">
+       <double>-99.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.100000000000000</double>
+      </property>
+      <property name="value">
+       <double>1.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="rflec_box">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>570</y>
+        <width>81</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="minimum">
+       <double>-99.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.100000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_26">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>630</y>
+        <width>111</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>transparency (alpha)</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="alpha_box">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>630</y>
+        <width>81</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="minimum">
+       <double>-99.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.100000000000000</double>
+      </property>
+      <property name="value">
+       <double>1.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_27">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>660</y>
+        <width>101</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>specularity</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="specl_box">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>660</y>
+        <width>81</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="minimum">
+       <double>-99.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.100000000000000</double>
+      </property>
+      <property name="value">
+       <double>20.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_20">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>570</y>
+        <width>111</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Set
+Material
+Attributes</string>
       </property>
      </widget>
     </widget>
@@ -1456,7 +1611,7 @@ Color</string>
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>22</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1858,8 +2013,8 @@ Color</string>
   <slot>refreshJointData(QTreeWidgetItem*)</slot>
  </slots>
  <buttongroups>
-  <buttongroup name="buttonGroup_2"/>
   <buttongroup name="buttonGroup_3"/>
+  <buttongroup name="buttonGroup_2"/>
   <buttongroup name="buttonGroup"/>
  </buttongroups>
 </ui>

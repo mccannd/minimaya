@@ -60,6 +60,7 @@ class Raytrace {
     static glm::vec4 background;
     static glm::vec4 light_source;
     static Face *sphere;
+    static const bool perfect_sphere = false;
 
     Raytrace(Camera *cam, Mesh *m);
 

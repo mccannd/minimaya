@@ -415,6 +415,17 @@ void MyGL::recolorFace(float r, float g, float b)
     update();
 }
 
+
+void MyGL::materializeFace(float rflec, float rfrac, float alpha, float specl)
+{
+    // check that a face is selected
+    if (selected_face == NULL) {
+        return;
+    }
+
+    selected_face->mat_attr = Material(rflec, rfrac, alpha, specl);
+}
+
 void MyGL::triangulateFace()
 {
     // check that a face is selected
