@@ -53,10 +53,10 @@ void MyGL::initializeGL()
     geom_cylinder.create();
     geom_sphere.create();
     geom_mesh.create();
-    //geom_mesh.unitCube(); // initialize mesh as a unit cube
+    geom_mesh.unitCube(); // initialize mesh as a unit cube
 
-    QString filename = QString("C:/Users/molisani/stage.obj");
-    geom_mesh.parseObj(filename);
+    //QString filename = QString("C:/Users/molisani/stage.obj");
+    //geom_mesh.parseObj(filename);
 
     geom_lattice = new Lattice(&geom_mesh);
     geom_lattice->create();
@@ -136,16 +136,19 @@ void MyGL::paintGL()
     prog_toon_ramp.setViewProjMatrix(camera.getViewProj());
     prog_toon_ramp.setModelMatrix(glm::mat4(1.0f));
 
-    // if (!skeleton_bound) {
-    //     prog_lambert.draw(*this, geom_mesh);
-    // } else {
-    //     prog_skeleton.draw(*this, geom_mesh);
-    // }
-
-    glDisable(GL_DEPTH_TEST);
-    prog_toon_outline.draw(*this, geom_mesh);
-    glEnable(GL_DEPTH_TEST);
-    prog_toon_ramp.draw(*this, geom_mesh);
+    if (shader_select == 0) {
+        if (!skeleton_bound) {
+            prog_lambert.draw(*this, geom_mesh);
+        } else {
+            prog_skeleton.draw(*this, geom_mesh);
+        }
+    } else if (shader_select == 1) {
+        glDisable(GL_DEPTH_TEST);
+        prog_toon_outline.draw(*this, geom_mesh);
+        glEnable(GL_DEPTH_TEST);
+        prog_toon_ramp.draw(*this, geom_mesh);
+    }
+    
 
 
     // draw selected mesh features

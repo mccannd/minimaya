@@ -365,3 +365,15 @@ void MainWindow::on_pushButton_20_clicked()
 
     ui->mygl->materializeFace(rflec, rfrac, alpha, specl);
 }
+
+void MainWindow::on_actionLambert_triggered() {
+    ui->actionLambert->setChecked(true);
+    ui->actionToon->setChecked(false);
+    ui->mygl->shader_select = 0;
+}
+
+void MainWindow::on_actionToon_triggered() {
+    ui->actionLambert->setChecked(false);
+    ui->actionToon->setChecked(true);
+    ui->mygl->shader_select = 1;
+}

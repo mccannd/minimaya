@@ -1611,7 +1611,7 @@ Attributes</string>
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>22</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1620,7 +1620,15 @@ Attributes</string>
     </property>
     <addaction name="actionQuit"/>
    </widget>
+   <widget class="QMenu" name="menuShader">
+    <property name="title">
+     <string>Shader</string>
+    </property>
+    <addaction name="actionLambert"/>
+    <addaction name="actionToon"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuShader"/>
   </widget>
   <action name="actionQuit">
    <property name="text">
@@ -1628,6 +1636,25 @@ Attributes</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionLambert">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Lambert</string>
+   </property>
+  </action>
+  <action name="actionToon">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Toon</string>
    </property>
   </action>
  </widget>
@@ -2013,8 +2040,8 @@ Attributes</string>
   <slot>refreshJointData(QTreeWidgetItem*)</slot>
  </slots>
  <buttongroups>
-  <buttongroup name="buttonGroup_2"/>
   <buttongroup name="buttonGroup_3"/>
   <buttongroup name="buttonGroup"/>
+  <buttongroup name="buttonGroup_2"/>
  </buttongroups>
 </ui>

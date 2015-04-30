@@ -71,6 +71,8 @@ public:
     // determines whether the mesh is rendered with lambert or skeleton
     bool skeleton_bound = false;
 
+    int shader_select = 0;
+
     // Deformation Stuff
     bool lattice_active = false;
     bool lattice_show = false;

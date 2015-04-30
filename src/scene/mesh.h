@@ -69,7 +69,7 @@ public:
     void triangulateFace(Face* f);
     void deleteVertex(Vertex* v);
 
-    bool smoothNormals = false;
+    bool smoothNormals = true;
 
     void parseObj(QString& fileName);
 
