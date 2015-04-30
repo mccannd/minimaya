@@ -20,6 +20,10 @@ uniform mat4 u_ViewProj;    // The matrix that defines the camera's transformati
                             // We've written a static matrix for you to use for HW2,
                             // but in HW3 you'll have to generate one yourself
 
+uniform vec4 u_LightPosition;
+
+uniform vec4 u_LightColor;
+
 in vec4 vs_Pos;  // ---------->The array of vertex positions passed to the shader
 
 in vec4 vs_Nor;  // ---------->The array of vertex normals passed to the shader
@@ -35,12 +39,12 @@ const vec4 lightPos = vec4(5, 5, 3, 1);  // The position of our virtual light, w
 
 void main()
 {
-    fs_Col = vs_Col;  //                          Pass the vertex color positions to the fragment shader
+    fs_Col = u_LightColor * vs_Col;  //                          Pass the vertex color positions to the fragment shader
     fs_Nor = u_ModelInvTr * vs_Nor;  //           Transform the geometry's normals
 
     vec4 modelposition = u_Model * vs_Pos;  //    Temporarily store the transformed vertex positions for use below
 
-    fs_LightVec = lightPos - modelposition;  //   Compute the direction in which the light source lies
+    fs_LightVec = u_LightPosition - modelposition;  //   Compute the direction in which the light source lies
 
     gl_Position = u_ViewProj * modelposition;  // gl_Position is a built-in variable of OpenGL which is used to render the final positions
                                              // of the geometry's vertices

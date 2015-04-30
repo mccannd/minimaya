@@ -21,6 +21,8 @@ void ShaderProgram::create(const char *vertfile, const char *fragfile)
     unifModel      = prog.uniformLocation("u_Model");
     unifModelInvTr = prog.uniformLocation("u_ModelInvTr");
     unifViewProj   = prog.uniformLocation("u_ViewProj");
+    unifLight      = prog.uniformLocation("u_LightPosition");
+    unifLightcolor = prog.uniformLocation("u_LightColor");
 }
 
 void ShaderProgram::setJointBindPosArray(const std::vector<glm::mat4> &jbp)
@@ -76,6 +78,27 @@ void ShaderProgram::setViewProjMatrix(const glm::mat4& vp)
         prog.setUniformValue(unifViewProj, la::to_qmat(vp));
     }
 }
+
+void ShaderProgram::setLightPosition(const glm::vec4 &pos)
+{
+    prog.bind();
+
+    if(unifLight != -1) {
+        QVector4D vec = QVector4D(pos[0], pos[1], pos[2], pos[3]);
+        prog.setUniformValue(unifLight, vec);
+    }
+}
+
+void ShaderProgram::setLightColor(const glm::vec4 &col)
+{
+    prog.bind();
+
+    if(unifLightcolor != -1) {
+        QVector4D vec = QVector4D(col[0], col[1], col[2], col[3]);
+        prog.setUniformValue(unifLightcolor, vec);
+    }
+}
+
 
 // This function, as its name implies, uses the passed in GL widget
 void ShaderProgram::draw(GLWidget277 &f, Drawable &d)

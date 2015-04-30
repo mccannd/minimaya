@@ -94,6 +94,8 @@ public:
 
     void updateSkeletonList();
     void updateSkeletonTransformations();
+    void updateLightPosition(float x, float y, float z);
+    void updateLightColor(float r, float g, float b);
 
     void playAnimation(QListWidget *kf);
 

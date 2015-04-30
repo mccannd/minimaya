@@ -41,6 +41,8 @@ public:
     int unifModelInvTr;
     int unifViewProj;
     int unifColor;
+    int unifLight; // used for light vector
+    int unifLightcolor;
 
 public:
     void create(const char *vertfile, const char *fragfile);
@@ -48,5 +50,7 @@ public:
     void setViewProjMatrix(const glm::mat4& vp);
     void setJointBindPosArray(const std::vector<glm::mat4>& jbp);
     void setJointTransformArray(const std::vector<glm::mat4>& jt);
+    void setLightPosition(const glm::vec4& pos);
+    void setLightColor(const glm::vec4& col);
     void draw(GLWidget277 &f, Drawable &d);
 };
