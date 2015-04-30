@@ -53,11 +53,19 @@ void MyGL::initializeGL()
     geom_cylinder.create();
     geom_sphere.create();
     geom_mesh.create();
-    geom_mesh.unitCube(); // initialize mesh as a unit cube
+    //geom_mesh.unitCube(); // initialize mesh as a unit cube
+
+    QString filename = QString("C:/Users/molisani/stage.obj");
+    geom_mesh.parseObj(filename);
+
     geom_lattice = new Lattice(&geom_mesh);
     geom_lattice->create();
     lattice_controls = new Controls();
     lattice_controls->create();
+
+
+    
+
 
     // create a root skellington joint
     root_joint = new Joint();
@@ -87,6 +95,7 @@ void MyGL::initializeGL()
 void MyGL::resizeGL(int w, int h)
 {
     camera = Camera(w, h);
+    rt = new Raytrace(&camera, &geom_mesh);
 
     glm::mat4 viewproj = camera.getViewProj();
 
@@ -202,6 +211,7 @@ void MyGL::keyPressEvent(QKeyEvent *e)
         camera.fovy += 5.0f * DEG2RAD;
     } else if (e->key() == Qt::Key_2) {
         camera.fovy -= 5.0f * DEG2RAD;
+<<<<<<< HEAD
     } else if (e->key() == Qt::Key_W) {
         geom_lattice->updateDivisions(geom_lattice->x,
                                       geom_lattice->y + 1,
@@ -286,6 +296,8 @@ void MyGL::keyPressEvent(QKeyEvent *e)
         geom_mesh.create();
         update();
         emit meshChanged();
+    } else if (e->key() == Qt::Key_R) {
+        rt->renderToFile("render.bmp");
     }
 
     camera.RecomputeEye();

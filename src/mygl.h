@@ -17,6 +17,7 @@
 #include <la.h>
 #include "skeletonparser.h"
 #include <scene/controls.h>
+#include "raytrace.h"
 
 class MyGL
     : public GLWidget277
@@ -41,6 +42,8 @@ private:
     Vertex* selected_vertex = NULL;
 
     Camera camera;
+
+    Raytrace *rt;
 
     std::vector<HalfEdge*> drawn_edges = {};
     std::vector<Joint*> skeleton_list = {};

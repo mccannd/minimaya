@@ -3,7 +3,7 @@
 Face::Face(int id)
 {
     this->id = id;
-    color = glm::vec4(0.5, 0.5, 0.5, 0);
+    color = glm::vec4(0.5, 0.5, 0.5, 1);
     QString s = QString::fromStdString("Face " + std::to_string(id));
     this->setText(s);
 }
