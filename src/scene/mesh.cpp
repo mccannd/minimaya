@@ -56,7 +56,8 @@ glm::vec4 averagedNormal(Vertex* v)
 
 }
 
-// refresh all information necessary for opengl to draw
+/// updateBuffers: translates the half-edge data structure into data usable for OpenGL buffers
+
 void Mesh::updateBuffers()
 {
     // clear the current buffers
@@ -175,37 +176,37 @@ void Mesh::create()
 
     count = meshIndices.size();
 
-    bufIdx.create();
+    bufIdx.create(); // Vertex ID stream
     bufIdx.bind();
     bufIdx.setUsagePattern(QOpenGLBuffer::StaticDraw);
     bufIdx.allocate(meshIndices.data(),
                     meshIndices.size() * sizeof(GLuint));
 
-    bufPos.create();
+    bufPos.create(); // Vertex position stream
     bufPos.bind();
     bufPos.setUsagePattern(QOpenGLBuffer::StaticDraw);
     bufPos.allocate(meshVertexPositions.data(),
                     meshVertexPositions.size() * sizeof(glm::vec4));
 
-    bufCol.create();
+    bufCol.create(); // Vertex color stream
     bufCol.bind();
     bufCol.setUsagePattern(QOpenGLBuffer::StaticDraw);
     bufCol.allocate(meshVertexColors.data(),
                     meshVertexPositions.size() * sizeof(glm::vec4));
 
-    bufNor.create();
+    bufNor.create(); // Vertex normal stream
     bufNor.bind();
     bufNor.setUsagePattern(QOpenGLBuffer::StaticDraw);
     bufNor.allocate(meshVertexNormals.data(),
                     meshVertexPositions.size() * sizeof(glm::vec4));
 
-    bufJID.create();
+    bufJID.create(); // Ties two skeleton joints to each vertex
     bufJID.bind();
     bufJID.setUsagePattern(QOpenGLBuffer::StaticDraw);
     bufJID.allocate(meshJointIDs.data(),
                     meshJointIDs.size() * sizeof(glm::ivec2));
 
-    bufJWeight.create();
+    bufJWeight.create(); // Gives each vertex joint a weight
     bufJWeight.bind();
     bufJWeight.setUsagePattern(QOpenGLBuffer::StaticDraw);
     bufJWeight.allocate(meshJointWeights.data(),
@@ -371,6 +372,9 @@ Vertex* Mesh::divideEdge(HalfEdge *e, bool updateBuffers)
     return vn;
 }
 
+/// Face triangulation: splits a face into a fan of triangles
+/// Input: pointer of face to be triangulated
+
 void Mesh::triangulateFace(Face *f)
 {
     // check that the face is contained within this mesh
@@ -454,6 +458,9 @@ int incidentEdges(Vertex* v)
     return edges;
 }
 
+/// Vertex Deletion
+/// Input: pointer to vertex to be deleted
+
 void Mesh::deleteVertex(Vertex *v)
 {
     // check that the face is contained within this mesh
@@ -483,10 +490,7 @@ void Mesh::deleteVertex(Vertex *v)
     // add vertex to list for deletion
     dv.push_back(v);
 
-    ///
-    /// reach out from the deleted vertex and compile the lists
-    ///
-
+    // reach out from the deleted vertex and compile the deletion lists
     HalfEdge* start = v->edge;
     HalfEdge* e1 = start;
 
@@ -537,7 +541,6 @@ void Mesh::deleteVertex(Vertex *v)
                 // point to an edge that will be deleted
                 e1->vert->edge = e1;
             }
-
         }
 
         e1->face = NULL; // the face this is on will be deleted
@@ -546,6 +549,7 @@ void Mesh::deleteVertex(Vertex *v)
 
     // delete everything on the lists
     // by erasing them from the face, vert, edge vecs
+    // (linear runtime, needs refactoring)
 
     // faces
     for (unsigned int i = 0; i < df.size(); i++) {
@@ -619,6 +623,10 @@ float jointToVertDistance(Joint* j, Vertex* v)
     return dist;
 }
 
+/// Linear binding: binds this mesh to a skeleton, allowing it to be deformed
+///
+/// Input: root of the skeleton, as a tree
+
 void Mesh::linearBinding(Joint *root)
 {
     // compile a list of all joints to iterate
@@ -667,11 +675,6 @@ void Mesh::linearBinding(Joint *root)
         // map these joints to vertex weights
         currentVertex->jointIDs = glm::ivec2(firstID, secondID);
         currentVertex->weights = glm::vec2(secondDistance, firstDistance);
-//        std::cout<<"Bound vertex " << currentVertex->getID() <<" to joints: <"
-//                << firstID << ", " << secondID <<
-//                   "> with weights: <" << secondDistance <<
-//                   ", " << firstDistance << ">\n";
-
     }
 
     // create the bind matrix for all joints
@@ -684,6 +687,9 @@ void Mesh::linearBinding(Joint *root)
     this->create();
 }
 
+/// Catmull-clark subdivision: splits all faces on mesh into smaller quadrangles, smoothing it
+///
+/// Input: UI Widgets for visual updates, mesh data stored within object
 
 void Mesh::subdivide(QListWidget *edgeList, QListWidget *faceList,
                      QListWidget *vertList)
@@ -999,20 +1005,11 @@ void Mesh::subdivide(QListWidget *edgeList, QListWidget *faceList,
     this->create();
 }
 
-/// --- Creation of arbitrary meshes ---
-
-// god have mercy on your soul if you need this
-void Mesh::arbitraryMesh(std::vector<Face*> f,
-                         std::vector<Vertex*> v,
-                         std::vector<HalfEdge*> e)
-{
-    this->destroy();
-    this->clearAll();
-    faces = f;
-    edges = e;
-    vertices = v;
-    this->create();
-}
+/// OBJ Importer: reads an obj file and creates a half-edge mesh
+/// Currently ignores UVs and normals
+///
+/// Input: name of an obj file
+///
 
 void Mesh::parseObj(QString& fileName)
 {
@@ -1049,7 +1046,7 @@ void Mesh::parseObj(QString& fileName)
             // check which type of line this is
             if (dividedList.at(0) == "v") {
                 // found a vertex
-                // v (posx) (posy) (posz)
+                // OBJ format: v (posx) (posy) (posz)
                 float x = dividedList.at(1).toFloat();
                 float y = dividedList.at(2).toFloat();
                 float z = dividedList.at(3).toFloat();
@@ -1057,8 +1054,8 @@ void Mesh::parseObj(QString& fileName)
                 vertices.push_back(v);
                 verts[vertexID] = v;
             } else if (dividedList.at(0) == "f") {
-                // found a face
-                // f (v/vt/vn) (v/vt/vn) ...
+                // found a face, link with vertices
+                // OBJ format: f (v/vt/vn) (v/vt/vn) ...
 
                 Face* f = new Face(++faceID);
                 faces.push_back(f);
@@ -1113,8 +1110,6 @@ void Mesh::parseObj(QString& fileName)
 
                         prev = e1;
                     }
-
-
                 }
 
                 // connect the last edge to the first
