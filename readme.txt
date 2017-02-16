@@ -6,7 +6,7 @@ Deformations (Dan)
 Additional Features/Extra Credit: Move light, colored light, smooth vertex normals
 
 >>>"Keys" Tab <<<
-I'm not quite sure how this works - Ellen
+Add or replace keys for all joints
 
 >>>"Light" Tab<<<
 [ ] Check Smooth Vertex Normals to show smooth vertex normals.
@@ -20,7 +20,6 @@ Additional Features/Extra Credit:  Toon Shader
 
 R - renders to file
 
-Also not quite sure what else to do - Ellen
 
 =====================
 Deformations (Ellen) - All under "Deformation" Tab
@@ -73,7 +72,7 @@ The center of the onscreen control will highlight to the color of the lattice
 =====================
 
 
-
+Readme from Dan's original base code:
 
 Homework 5 and 6: by Dan McCann
 
